@@ -6,6 +6,15 @@ import { DateTime } from 'luxon'
 import crypto from 'node:crypto'
 
 export default class ForgotPasswordsController {
+  /**
+   * @store
+   * @operationId requestPasswordReset
+   * @summary Request password reset
+   * @description Initiates the password reset process by sending a reset link to the user's email.
+   * @requestBody <forgotPasswordValidator>
+   * @responseBody 200 - { "success": true, "message": "If an account with that email exists, a password reset link has been sent." }
+   * @responseBody 422 - { "success": false, "message": "Validation Error", "errors": [{ "message": "The email field must be defined", "rule": "required", "field": "email" }] }
+   */
   async store(ctx: HttpContext) {
     const { request, response } = ctx
 
@@ -22,7 +31,7 @@ export default class ForgotPasswordsController {
 
       await user.save()
 
-      await PasswordResetRequested.dispatch(user, resetToken)
+      PasswordResetRequested.dispatch(user, resetToken)
     }
 
     const formattedResponse = ctx.serialize(

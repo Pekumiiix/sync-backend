@@ -32,6 +32,62 @@ export class AuthAccessTokenSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class BookmarkSchema extends BaseModel {
+  static $columns = ['browser', 'coverImageUrl', 'createdAt', 'description', 'domain', 'faviconUrl', 'folderId', 'id', 'isPinned', 'tags', 'title', 'updatedAt', 'url', 'userId', 'websiteName'] as const
+  $columns = BookmarkSchema.$columns
+  @column()
+  declare browser: string
+  @column()
+  declare coverImageUrl: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare description: string | null
+  @column()
+  declare domain: string
+  @column()
+  declare faviconUrl: string | null
+  @column()
+  declare folderId: string
+  @column({ isPrimary: true })
+  declare id: string
+  @column()
+  declare isPinned: boolean
+  @column()
+  declare tags: any
+  @column()
+  declare title: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+  @column()
+  declare url: string
+  @column()
+  declare userId: string
+  @column()
+  declare websiteName: string
+}
+
+export class FolderSchema extends BaseModel {
+  static $columns = ['bookmarkCount', 'createdAt', 'id', 'isSystem', 'name', 'recentBookmarksImages', 'updatedAt', 'userId'] as const
+  $columns = FolderSchema.$columns
+  @column()
+  declare bookmarkCount: number
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: string
+  @column()
+  declare isSystem: boolean
+  @column()
+  declare name: string
+  @column()
+  declare recentBookmarksImages: any
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+  @column()
+  declare userId: string
+}
+
 export class UserSchema extends BaseModel {
   static $columns = ['avatarUrl', 'createdAt', 'email', 'emailVerificationToken', 'emailVerificationTokenExpiresAt', 'firstName', 'id', 'integrations', 'isEmailVerified', 'lastName', 'location', 'password', 'plan', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'updatedAt'] as const
   $columns = UserSchema.$columns

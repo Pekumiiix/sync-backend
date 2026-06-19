@@ -9,6 +9,16 @@ export interface ApiDefinition {
     accessTokens: {
       store: typeof routes['auth.access_tokens.store']
     }
+    forgotPassword: {
+      store: typeof routes['auth.forgot_password.store']
+    }
+    resetPassword: {
+      store: typeof routes['auth.reset_password.store']
+    }
+    verifyEmail: {
+      store: typeof routes['auth.verify_email.store']
+      resend: typeof routes['auth.verify_email.resend']
+    }
   }
   profile: {
     profile: {

@@ -10,17 +10,27 @@
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 import { controllers } from '#generated/controllers'
+import AutoSwagger from 'adonis-autoswagger'
+import swagger from '#config/swagger'
 
-router.get('/', () => {
-  return { hello: 'world' }
+router.get('/swagger', async () => {
+  return AutoSwagger.default.docs(router.toJSON(), swagger)
+})
+
+router.get('/docs', async () => {
+  return AutoSwagger.default.scalar('/swagger') // .ui('/swagger', swagger) or .rapidoc('/swagger')
 })
 
 router
   .group(() => {
     router
       .group(() => {
-        router.post('signup', [controllers.NewAccount, 'store'])
-        router.post('login', [controllers.AccessTokens, 'store'])
+        router.post('sign-up', [controllers.NewAccount, 'store'])
+        router.post('sign-in', [controllers.AccessTokens, 'store'])
+        router.post('forgot-password', [controllers.ForgotPassword, 'store'])
+        router.post('reset-password', [controllers.ResetPassword, 'store'])
+        router.post('verify-email', [controllers.VerifyEmail, 'store'])
+        router.post('verify-email/resend', [controllers.VerifyEmail, 'resend'])
       })
       .prefix('auth')
       .as('auth')
@@ -28,7 +38,7 @@ router
     router
       .group(() => {
         router.get('profile', [controllers.Profile, 'show'])
-        router.post('logout', [controllers.AccessTokens, 'destroy'])
+        router.post('sign-out', [controllers.AccessTokens, 'destroy'])
       })
       .prefix('account')
       .as('profile')

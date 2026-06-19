@@ -7,7 +7,17 @@ import UserRegistered from '#events/user_registered'
 import { apiError } from '../utils/response.ts'
 
 export default class VerifyEmailController {
-  async verify(ctx: HttpContext) {
+  /**
+   * @store
+   * @operationId verifyEmail
+   * @summary Verify email
+   * @description Verifies the user's email address using a valid verification token.
+   * @requestBody <verifyEmailValidator>
+   * @responseBody 200 - { "success": true, "message": "Email verified successfully!", }
+   * @responseBody 400 - { "success": false, "message": "Verification token has expired. Please request a new one." }
+   * @responseBody 422 - { "success": false, "message": "Validation Error", "errors": [{ "message": "The token field must be defined", "rule": "required", "field": "token" }] }
+   */
+  async store(ctx: HttpContext) {
     const { request, response } = ctx
 
     const { token } = await request.validateUsing(verifyEmailValidator)
@@ -18,9 +28,9 @@ export default class VerifyEmailController {
       !user.emailVerificationTokenExpiresAt ||
       user.emailVerificationTokenExpiresAt < DateTime.now()
     ) {
-      response.badRequest(apiError('Verification token has expired. Please request a new one.'))
-
-      return
+      return response.badRequest(
+        apiError('Verification token has expired. Please request a new one.')
+      )
     }
 
     user.isEmailVerified = true
@@ -34,6 +44,14 @@ export default class VerifyEmailController {
     return response.ok(formattedData)
   }
 
+  /**
+   * @resend
+   * @operationId resendEmailVerification
+   * @summary Resend email verification
+   * @description Generates a new verification code and resends the email to the authenticated user.
+   * @responseBody 200 - { "success": true, "message": "A new verification code has been sent!" }
+   * @responseBody 400 - { "success": false, "message": "Your email is already verified." }
+   */
   async resend(ctx: HttpContext) {
     const { response, auth } = ctx
 
@@ -50,7 +68,7 @@ export default class VerifyEmailController {
 
     await user.save()
 
-    await UserRegistered.dispatch(user, verificationCode)
+    UserRegistered.dispatch(user, verificationCode)
 
     const formattedResponse = ctx.serialize(null, 'A new verification code has been sent!')
 

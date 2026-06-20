@@ -10,4 +10,6 @@ export const controllers = {
   Profile: () => import('#controllers/profile_controller'),
   ResetPassword: () => import('#controllers/reset_password_controller'),
   VerifyEmail: () => import('#controllers/verify_email_controller'),
+  Folders: () => import('#controllers/folders_controller'),
+  Bookmarks: () => import('#controllers/bookmarks_controller'),
 }

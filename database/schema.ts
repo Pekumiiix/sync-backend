@@ -56,7 +56,7 @@ export class BookmarkSchema extends BaseModel {
   @column()
   declare tags: any
   @column()
-  declare title: string
+  declare title: string | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
   @column()
@@ -64,11 +64,11 @@ export class BookmarkSchema extends BaseModel {
   @column()
   declare userId: string
   @column()
-  declare websiteName: string
+  declare websiteName: string | null
 }
 
 export class FolderSchema extends BaseModel {
-  static $columns = ['bookmarkCount', 'createdAt', 'id', 'isSystem', 'name', 'recentBookmarksImages', 'updatedAt', 'userId'] as const
+  static $columns = ['bookmarkCount', 'createdAt', 'id', 'isSystem', 'memberCount', 'name', 'recentBookmarksImages', 'updatedAt', 'userId'] as const
   $columns = FolderSchema.$columns
   @column()
   declare bookmarkCount: number
@@ -79,9 +79,30 @@ export class FolderSchema extends BaseModel {
   @column()
   declare isSystem: boolean
   @column()
+  declare memberCount: number
+  @column()
   declare name: string
   @column()
   declare recentBookmarksImages: any
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+  @column()
+  declare userId: string
+}
+
+export class MemberSchema extends BaseModel {
+  static $columns = ['accessLevel', 'createdAt', 'folderId', 'id', 'role', 'updatedAt', 'userId'] as const
+  $columns = MemberSchema.$columns
+  @column()
+  declare accessLevel: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare folderId: string
+  @column({ isPrimary: true })
+  declare id: string
+  @column()
+  declare role: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
   @column()

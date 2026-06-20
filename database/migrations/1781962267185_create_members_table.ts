@@ -1,7 +1,7 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'bookmarks'
+  protected tableName = 'members'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -22,34 +22,10 @@ export default class extends BaseSchema {
         .notNullable()
         .index()
 
-      table.string('title').nullable()
-      table.string('description').nullable()
-      table.string('website_name').nullable()
+      table.unique(['folder_id', 'user_id'])
 
-      table.string('url').notNullable()
-      table.string('domain').notNullable()
-
-      table.boolean('is_pinned').defaultTo(false).notNullable()
-
-      table
-        .enum('browser', [
-          'chrome',
-          'firefox',
-          'safari',
-          'edge',
-          'arc',
-          'opera',
-          'brave',
-          'other',
-          'manual',
-        ])
-        .notNullable()
-        .defaultTo('manual')
-
-      table.string('cover_image_url').nullable()
-      table.string('favicon_url').nullable()
-
-      table.json('tags').defaultTo('[]').notNullable()
+      table.enum('role', ['admin', 'member']).notNullable()
+      table.enum('access_level', ['editor', 'viewer']).notNullable()
 
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()

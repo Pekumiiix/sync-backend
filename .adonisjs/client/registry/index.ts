@@ -54,6 +54,42 @@ const routes = {
     tokens: [{"old":"/api/v1/account/sign-out","type":0,"val":"api","end":""},{"old":"/api/v1/account/sign-out","type":0,"val":"v1","end":""},{"old":"/api/v1/account/sign-out","type":0,"val":"account","end":""},{"old":"/api/v1/account/sign-out","type":0,"val":"sign-out","end":""}],
     types: placeholder as Registry['profile.access_tokens.destroy']['types'],
   },
+  'folder.folders.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/folder',
+    tokens: [{"old":"/api/v1/folder","type":0,"val":"api","end":""},{"old":"/api/v1/folder","type":0,"val":"v1","end":""},{"old":"/api/v1/folder","type":0,"val":"folder","end":""}],
+    types: placeholder as Registry['folder.folders.store']['types'],
+  },
+  'folder.folders.destroy': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/folder/:id',
+    tokens: [{"old":"/api/v1/folder/:id","type":0,"val":"api","end":""},{"old":"/api/v1/folder/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/folder/:id","type":0,"val":"folder","end":""},{"old":"/api/v1/folder/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['folder.folders.destroy']['types'],
+  },
+  'folder.folders.update': {
+    methods: ["PATCH"],
+    pattern: '/api/v1/folder/:id',
+    tokens: [{"old":"/api/v1/folder/:id","type":0,"val":"api","end":""},{"old":"/api/v1/folder/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/folder/:id","type":0,"val":"folder","end":""},{"old":"/api/v1/folder/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['folder.folders.update']['types'],
+  },
+  'folder.folders.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/folder',
+    tokens: [{"old":"/api/v1/folder","type":0,"val":"api","end":""},{"old":"/api/v1/folder","type":0,"val":"v1","end":""},{"old":"/api/v1/folder","type":0,"val":"folder","end":""}],
+    types: placeholder as Registry['folder.folders.index']['types'],
+  },
+  'folder.folders.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/folder/:id',
+    tokens: [{"old":"/api/v1/folder/:id","type":0,"val":"api","end":""},{"old":"/api/v1/folder/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/folder/:id","type":0,"val":"folder","end":""},{"old":"/api/v1/folder/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['folder.folders.show']['types'],
+  },
+  'bookmark.bookmarks.destroy': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/bookmark/:id',
+    tokens: [{"old":"/api/v1/bookmark/:id","type":0,"val":"api","end":""},{"old":"/api/v1/bookmark/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmark/:id","type":0,"val":"bookmark","end":""},{"old":"/api/v1/bookmark/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['bookmark.bookmarks.destroy']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

@@ -103,4 +103,76 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/access_tokens_controller').default['destroy']>>>
     }
   }
+  'folder.folders.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/folder'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/folder').createFolderValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/folder').createFolderValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/folders_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/folders_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'folder.folders.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/folder/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/folders_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/folders_controller').default['destroy']>>>
+    }
+  }
+  'folder.folders.update': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/folder/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/folder').updateFolderValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/folder').updateFolderValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/folders_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/folders_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'folder.folders.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/folder'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/folders_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/folders_controller').default['index']>>>
+    }
+  }
+  'folder.folders.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/folder/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/folder').getFolderParamValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/folders_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/folders_controller').default['show']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'bookmark.bookmarks.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/bookmark/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/bookmarks_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/bookmarks_controller').default['destroy']>>>
+    }
+  }
 }

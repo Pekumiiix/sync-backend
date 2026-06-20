@@ -10,8 +10,8 @@ export default class AccessTokensController {
    * @summary Sign in a user
    * @description Authenticates a user and returns an access token.
    * @requestBody <loginValidator>
-   * @responseBody 201 - { "success": true, "message": "Successfully signed in", "data": { "user": { "id": "123e4567-e89b-12d3-a456-426614174000", "firstName": "John", "lastName": "Doe", "email": "john@example.com", "is_email_verified": false, "location": "", "avatar_url": "", "created_at": "2024-01-01T00:00:00.000Z", "updated_at": "2024-01-01T00:00:00.000Z", "plan": "free", "integrations": [] }, "token": "oat_MTAx.XYZ..." } }
-   * @responseBody 422 - { "errors": [{ "message": "Invalid email or password", "rule": "auth.credentials", "field": "email" }] }
+   * @responseBody 201 - { "success": true, "message": "Successfully signed in", "data": "<AuthStoreData>" }
+   * @responseBody 422 - <ApiValidationError>
    */
   async store(ctx: HttpContext) {
     const { request, response } = ctx
@@ -37,7 +37,9 @@ export default class AccessTokensController {
    * @operationId signOut
    * @summary Sign out a user
    * @description Invalidates the current access token and signs out the user.
-   * @responseBody 200 - { "success": true, "message": "Successfully logged out" }
+   * @responseBody 200 - <ApiSuccessMessage>
+   * @responseBody 401 - <ApiErrorResponse>
+   * @responseBody 403 - <ApiErrorResponse>
    */
   async destroy(ctx: HttpContext) {
     const { response, auth } = ctx

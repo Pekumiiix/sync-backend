@@ -11,8 +11,8 @@ export default class ResetPasswordsController {
    * @summary Reset password
    * @description Resets the user's password using a valid reset token.
    * @requestBody <resetPasswordValidator>
-   * @responseBody 200 - { "success": true, "message": "Password reset successfully!" }
-   * @responseBody 422 - { "success": false, "message": "Validation Error", "errors": [{ "message": "The email field must be defined", "rule": "required", "field": "email" }] }
+   * @responseBody 200 - <ApiSuccessMessage>
+   * @responseBody 422 - <ApiValidationError>
    */
   async store(ctx: HttpContext) {
     const { request, response } = ctx

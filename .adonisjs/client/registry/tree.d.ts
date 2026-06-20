@@ -28,4 +28,18 @@ export interface ApiDefinition {
       destroy: typeof routes['profile.access_tokens.destroy']
     }
   }
+  folder: {
+    folders: {
+      store: typeof routes['folder.folders.store']
+      destroy: typeof routes['folder.folders.destroy']
+      update: typeof routes['folder.folders.update']
+      index: typeof routes['folder.folders.index']
+      show: typeof routes['folder.folders.show']
+    }
+  }
+  bookmark: {
+    bookmarks: {
+      destroy: typeof routes['bookmark.bookmarks.destroy']
+    }
+  }
 }

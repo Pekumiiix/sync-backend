@@ -7,4 +7,5 @@ export const listeners = {
   CreateDefaultFolders: () => import('#listeners/create_default_folders'),
   SendPasswordResetEmail: () => import('#listeners/send_password_reset_email'),
   SendVerificationEmail: () => import('#listeners/send_verification_email'),
+  AssignFolderOwner: () => import('#listeners/assign_folder_owner'),
 }

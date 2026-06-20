@@ -7,10 +7,17 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('id').primary().defaultTo(this.db.rawQuery('gen_random_uuid()').knexQuery)
 
-      table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE')
+      table
+        .uuid('user_id')
+        .notNullable()
+        .references('id')
+        .inTable('users')
+        .onDelete('CASCADE')
+        .index()
 
       table.string('name').notNullable()
       table.integer('bookmark_count').defaultTo(0).notNullable()
+      table.integer('member_count').defaultTo(0).notNullable()
       table.boolean('is_system').defaultTo(false).notNullable()
       table.jsonb('recent_bookmarks_images').defaultTo('[]').notNullable()
 

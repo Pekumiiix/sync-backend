@@ -43,5 +43,25 @@ router
       .prefix('account')
       .as('profile')
       .use(middleware.auth())
+
+    router
+      .group(() => {
+        router.post('/', [controllers.Folders, 'store'])
+        router.delete(':id', [controllers.Folders, 'destroy'])
+        router.patch(':id', [controllers.Folders, 'update'])
+        router.get('/', [controllers.Folders, 'index'])
+        router.get(':id', [controllers.Folders, 'show'])
+      })
+      .prefix('folder')
+      .as('folder')
+      .use(middleware.auth())
+
+    router
+      .group(() => {
+        router.delete(':id', [controllers.Bookmarks, 'destroy'])
+      })
+      .prefix('bookmark')
+      .as('bookmark')
+      .use(middleware.auth())
   })
   .prefix('/api/v1')

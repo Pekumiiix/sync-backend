@@ -3,8 +3,8 @@ import { verifyEmailValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
 import { generateVerificationCode } from '../utils/string.ts'
-import UserRegistered from '#events/user_registered'
 import { apiError } from '../utils/response.ts'
+import { events } from '#generated/events'
 
 export default class VerifyEmailController {
   /**
@@ -13,9 +13,9 @@ export default class VerifyEmailController {
    * @summary Verify email
    * @description Verifies the user's email address using a valid verification token.
    * @requestBody <verifyEmailValidator>
-   * @responseBody 200 - { "success": true, "message": "Email verified successfully!", }
-   * @responseBody 400 - { "success": false, "message": "Verification token has expired. Please request a new one." }
-   * @responseBody 422 - { "success": false, "message": "Validation Error", "errors": [{ "message": "The token field must be defined", "rule": "required", "field": "token" }] }
+   * @responseBody 200 - <ApiSuccessMessage>
+   * @responseBody 400 - <ApiErrorResponse>
+   * @responseBody 422 - <ApiValidationError>
    */
   async store(ctx: HttpContext) {
     const { request, response } = ctx
@@ -49,8 +49,8 @@ export default class VerifyEmailController {
    * @operationId resendEmailVerification
    * @summary Resend email verification
    * @description Generates a new verification code and resends the email to the authenticated user.
-   * @responseBody 200 - { "success": true, "message": "A new verification code has been sent!" }
-   * @responseBody 400 - { "success": false, "message": "Your email is already verified." }
+   * @responseBody 200 - <ApiSuccessMessage>
+   * @responseBody 400 - <ApiErrorResponse>
    */
   async resend(ctx: HttpContext) {
     const { response, auth } = ctx
@@ -68,7 +68,7 @@ export default class VerifyEmailController {
 
     await user.save()
 
-    UserRegistered.dispatch(user, verificationCode)
+    events.UserRegistered.dispatch(user, verificationCode)
 
     const formattedResponse = ctx.serialize(null, 'A new verification code has been sent!')
 

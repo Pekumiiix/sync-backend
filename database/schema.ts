@@ -90,6 +90,33 @@ export class FolderSchema extends BaseModel {
   declare userId: string
 }
 
+export class InvitationSchema extends BaseModel {
+  static $columns = ['acceptedAt', 'accessLevel', 'createdAt', 'email', 'expiresAt', 'folderId', 'id', 'inviterId', 'status', 'token', 'updatedAt'] as const
+  $columns = InvitationSchema.$columns
+  @column.dateTime()
+  declare acceptedAt: DateTime | null
+  @column()
+  declare accessLevel: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare email: string
+  @column.dateTime()
+  declare expiresAt: DateTime
+  @column()
+  declare folderId: string
+  @column({ isPrimary: true })
+  declare id: string
+  @column()
+  declare inviterId: string
+  @column()
+  declare status: string
+  @column()
+  declare token: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+}
+
 export class MemberSchema extends BaseModel {
   static $columns = ['accessLevel', 'createdAt', 'folderId', 'id', 'role', 'updatedAt', 'userId'] as const
   $columns = MemberSchema.$columns

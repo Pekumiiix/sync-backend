@@ -1,3 +1,5 @@
+import { ACCESS_LEVELS } from '#enums/access_level'
+import { ROLES } from '#enums/role'
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
@@ -24,8 +26,8 @@ export default class extends BaseSchema {
 
       table.unique(['folder_id', 'user_id'])
 
-      table.enum('role', ['admin', 'member']).notNullable()
-      table.enum('access_level', ['editor', 'viewer']).notNullable()
+      table.enum('role', [...ROLES]).notNullable()
+      table.enum('access_level', [...ACCESS_LEVELS]).notNullable()
 
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()

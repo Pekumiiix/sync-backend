@@ -39,6 +39,7 @@ router
       .group(() => {
         router.get('profile', [controllers.Profile, 'show'])
         router.post('sign-out', [controllers.AccessTokens, 'destroy'])
+        router.patch('profile', [controllers.Profile, 'update'])
       })
       .prefix('account')
       .as('profile')
@@ -52,16 +53,42 @@ router
         router.get('/', [controllers.Folders, 'index'])
         router.get(':id', [controllers.Folders, 'show'])
       })
-      .prefix('folder')
+      .prefix('folders')
       .as('folder')
       .use(middleware.auth())
 
     router
       .group(() => {
+        router.post('preview', [controllers.Bookmarks, 'fetch'])
+        router.post('/', [controllers.Bookmarks, 'store'])
+        router.patch(':id', [controllers.Bookmarks, 'update'])
+        router.patch('bookmarks/:id/pin', [controllers.Bookmarks, 'pin'])
+        router.patch('bookmarks/:id/unpin', [controllers.Bookmarks, 'unpin'])
         router.delete(':id', [controllers.Bookmarks, 'destroy'])
       })
-      .prefix('bookmark')
-      .as('bookmark')
+      .prefix('bookmarks')
+      .as('bookmarks')
+      .use(middleware.auth())
+
+    router
+      .group(() => {
+        router.get('/', [controllers.Members, 'index'])
+        router.patch(':memberId', [controllers.Members, 'update'])
+        router.delete(':memberId', [controllers.Members, 'destroy'])
+      })
+      .prefix('/folder/:folderId/member')
+      .as('member')
+      .use(middleware.auth())
+
+    router
+      .group(() => {
+        router.get('/', [controllers.Invitations, 'index'])
+        router.post('/', [controllers.Invitations, 'store'])
+        router.post(':id/decline', [controllers.Invitations, 'destroy'])
+        router.post(':id/accept', [controllers.Invitations, 'accept'])
+      })
+      .prefix('invitations')
+      .as('invitations')
       .use(middleware.auth())
   })
   .prefix('/api/v1')

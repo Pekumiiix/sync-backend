@@ -1,8 +1,8 @@
-import { SUPPORTED_BROWSERS } from '#enums/browser'
+import { ACCESS_LEVELS } from '#enums/access_level'
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'bookmarks'
+  protected tableName = 'invitations'
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -10,34 +10,31 @@ export default class extends BaseSchema {
 
       table
         .uuid('folder_id')
+        .notNullable()
         .references('id')
         .inTable('folders')
         .onDelete('CASCADE')
-        .notNullable()
         .index()
       table
-        .uuid('user_id')
+        .uuid('inviter_id')
+        .notNullable()
         .references('id')
         .inTable('users')
         .onDelete('CASCADE')
-        .notNullable()
         .index()
 
-      table.string('title').nullable()
-      table.string('description').nullable()
-      table.string('website_name').nullable()
+      table.string('email').notNullable()
+      table.string('token').notNullable().unique()
 
-      table.string('url').notNullable()
-      table.string('domain').notNullable()
+      table.enum('status', ['pending', 'accepted', 'declined']).defaultTo('pending').notNullable()
+      table
+        .enum('access_level', [...ACCESS_LEVELS])
+        .defaultTo('viewer')
+        .notNullable()
 
-      table.boolean('is_pinned').defaultTo(false).notNullable()
+      table.timestamp('expires_at', { useTz: true }).notNullable()
 
-      table.enum('browser', SUPPORTED_BROWSERS).notNullable().defaultTo('manual')
-
-      table.string('cover_image_url').nullable()
-      table.string('favicon_url').nullable()
-
-      table.json('tags').defaultTo('[]').notNullable()
+      table.timestamp('accepted_at', { useTz: true }).nullable()
 
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()

@@ -1,5 +1,25 @@
 import vine from '@vinejs/vine'
+import { SUPPORTED_BROWSERS } from '#enums/browser'
+
+export const fetchUrlDataValidator = vine.create({
+  url: vine.string().url(),
+})
 
 export const createBookmarkValidator = vine.create({
+  folderId: vine.string().uuid(),
+  title: vine.string().minLength(1).maxLength(255),
+  description: vine.string().maxLength(1000).optional(),
+  websiteName: vine.string().maxLength(255).optional(),
   url: vine.string().url(),
+  domain: vine.string().maxLength(255),
+  faviconUrl: vine.string().url().optional(),
+  coverImageUrl: vine.string().url().optional(),
+  tags: vine.array(vine.string().minLength(1).maxLength(50)).optional(),
+  browser: vine.enum([...SUPPORTED_BROWSERS]),
+})
+
+export const updateBookmarkValidator = vine.create({
+  title: vine.string().minLength(1).maxLength(255).optional(),
+  description: vine.string().maxLength(1000).optional(),
+  tags: vine.array(vine.string().minLength(1).maxLength(50)).optional(),
 })

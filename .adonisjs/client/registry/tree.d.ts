@@ -23,6 +23,7 @@ export interface ApiDefinition {
   profile: {
     profile: {
       show: typeof routes['profile.profile.show']
+      update: typeof routes['profile.profile.update']
     }
     accessTokens: {
       destroy: typeof routes['profile.access_tokens.destroy']
@@ -37,9 +38,29 @@ export interface ApiDefinition {
       show: typeof routes['folder.folders.show']
     }
   }
-  bookmark: {
+  bookmarks: {
     bookmarks: {
-      destroy: typeof routes['bookmark.bookmarks.destroy']
+      fetch: typeof routes['bookmarks.bookmarks.fetch']
+      store: typeof routes['bookmarks.bookmarks.store']
+      update: typeof routes['bookmarks.bookmarks.update']
+      pin: typeof routes['bookmarks.bookmarks.pin']
+      unpin: typeof routes['bookmarks.bookmarks.unpin']
+      destroy: typeof routes['bookmarks.bookmarks.destroy']
+    }
+  }
+  member: {
+    members: {
+      index: typeof routes['member.members.index']
+      update: typeof routes['member.members.update']
+      destroy: typeof routes['member.members.destroy']
+    }
+  }
+  invitations: {
+    invitations: {
+      index: typeof routes['invitations.invitations.index']
+      store: typeof routes['invitations.invitations.store']
+      destroy: typeof routes['invitations.invitations.destroy']
+      accept: typeof routes['invitations.invitations.accept']
     }
   }
 }

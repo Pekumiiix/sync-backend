@@ -46,3 +46,13 @@ export const resetPasswordValidator = vine.create({
   token: vine.string().fixedLength(6),
   password: password(),
 })
+
+/**
+ * Validator to use when updating the user's profile
+ */
+export const updateProfileValidator = vine.create({
+  firstName: vine.string().maxLength(50).optional(),
+  lastName: vine.string().maxLength(50).optional(),
+  location: vine.string().maxLength(100).optional(),
+  avatarUrl: vine.string().url().maxLength(2048).optional(),
+})

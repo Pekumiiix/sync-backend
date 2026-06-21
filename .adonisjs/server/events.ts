@@ -3,12 +3,12 @@
  * DO NOT EDIT manually
  */
 
+import FolderCreated from '#events/folder_created'
 import PasswordResetRequested from '#events/password_reset_requested'
 import UserRegistered from '#events/user_registered'
-import FolderCreated from '#events/folder_created'
 
 export const events = {
+  FolderCreated: FolderCreated,
   PasswordResetRequested: PasswordResetRequested,
   UserRegistered: UserRegistered,
-  FolderCreated: FolderCreated,
 }

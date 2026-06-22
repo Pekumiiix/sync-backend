@@ -2,7 +2,7 @@ import User from '#models/user'
 import { resetPasswordValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
-import { apiError } from '../utils/response.ts'
+import { apiError } from '#utils/response'
 
 export default class ResetPasswordsController {
   /**

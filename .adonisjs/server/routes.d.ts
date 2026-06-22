@@ -6,73 +6,81 @@ export type ScannedRoutes = {
   ALL: {
     'auth.new_account.store': { paramsTuple?: []; params?: {} }
     'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
-    'auth.forgot_password.store': { paramsTuple?: []; params?: {} }
-    'auth.reset_password.store': { paramsTuple?: []; params?: {} }
-    'auth.verify_email.store': { paramsTuple?: []; params?: {} }
-    'auth.verify_email.resend': { paramsTuple?: []; params?: {} }
+    'auth.forgot_passwords.store': { paramsTuple?: []; params?: {} }
+    'auth.reset_passwords.store': { paramsTuple?: []; params?: {} }
+    'auth.verify_emails.store': { paramsTuple?: []; params?: {} }
+    'auth.verify_emails.resend': { paramsTuple?: []; params?: {} }
+    'oauths.googles.redirect': { paramsTuple?: []; params?: {} }
+    'oauths.googles.store': { paramsTuple?: []; params?: {} }
+    'oauths.googles.destroy': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
     'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
     'profile.profile.update': { paramsTuple?: []; params?: {} }
-    'folder.folders.store': { paramsTuple?: []; params?: {} }
-    'folder.folders.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'folder.folders.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'folder.folders.index': { paramsTuple?: []; params?: {} }
-    'folder.folders.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'bookmarks.bookmarks.fetch': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmarks.store': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmarks.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'bookmarks.bookmarks.pin': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'bookmarks.bookmarks.unpin': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'bookmarks.bookmarks.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'member.members.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
-    'member.members.update': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
-    'member.members.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
-    'invitations.invitations.index': { paramsTuple?: []; params?: {} }
-    'invitations.invitations.store': { paramsTuple?: []; params?: {} }
-    'invitations.invitations.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'invitations.invitations.accept': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'folder.folder.store': { paramsTuple?: []; params?: {} }
+    'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'folder.folder.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'folder.folder.index': { paramsTuple?: []; params?: {} }
+    'folder.folder.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'bookmarks.bookmark.fetch': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'bookmarks.bookmark.pin': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'bookmarks.bookmark.unpin': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'members.member.update': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
+    'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
+    'invitations.invitation.index': { paramsTuple?: []; params?: {} }
+    'invitations.invitation.store': { paramsTuple?: []; params?: {} }
+    'invitations.invitation.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'invitations.invitation.accept': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
+    'oauths.googles.redirect': { paramsTuple?: []; params?: {} }
+    'oauths.googles.store': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
-    'folder.folders.index': { paramsTuple?: []; params?: {} }
-    'folder.folders.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'member.members.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
-    'invitations.invitations.index': { paramsTuple?: []; params?: {} }
+    'folder.folder.index': { paramsTuple?: []; params?: {} }
+    'folder.folder.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'invitations.invitation.index': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
+    'oauths.googles.redirect': { paramsTuple?: []; params?: {} }
+    'oauths.googles.store': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
-    'folder.folders.index': { paramsTuple?: []; params?: {} }
-    'folder.folders.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'member.members.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
-    'invitations.invitations.index': { paramsTuple?: []; params?: {} }
+    'folder.folder.index': { paramsTuple?: []; params?: {} }
+    'folder.folder.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'invitations.invitation.index': { paramsTuple?: []; params?: {} }
   }
   POST: {
     'auth.new_account.store': { paramsTuple?: []; params?: {} }
     'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
-    'auth.forgot_password.store': { paramsTuple?: []; params?: {} }
-    'auth.reset_password.store': { paramsTuple?: []; params?: {} }
-    'auth.verify_email.store': { paramsTuple?: []; params?: {} }
-    'auth.verify_email.resend': { paramsTuple?: []; params?: {} }
+    'auth.forgot_passwords.store': { paramsTuple?: []; params?: {} }
+    'auth.reset_passwords.store': { paramsTuple?: []; params?: {} }
+    'auth.verify_emails.store': { paramsTuple?: []; params?: {} }
+    'auth.verify_emails.resend': { paramsTuple?: []; params?: {} }
     'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
-    'folder.folders.store': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmarks.fetch': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmarks.store': { paramsTuple?: []; params?: {} }
-    'invitations.invitations.store': { paramsTuple?: []; params?: {} }
-    'invitations.invitations.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'invitations.invitations.accept': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'folder.folder.store': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.fetch': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
+    'invitations.invitation.store': { paramsTuple?: []; params?: {} }
+    'invitations.invitation.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'invitations.invitation.accept': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+  }
+  DELETE: {
+    'oauths.googles.destroy': { paramsTuple?: []; params?: {} }
+    'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
   }
   PATCH: {
     'profile.profile.update': { paramsTuple?: []; params?: {} }
-    'folder.folders.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'bookmarks.bookmarks.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'bookmarks.bookmarks.pin': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'bookmarks.bookmarks.unpin': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'member.members.update': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
-  }
-  DELETE: {
-    'folder.folders.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'bookmarks.bookmarks.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'member.members.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
+    'folder.folder.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'bookmarks.bookmark.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'bookmarks.bookmark.pin': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'bookmarks.bookmark.unpin': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'members.member.update': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

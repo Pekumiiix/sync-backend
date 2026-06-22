@@ -1,13 +1,14 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import FolderService from '../sevices/folder_service.ts'
+import FolderService from '#services/folder_service'
 import Member from '#models/member'
 import MemberTransformer from '#transformers/member_transformer'
 import { updateMemberValidator } from '#validators/member'
-import { apiError } from '../utils/response.ts'
+import { apiError } from '#utils/response'
 
 export default class MembersController {
   /**
    * @index
+   * @tags Members
    * @operationId getFolderMembers
    * @summary List all folder members
    * @description Fetches all members of a specific folder, including preloaded user profiles, alongside the current user's permission level.
@@ -42,6 +43,7 @@ export default class MembersController {
 
   /**
    * @update
+   * @tags Members
    * @operationId updateFolderMember
    * @summary Update member role
    * @description Updates the access level (e.g., viewer or editor) of a specific member within a folder. The authenticated user must be the 'owner' of the folder.
@@ -88,6 +90,7 @@ export default class MembersController {
 
   /**
    * @destroy
+   * @tags Members
    * @operationId removeFolderMember
    * @summary Remove a member
    * @description Kicks a specific member out of a folder. The authenticated user making the request must be the 'owner' of the folder.

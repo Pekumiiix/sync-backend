@@ -136,8 +136,29 @@ export class MemberSchema extends BaseModel {
   declare userId: string
 }
 
+export class OauthIdentitySchema extends BaseModel {
+  static $columns = ['accessToken', 'createdAt', 'id', 'provider', 'providerId', 'refreshToken', 'updatedAt', 'userId'] as const
+  $columns = OauthIdentitySchema.$columns
+  @column()
+  declare accessToken: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: string
+  @column()
+  declare provider: string
+  @column()
+  declare providerId: string
+  @column()
+  declare refreshToken: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+  @column()
+  declare userId: string
+}
+
 export class UserSchema extends BaseModel {
-  static $columns = ['avatarUrl', 'createdAt', 'email', 'emailVerificationToken', 'emailVerificationTokenExpiresAt', 'firstName', 'id', 'integrations', 'isEmailVerified', 'lastName', 'location', 'password', 'plan', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'updatedAt'] as const
+  static $columns = ['avatarUrl', 'createdAt', 'email', 'emailVerificationToken', 'emailVerificationTokenExpiresAt', 'firstName', 'id', 'isEmailVerified', 'lastName', 'location', 'password', 'plan', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'settings', 'updatedAt'] as const
   $columns = UserSchema.$columns
   @column()
   declare avatarUrl: string | null
@@ -154,8 +175,6 @@ export class UserSchema extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
   @column()
-  declare integrations: any | null
-  @column()
   declare isEmailVerified: boolean | null
   @column()
   declare lastName: string
@@ -169,6 +188,8 @@ export class UserSchema extends BaseModel {
   declare resetPasswordToken: string | null
   @column.dateTime()
   declare resetPasswordTokenExpiresAt: DateTime | null
+  @column()
+  declare settings: any
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 }

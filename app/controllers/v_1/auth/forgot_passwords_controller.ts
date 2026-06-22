@@ -1,4 +1,4 @@
-import PasswordResetRequested from '#events/password_reset_requested'
+import { events } from '#generated/events'
 import User from '#models/user'
 import { forgotPasswordValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -31,7 +31,7 @@ export default class ForgotPasswordsController {
 
       await user.save()
 
-      PasswordResetRequested.dispatch(user, resetToken)
+      events.PasswordResetRequested.dispatch(user, resetToken)
     }
 
     const formattedResponse = ctx.serialize(

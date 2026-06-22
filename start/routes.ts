@@ -25,21 +25,32 @@ router
   .group(() => {
     router
       .group(() => {
-        router.post('sign-up', [controllers.NewAccount, 'store'])
-        router.post('sign-in', [controllers.AccessTokens, 'store'])
-        router.post('forgot-password', [controllers.ForgotPassword, 'store'])
-        router.post('reset-password', [controllers.ResetPassword, 'store'])
-        router.post('verify-email', [controllers.VerifyEmail, 'store'])
-        router.post('verify-email/resend', [controllers.VerifyEmail, 'resend'])
+        router.post('sign-up', [controllers.v1.auth.NewAccount, 'store'])
+        router.post('sign-in', [controllers.v1.auth.AccessTokens, 'store'])
+        router.post('forgot-password', [controllers.v1.auth.ForgotPasswords, 'store'])
+        router.post('reset-password', [controllers.v1.auth.ResetPasswords, 'store'])
+        router.post('verify-email', [controllers.v1.auth.VerifyEmails, 'store'])
+        router.post('verify-email/resend', [controllers.v1.auth.VerifyEmails, 'resend'])
       })
       .prefix('auth')
       .as('auth')
 
     router
       .group(() => {
-        router.get('profile', [controllers.Profile, 'show'])
-        router.post('sign-out', [controllers.AccessTokens, 'destroy'])
-        router.patch('profile', [controllers.Profile, 'update'])
+        router.get('google', [controllers.v1.oauth.Googles, 'redirect'])
+        router.get('google/callback', [controllers.v1.oauth.Googles, 'store'])
+        router
+          .delete('google/disconnect', [controllers.v1.oauth.Googles, 'destroy'])
+          .use(middleware.auth())
+      })
+      .prefix('oauth')
+      .as('oauths')
+
+    router
+      .group(() => {
+        router.get('profile', [controllers.v1.users.Profile, 'show'])
+        router.post('sign-out', [controllers.v1.auth.AccessTokens, 'destroy'])
+        router.patch('profile', [controllers.v1.users.Profile, 'update'])
       })
       .prefix('account')
       .as('profile')
@@ -47,11 +58,11 @@ router
 
     router
       .group(() => {
-        router.post('/', [controllers.Folders, 'store'])
-        router.delete(':id', [controllers.Folders, 'destroy'])
-        router.patch(':id', [controllers.Folders, 'update'])
-        router.get('/', [controllers.Folders, 'index'])
-        router.get(':id', [controllers.Folders, 'show'])
+        router.post('/', [controllers.v1.core.Folder, 'store'])
+        router.delete(':id', [controllers.v1.core.Folder, 'destroy'])
+        router.patch(':id', [controllers.v1.core.Folder, 'update'])
+        router.get('/', [controllers.v1.core.Folder, 'index'])
+        router.get(':id', [controllers.v1.core.Folder, 'show'])
       })
       .prefix('folders')
       .as('folder')
@@ -59,12 +70,12 @@ router
 
     router
       .group(() => {
-        router.post('preview', [controllers.Bookmarks, 'fetch'])
-        router.post('/', [controllers.Bookmarks, 'store'])
-        router.patch(':id', [controllers.Bookmarks, 'update'])
-        router.patch('bookmarks/:id/pin', [controllers.Bookmarks, 'pin'])
-        router.patch('bookmarks/:id/unpin', [controllers.Bookmarks, 'unpin'])
-        router.delete(':id', [controllers.Bookmarks, 'destroy'])
+        router.post('preview', [controllers.v1.core.Bookmark, 'fetch'])
+        router.post('/', [controllers.v1.core.Bookmark, 'store'])
+        router.patch(':id', [controllers.v1.core.Bookmark, 'update'])
+        router.patch('bookmarks/:id/pin', [controllers.v1.core.Bookmark, 'pin'])
+        router.patch('bookmarks/:id/unpin', [controllers.v1.core.Bookmark, 'unpin'])
+        router.delete(':id', [controllers.v1.core.Bookmark, 'destroy'])
       })
       .prefix('bookmarks')
       .as('bookmarks')
@@ -72,20 +83,20 @@ router
 
     router
       .group(() => {
-        router.get('/', [controllers.Members, 'index'])
-        router.patch(':memberId', [controllers.Members, 'update'])
-        router.delete(':memberId', [controllers.Members, 'destroy'])
+        router.get('/', [controllers.v1.core.Member, 'index'])
+        router.patch(':memberId', [controllers.v1.core.Member, 'update'])
+        router.delete(':memberId', [controllers.v1.core.Member, 'destroy'])
       })
       .prefix('/folder/:folderId/member')
-      .as('member')
+      .as('members')
       .use(middleware.auth())
 
     router
       .group(() => {
-        router.get('/', [controllers.Invitations, 'index'])
-        router.post('/', [controllers.Invitations, 'store'])
-        router.post(':id/decline', [controllers.Invitations, 'destroy'])
-        router.post(':id/accept', [controllers.Invitations, 'accept'])
+        router.get('/', [controllers.v1.core.Invitation, 'index'])
+        router.post('/', [controllers.v1.core.Invitation, 'store'])
+        router.post(':id/decline', [controllers.v1.core.Invitation, 'destroy'])
+        router.post(':id/accept', [controllers.v1.core.Invitation, 'accept'])
       })
       .prefix('invitations')
       .as('invitations')

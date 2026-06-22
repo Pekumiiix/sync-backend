@@ -9,15 +9,22 @@ export interface ApiDefinition {
     accessTokens: {
       store: typeof routes['auth.access_tokens.store']
     }
-    forgotPassword: {
-      store: typeof routes['auth.forgot_password.store']
+    forgotPasswords: {
+      store: typeof routes['auth.forgot_passwords.store']
     }
-    resetPassword: {
-      store: typeof routes['auth.reset_password.store']
+    resetPasswords: {
+      store: typeof routes['auth.reset_passwords.store']
     }
-    verifyEmail: {
-      store: typeof routes['auth.verify_email.store']
-      resend: typeof routes['auth.verify_email.resend']
+    verifyEmails: {
+      store: typeof routes['auth.verify_emails.store']
+      resend: typeof routes['auth.verify_emails.resend']
+    }
+  }
+  oauths: {
+    googles: {
+      redirect: typeof routes['oauths.googles.redirect']
+      store: typeof routes['oauths.googles.store']
+      destroy: typeof routes['oauths.googles.destroy']
     }
   }
   profile: {
@@ -30,37 +37,37 @@ export interface ApiDefinition {
     }
   }
   folder: {
-    folders: {
-      store: typeof routes['folder.folders.store']
-      destroy: typeof routes['folder.folders.destroy']
-      update: typeof routes['folder.folders.update']
-      index: typeof routes['folder.folders.index']
-      show: typeof routes['folder.folders.show']
+    folder: {
+      store: typeof routes['folder.folder.store']
+      destroy: typeof routes['folder.folder.destroy']
+      update: typeof routes['folder.folder.update']
+      index: typeof routes['folder.folder.index']
+      show: typeof routes['folder.folder.show']
     }
   }
   bookmarks: {
-    bookmarks: {
-      fetch: typeof routes['bookmarks.bookmarks.fetch']
-      store: typeof routes['bookmarks.bookmarks.store']
-      update: typeof routes['bookmarks.bookmarks.update']
-      pin: typeof routes['bookmarks.bookmarks.pin']
-      unpin: typeof routes['bookmarks.bookmarks.unpin']
-      destroy: typeof routes['bookmarks.bookmarks.destroy']
+    bookmark: {
+      fetch: typeof routes['bookmarks.bookmark.fetch']
+      store: typeof routes['bookmarks.bookmark.store']
+      update: typeof routes['bookmarks.bookmark.update']
+      pin: typeof routes['bookmarks.bookmark.pin']
+      unpin: typeof routes['bookmarks.bookmark.unpin']
+      destroy: typeof routes['bookmarks.bookmark.destroy']
     }
   }
-  member: {
-    members: {
-      index: typeof routes['member.members.index']
-      update: typeof routes['member.members.update']
-      destroy: typeof routes['member.members.destroy']
+  members: {
+    member: {
+      index: typeof routes['members.member.index']
+      update: typeof routes['members.member.update']
+      destroy: typeof routes['members.member.destroy']
     }
   }
   invitations: {
-    invitations: {
-      index: typeof routes['invitations.invitations.index']
-      store: typeof routes['invitations.invitations.store']
-      destroy: typeof routes['invitations.invitations.destroy']
-      accept: typeof routes['invitations.invitations.accept']
+    invitation: {
+      index: typeof routes['invitations.invitation.index']
+      store: typeof routes['invitations.invitation.store']
+      destroy: typeof routes['invitations.invitation.destroy']
+      accept: typeof routes['invitations.invitation.accept']
     }
   }
 }

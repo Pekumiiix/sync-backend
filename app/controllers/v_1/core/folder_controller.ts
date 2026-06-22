@@ -4,10 +4,10 @@ import {
   updateFolderValidator,
 } from '#validators/folder'
 import type { HttpContext } from '@adonisjs/core/http'
-import { apiError } from '../utils/response.ts'
+import { apiError } from '#utils/response'
 import FolderTransformer from '#transformers/folder_transformer'
 import { events } from '#generated/events'
-import FolderService from '../sevices/folder_service.ts'
+import FolderService from '#services/folder_service'
 
 export default class FoldersController {
   /**

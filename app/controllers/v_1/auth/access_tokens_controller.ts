@@ -10,7 +10,7 @@ export default class AccessTokensController {
    * @summary Sign in a user
    * @description Authenticates a user and returns an access token.
    * @requestBody <loginValidator>
-   * @responseBody 201 - { "success": true, "message": "Successfully signed in", "data": "<AuthStoreData>" }
+   * @responseBody 201 - { "success": true, "message": "Successfully signed in", "data": { "user": "<UserResponse>", "token": "string" } }
    * @responseBody 422 - <ApiValidationError>
    */
   async store(ctx: HttpContext) {

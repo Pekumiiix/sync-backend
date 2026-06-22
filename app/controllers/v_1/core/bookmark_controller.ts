@@ -1,7 +1,7 @@
 import Bookmark from '#models/bookmark'
 import type { HttpContext } from '@adonisjs/core/http'
-import FolderService from '../sevices/folder_service.ts'
-import { apiError } from '../utils/response.ts'
+import FolderService from '#services/folder_service'
+import { apiError } from '#utils/response'
 import {
   createBookmarkValidator,
   fetchUrlDataValidator,

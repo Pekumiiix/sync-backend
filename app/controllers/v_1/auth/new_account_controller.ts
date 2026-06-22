@@ -2,7 +2,7 @@ import User from '#models/user'
 import { signupValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
-import { generateVerificationCode } from '../utils/string.ts'
+import { generateVerificationCode } from '#utils/string'
 import UserTransformer from '#transformers/user_transformer'
 import { events } from '#generated/events'
 
@@ -13,7 +13,7 @@ export default class NewAccountController {
    * @summary Create a new user account
    * @description Registers a new user and returns an access token.
    * @requestBody <signupValidator>
-   * @responseBody 201 - { "success": true, "message": "Account created successfully!", "data": "<AuthStoreData>" }
+   * @responseBody 201 - { "success": true, "message": "Account created successfully!", "data": { "user": "<UserResponse>", "token": "string" } }
    * @responseBody 422 - <ApiValidationError>
    */
   async store(ctx: HttpContext) {

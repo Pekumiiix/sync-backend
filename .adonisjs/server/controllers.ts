@@ -4,14 +4,25 @@
  */
 
 export const controllers = {
-  AccessTokens: () => import('#controllers/access_tokens_controller'),
-  Bookmarks: () => import('#controllers/bookmarks_controller'),
-  Folders: () => import('#controllers/folders_controller'),
-  ForgotPassword: () => import('#controllers/forgot_password_controller'),
-  NewAccount: () => import('#controllers/new_account_controller'),
-  Profile: () => import('#controllers/profile_controller'),
-  ResetPassword: () => import('#controllers/reset_password_controller'),
-  VerifyEmail: () => import('#controllers/verify_email_controller'),
-  Members: () => import('#controllers/members_controller'),
-  Invitations: () => import('#controllers/invitations_controller'),
+  v1: {
+    auth: {
+      AccessTokens: () => import('#controllers/v_1/auth/access_tokens_controller'),
+      ForgotPasswords: () => import('#controllers/v_1/auth/forgot_passwords_controller'),
+      NewAccount: () => import('#controllers/v_1/auth/new_account_controller'),
+      ResetPasswords: () => import('#controllers/v_1/auth/reset_passwords_controller'),
+      VerifyEmails: () => import('#controllers/v_1/auth/verify_emails_controller'),
+    },
+    core: {
+      Bookmark: () => import('#controllers/v_1/core/bookmark_controller'),
+      Folder: () => import('#controllers/v_1/core/folder_controller'),
+      Invitation: () => import('#controllers/v_1/core/invitation_controller'),
+      Member: () => import('#controllers/v_1/core/member_controller'),
+    },
+    oauth: {
+      Googles: () => import('#controllers/v_1/oauth/googles_controller'),
+    },
+    users: {
+      Profile: () => import('#controllers/v_1/users/profile_controller'),
+    },
+  },
 }

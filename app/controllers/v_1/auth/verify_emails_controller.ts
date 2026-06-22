@@ -2,8 +2,8 @@ import User from '#models/user'
 import { verifyEmailValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
-import { generateVerificationCode } from '../utils/string.ts'
-import { apiError } from '../utils/response.ts'
+import { generateVerificationCode } from '#utils/string'
+import { apiError } from '#utils/response'
 import { events } from '#generated/events'
 
 export default class VerifyEmailController {

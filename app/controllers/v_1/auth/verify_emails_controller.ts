@@ -13,7 +13,7 @@ export default class VerifyEmailController {
    * @summary Verify email
    * @description Verifies the user's email address using a valid verification token.
    * @requestBody <verifyEmailValidator>
-   * @responseBody 200 - <ApiSuccessMessage>
+   * @responseBody 200 - <ApiSuccessResponse>
    * @responseBody 400 - <ApiErrorResponse>
    * @responseBody 422 - <ApiValidationError>
    */
@@ -49,7 +49,7 @@ export default class VerifyEmailController {
    * @operationId resendEmailVerification
    * @summary Resend email verification
    * @description Generates a new verification code and resends the email to the authenticated user.
-   * @responseBody 200 - <ApiSuccessMessage>
+   * @responseBody 200 - <ApiSuccessResponse>
    * @responseBody 400 - <ApiErrorResponse>
    */
   async resend(ctx: HttpContext) {

@@ -37,7 +37,9 @@ export default class extends BaseSchema {
       table.string('cover_image_url').nullable()
       table.string('favicon_url').nullable()
 
-      table.json('tags').defaultTo('[]').notNullable()
+      table.jsonb('tags').defaultTo('[]').notNullable()
+
+      table.index(['tags'], 'folders_tags_gin', 'gin')
 
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()

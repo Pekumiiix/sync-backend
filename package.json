@@ -25,7 +25,6 @@
     "#services/*": "./app/services/*.js",
     "#listeners/*": "./app/listeners/*.js",
     "#events/*": "./app/events/*.js",
-    "#interfaces/*": "./app/interfaces/*.js",
     "#enums/*": "./app/enums/*.js",
     "#generated/*": "./.adonisjs/server/*.js",
     "#middleware/*": "./app/middleware/*.js",
@@ -38,7 +37,8 @@
     "#tests/*": "./tests/*.js",
     "#start/*": "./start/*.js",
     "#config/*": "./config/*.js",
-    "#utils/*": "./app/utils/*.js"
+    "#utils/*": "./app/utils/*.js",
+    "#types/*": "./app/types/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^8.4.0",

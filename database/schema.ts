@@ -6,6 +6,13 @@
 
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
+import type { JSON } from '#types/db'
+import type { AccessLevelType, RoleType } from '#enums/member'
+import type { InvitationStatusType } from '#enums/invitation'
+import type { NotificationData } from '#types/notifications'
+import type { NotificationType } from '#enums/notification'
+import type { PlanType } from '#enums/user'
+import type { UserSettings } from '#types/user'
 
 export class AuthAccessTokenSchema extends BaseModel {
   static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
@@ -54,7 +61,7 @@ export class BookmarkSchema extends BaseModel {
   @column()
   declare isPinned: boolean
   @column()
-  declare tags: any
+  declare tags: JSON<string[]>
   @column()
   declare title: string | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
@@ -68,7 +75,7 @@ export class BookmarkSchema extends BaseModel {
 }
 
 export class FolderSchema extends BaseModel {
-  static $columns = ['bookmarkCount', 'createdAt', 'id', 'isSystem', 'memberCount', 'name', 'recentBookmarksImages', 'updatedAt', 'userId'] as const
+  static $columns = ['bookmarkCount', 'createdAt', 'id', 'isSystem', 'memberCount', 'name', 'password', 'recentBookmarksImages', 'updatedAt', 'userId'] as const
   $columns = FolderSchema.$columns
   @column()
   declare bookmarkCount: number
@@ -82,8 +89,10 @@ export class FolderSchema extends BaseModel {
   declare memberCount: number
   @column()
   declare name: string
+  @column({ serializeAs: null })
+  declare password: string | null
   @column()
-  declare recentBookmarksImages: any
+  declare recentBookmarksImages: JSON<string[]>
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
   @column()
@@ -96,7 +105,7 @@ export class InvitationSchema extends BaseModel {
   @column.dateTime()
   declare acceptedAt: DateTime | null
   @column()
-  declare accessLevel: string
+  declare accessLevel: AccessLevelType
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
@@ -110,7 +119,7 @@ export class InvitationSchema extends BaseModel {
   @column()
   declare inviterId: string
   @column()
-  declare status: string
+  declare status: InvitationStatusType
   @column()
   declare token: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
@@ -121,7 +130,7 @@ export class MemberSchema extends BaseModel {
   static $columns = ['accessLevel', 'createdAt', 'folderId', 'id', 'role', 'updatedAt', 'userId'] as const
   $columns = MemberSchema.$columns
   @column()
-  declare accessLevel: string
+  declare accessLevel: AccessLevelType
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
@@ -129,7 +138,26 @@ export class MemberSchema extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
   @column()
-  declare role: string
+  declare role: RoleType
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+  @column()
+  declare userId: string
+}
+
+export class NotificationSchema extends BaseModel {
+  static $columns = ['createdAt', 'data', 'id', 'readAt', 'type', 'updatedAt', 'userId'] as const
+  $columns = NotificationSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare data: JSON<NotificationData>
+  @column({ isPrimary: true })
+  declare id: string
+  @column.dateTime()
+  declare readAt: DateTime | null
+  @column()
+  declare type: NotificationType
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
   @column()
@@ -183,13 +211,13 @@ export class UserSchema extends BaseModel {
   @column({ serializeAs: null })
   declare password: string
   @column()
-  declare plan: string | null
+  declare plan: PlanType
   @column()
   declare resetPasswordToken: string | null
   @column.dateTime()
   declare resetPasswordTokenExpiresAt: DateTime | null
   @column()
-  declare settings: any
+  declare settings: JSON<UserSettings>
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 }

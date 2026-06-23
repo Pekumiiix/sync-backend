@@ -38,21 +38,21 @@ export interface ApiDefinition {
   }
   folder: {
     folder: {
+      index: typeof routes['folder.folder.index']
       store: typeof routes['folder.folder.store']
       destroy: typeof routes['folder.folder.destroy']
       update: typeof routes['folder.folder.update']
-      index: typeof routes['folder.folder.index']
       show: typeof routes['folder.folder.show']
     }
   }
   bookmarks: {
     bookmark: {
-      fetch: typeof routes['bookmarks.bookmark.fetch']
       store: typeof routes['bookmarks.bookmark.store']
+      fetch: typeof routes['bookmarks.bookmark.fetch']
       update: typeof routes['bookmarks.bookmark.update']
+      destroy: typeof routes['bookmarks.bookmark.destroy']
       pin: typeof routes['bookmarks.bookmark.pin']
       unpin: typeof routes['bookmarks.bookmark.unpin']
-      destroy: typeof routes['bookmarks.bookmark.destroy']
     }
   }
   members: {
@@ -68,6 +68,15 @@ export interface ApiDefinition {
       store: typeof routes['invitations.invitation.store']
       destroy: typeof routes['invitations.invitation.destroy']
       accept: typeof routes['invitations.invitation.accept']
+    }
+  }
+  notifications: {
+    notifications: {
+      index: typeof routes['notifications.notifications.index']
+      markAllAsRead: typeof routes['notifications.notifications.mark_all_as_read']
+      destroy: typeof routes['notifications.notifications.destroy']
+      markAsRead: typeof routes['notifications.notifications.mark_as_read']
+      markAsUnread: typeof routes['notifications.notifications.mark_as_unread']
     }
   }
 }

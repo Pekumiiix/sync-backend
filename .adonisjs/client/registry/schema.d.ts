@@ -151,6 +151,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'folder.folder.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/folders'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['index']>>>
+    }
+  }
   'folder.folder.store': {
     methods: ["POST"]
     pattern: '/api/v1/folders'
@@ -165,11 +177,11 @@ export interface Registry {
   }
   'folder.folder.destroy': {
     methods: ["DELETE"]
-    pattern: '/api/v1/folders/:id'
+    pattern: '/api/v1/folders/:folderId'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      params: { folderId: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['destroy']>>>
@@ -177,50 +189,26 @@ export interface Registry {
   }
   'folder.folder.update': {
     methods: ["PATCH"]
-    pattern: '/api/v1/folders/:id'
+    pattern: '/api/v1/folders/:folderId'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/folder').updateFolderValidator)>>
       paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      params: { folderId: ParamValue }
       query: ExtractQuery<InferInput<(typeof import('#validators/folder').updateFolderValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'folder.folder.index': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/folders'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['index']>>>
-    }
-  }
   'folder.folder.show': {
     methods: ["GET","HEAD"]
-    pattern: '/api/v1/folders/:id'
+    pattern: '/api/v1/folders/:folderId'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      params: { folderId: ParamValue }
       query: ExtractQueryForGet<InferInput<(typeof import('#validators/folder').getFolderParamValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['show']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
-  'bookmarks.bookmark.fetch': {
-    methods: ["POST"]
-    pattern: '/api/v1/bookmarks/preview'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/bookmark').fetchUrlDataValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/bookmark').fetchUrlDataValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['fetch']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['fetch']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'bookmarks.bookmark.store': {
@@ -235,25 +223,49 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'bookmarks.bookmark.fetch': {
+    methods: ["POST"]
+    pattern: '/api/v1/bookmarks/preview'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/bookmark').fetchUrlDataValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/bookmark').fetchUrlDataValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['fetch']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['fetch']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'bookmarks.bookmark.update': {
     methods: ["PATCH"]
-    pattern: '/api/v1/bookmarks/:id'
+    pattern: '/api/v1/bookmarks/:bookmarkId'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/bookmark').updateBookmarkValidator)>>
       paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      params: { bookmarkId: ParamValue }
       query: ExtractQuery<InferInput<(typeof import('#validators/bookmark').updateBookmarkValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'bookmarks.bookmark.pin': {
-    methods: ["PATCH"]
-    pattern: '/api/v1/bookmarks/bookmarks/:id/pin'
+  'bookmarks.bookmark.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/bookmarks/:bookmarkId'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      params: { bookmarkId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['destroy']>>>
+    }
+  }
+  'bookmarks.bookmark.pin': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/bookmarks/:bookmarkId/pin'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { bookmarkId: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['pin']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['pin']>>>
@@ -261,26 +273,14 @@ export interface Registry {
   }
   'bookmarks.bookmark.unpin': {
     methods: ["PATCH"]
-    pattern: '/api/v1/bookmarks/bookmarks/:id/unpin'
+    pattern: '/api/v1/bookmarks/:bookmarkId/unpin'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      params: { bookmarkId: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['unpin']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['unpin']>>>
-    }
-  }
-  'bookmarks.bookmark.destroy': {
-    methods: ["DELETE"]
-    pattern: '/api/v1/bookmarks/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['destroy']>>>
     }
   }
   'members.member.index': {
@@ -345,11 +345,11 @@ export interface Registry {
   }
   'invitations.invitation.destroy': {
     methods: ["POST"]
-    pattern: '/api/v1/invitations/:id/decline'
+    pattern: '/api/v1/invitations/:invitationId/decline'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      params: { invitationId: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['destroy']>>>
@@ -357,14 +357,74 @@ export interface Registry {
   }
   'invitations.invitation.accept': {
     methods: ["POST"]
-    pattern: '/api/v1/invitations/:id/accept'
+    pattern: '/api/v1/invitations/:invitationId/accept'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      params: { invitationId: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['accept']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['accept']>>>
+    }
+  }
+  'notifications.notifications.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/notifications'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['index']>>>
+    }
+  }
+  'notifications.notifications.mark_all_as_read': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/notifications/mark-all-read'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAllAsRead']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAllAsRead']>>>
+    }
+  }
+  'notifications.notifications.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/notifications/:notificationId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { notificationId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['destroy']>>>
+    }
+  }
+  'notifications.notifications.mark_as_read': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/notifications/:notificationId/read'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { notificationId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAsRead']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAsRead']>>>
+    }
+  }
+  'notifications.notifications.mark_as_unread': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/notifications/:notificationId/unread'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { notificationId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAsUnread']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAsUnread']>>>
     }
   }
 }

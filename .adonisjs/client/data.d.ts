@@ -9,6 +9,7 @@ import type BookmarkTransformer from '#transformers/bookmark_transformer'
 import type FolderTransformer from '#transformers/folder_transformer'
 import type InvitationTransformer from '#transformers/invitation_transformer'
 import type MemberTransformer from '#transformers/member_transformer'
+import type NotificationTransformer from '#transformers/notification_transformer'
 import type UserTransformer from '#transformers/user_transformer'
 
 export namespace Data {
@@ -27,6 +28,10 @@ export namespace Data {
   export type Member = InferData<MemberTransformer>
   export namespace Member {
     export type Variants = InferVariants<MemberTransformer>
+  }
+  export type Notification = InferData<NotificationTransformer>
+  export namespace Notification {
+    export type Variants = InferVariants<NotificationTransformer>
   }
   export type User = InferData<UserTransformer>
   export namespace User {

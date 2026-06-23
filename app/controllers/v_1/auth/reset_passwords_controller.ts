@@ -11,7 +11,7 @@ export default class ResetPasswordsController {
    * @summary Reset password
    * @description Resets the user's password using a valid reset token.
    * @requestBody <resetPasswordValidator>
-   * @responseBody 200 - <ApiSuccessMessage>
+   * @responseBody 200 - <ApiSuccessResponse>
    * @responseBody 422 - <ApiValidationError>
    */
   async store(ctx: HttpContext) {

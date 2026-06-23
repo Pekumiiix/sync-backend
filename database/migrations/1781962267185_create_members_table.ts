@@ -1,5 +1,4 @@
-import { ACCESS_LEVELS } from '#enums/access_level'
-import { ROLES } from '#enums/role'
+import { ACCESS_LEVELS, ROLES } from '#enums/member'
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {

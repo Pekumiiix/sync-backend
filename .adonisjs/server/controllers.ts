@@ -22,6 +22,7 @@ export const controllers = {
       Googles: () => import('#controllers/v_1/oauth/googles_controller'),
     },
     users: {
+      Notifications: () => import('#controllers/v_1/users/notifications_controller'),
       Profile: () => import('#controllers/v_1/users/profile_controller'),
     },
   },

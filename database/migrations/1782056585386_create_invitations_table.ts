@@ -1,5 +1,6 @@
-import { ACCESS_LEVELS } from '#enums/access_level'
+import { ACCESS_LEVELS } from '#enums/member'
 import { BaseSchema } from '@adonisjs/lucid/schema'
+import { INVITATION_STATUSES } from '#enums/invitation'
 
 export default class extends BaseSchema {
   protected tableName = 'invitations'
@@ -26,7 +27,10 @@ export default class extends BaseSchema {
       table.string('email').notNullable()
       table.string('token').notNullable().unique()
 
-      table.enum('status', ['pending', 'accepted', 'declined']).defaultTo('pending').notNullable()
+      table
+        .enum('status', [...INVITATION_STATUSES])
+        .defaultTo('pending')
+        .notNullable()
       table
         .enum('access_level', [...ACCESS_LEVELS])
         .defaultTo('viewer')

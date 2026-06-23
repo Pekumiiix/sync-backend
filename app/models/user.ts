@@ -9,6 +9,7 @@ import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Member from './member.ts'
 import Bookmark from './bookmark.ts'
 import OauthIdentity from './o_auth_identity.ts'
+import Notification from './notification.ts'
 
 export default class User extends compose(UserSchema, withAuthFinder(hash)) {
   static accessTokens = DbAccessTokensProvider.forModel(User)
@@ -25,6 +26,9 @@ export default class User extends compose(UserSchema, withAuthFinder(hash)) {
 
   @hasMany(() => OauthIdentity)
   declare oauthIdentities: HasMany<typeof OauthIdentity>
+
+  @hasMany(() => Notification)
+  declare notifications: HasMany<typeof Notification>
 
   @manyToMany(() => Folder, {
     pivotTable: 'members',

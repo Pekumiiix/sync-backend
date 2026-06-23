@@ -73,6 +73,7 @@ export default class FoldersController {
    * @destroy
    * @operationId deleteFolder
    * @summary Delete a folder
+   * @paramPath folderId - string - Required. The UUID of the folder to delete.
    * @description Deletes a custom folder and automatically cascades to delete all bookmarks inside it. System folders cannot be deleted.
    * @responseBody 200 - <ApiSuccessMessage>
    * @responseBody 400 - <ApiErrorResponse>
@@ -81,7 +82,7 @@ export default class FoldersController {
   async destroy(ctx: HttpContext) {
     const { params, response, auth } = ctx
 
-    const folderId = params.id
+    const folderId = params.folderId
 
     const user = auth.user!
 
@@ -103,7 +104,7 @@ export default class FoldersController {
    * @operationId updateFolder
    * @summary Update a folder
    * @description Renames an existing custom folder. Users can only update folders that belong to them.
-   * @paramPath id - string - Required. The UUID of the folder to update.
+   * @paramPath folderId - string - Required. The UUID of the folder to update.
    * @requestBody <updateFolderValidator>
    * @responseBody 200 - { "success": true, "message": "Folder updated successfully!", "data": "<FolderSingleData>" }
    * @responseBody 403 - <ApiErrorResponse>
@@ -113,7 +114,7 @@ export default class FoldersController {
   async update(ctx: HttpContext) {
     const { params, request, response, auth } = ctx
 
-    const folderId = params.id
+    const folderId = params.folderId
 
     const { name } = await request.validateUsing(updateFolderValidator)
 
@@ -142,7 +143,7 @@ export default class FoldersController {
    * @operationId getFolder
    * @summary Retrieve a single folder
    * @description Fetches a specific folder and its paginated bookmarks. Supports filtering by browser and sorting by date or title.
-   * @paramPath id - string - Required. The UUID of the folder.
+   * @paramPath folderId - string - Required. The UUID of the folder.
    * @paramQuery page - number - Optional. The page number for pagination (default: 1).
    * @paramQuery limit - number - Optional. Items per page (default: 20).
    * @paramQuery sortByBrowser - string - Optional. Filter by browser (e.g., 'chrome', 'arc', 'all').
@@ -163,7 +164,7 @@ export default class FoldersController {
       sortByTitle,
     } = await request.validateUsing(getFolderParamValidator)
 
-    const folderId = params.id
+    const folderId = params.folderId
 
     const user = auth.user!
 
@@ -190,6 +191,7 @@ export default class FoldersController {
     const paginatedBookmarks = await bookmarksQuery.paginate(page, limit)
 
     const bookmarksArray = paginatedBookmarks.all()
+    const meta = paginatedBookmarks.getMeta()
 
     const formattedResponse = ctx.serialize(
       {
@@ -204,10 +206,8 @@ export default class FoldersController {
         pinnedBookmarks: bookmarksArray.filter((b) => b.isPinned),
         data: bookmarksArray.filter((b) => !b.isPinned),
         meta: {
-          totalCount: folder.bookmarkCount,
-          currentPage: page,
-          totalPages: Math.ceil(folder.bookmarkCount / limit),
-          hasNextPage: page * limit < folder.bookmarkCount,
+          currentPage: meta.currentPage,
+          totalPages: meta.lastPage,
         },
       },
       'Folder retrieved successfully!'

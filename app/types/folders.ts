@@ -1,6 +1,7 @@
-import { BookmarkResponse } from './bookmark.ts'
+import { AccessLevelType, RoleType } from '#enums/member'
+import type { BookmarkResponse } from '#types/bookmarks'
 
-export interface FolderResponse {
+export type FolderResponse = {
   id: string
   name: string
   bookmarkCount: number
@@ -10,53 +11,48 @@ export interface FolderResponse {
   updatedAt: string
 }
 
-interface PreviewMember {
+type PreviewMember = {
   id: string
-  fisrtName: string
+  firstName: string
   lastName: string
   avatarUrl: string | null
 }
 
-export interface ShowFolderResponse {
+export type ShowFolderResponse = {
   id: string
   name: string
   bookmarkCount: number
   isSystem: boolean
   memberCount: number
   previewMembers: PreviewMember[]
+  isProtected: boolean
+  createdAt: string
+  updatedAt: string
 }
 
-export interface FolderSingleData {
+export type FolderSingleData = {
   folder: FolderResponse
 }
 
-export interface FolderIndexData {
+export type FolderIndexData = {
   systemFolders: FolderResponse[]
   ownedFolders: FolderResponse[]
   sharedFolders: FolderResponse[]
 }
 
-export interface PaginationMeta {
+export type PaginationMeta = {
   totalCount: number
   currentPage: number
   totalPages: number
   hasNextPage: boolean
 }
 
-export interface FolderPermission {
-  /**
-   * Expected values: 'admin', 'member'
-   * @example "admin"
-   */
-  role: string
-  /**
-   * Expected values: 'editor', 'viewer'
-   * @example "editor"
-   */
-  accessLevel: string
+export type FolderPermission = {
+  role: AccessLevelType
+  accessLevel: RoleType
 }
 
-export interface FolderShowData {
+export type FolderShowData = {
   folder: ShowFolderResponse
   permission: FolderPermission
   pinnedBookmarks: BookmarkResponse[]

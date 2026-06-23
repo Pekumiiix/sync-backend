@@ -12,7 +12,7 @@ export default class ForgotPasswordsController {
    * @summary Request password reset
    * @description Initiates the password reset process by sending a reset link to the user's email.
    * @requestBody <forgotPasswordValidator>
-   * @responseBody 200 - <ApiSuccessMessage>
+   * @responseBody 200 - <ApiSuccessResponse>
    * @responseBody 422 - <ApiValidationError>
    */
   async store(ctx: HttpContext) {

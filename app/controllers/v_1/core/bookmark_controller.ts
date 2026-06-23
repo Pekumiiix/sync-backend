@@ -121,6 +121,7 @@ export default class BookmarksController {
    * @destroy
    * @operationId deleteBookmark
    * @summary Delete a bookmark
+   * @paramPath bookmarkId - string - Required. The UUID of the bookmark to delete.
    * @description Deletes a bookmark from a folder. The user must have 'editor' access level in the parent folder to perform this action.
    * @responseBody 200 - <ApiSuccessMessage>
    * @responseBody 403 - <ApiErrorResponse>
@@ -131,7 +132,7 @@ export default class BookmarksController {
 
     const user = auth.user!
 
-    const bookmarkId = params.id
+    const bookmarkId = params.bookmarkId
 
     const bookmark = await Bookmark.query().where('id', bookmarkId).firstOrFail()
 
@@ -153,7 +154,7 @@ export default class BookmarksController {
    * @operationId updateBookmark
    * @summary Update a bookmark
    * @description Updates the title, description, or tags of an existing bookmark. The authenticated user must have 'editor' access level in the parent folder.
-   * @paramPath id - string - Required. The UUID of the bookmark to update.
+   * @paramPath bookmarkId - string - Required. The UUID of the bookmark to update.
    * @requestBody <updateBookmarkValidator>
    * @responseBody 200 - { "success": true, "message": "Bookmark updated successfully!", "data": { "bookmark": "<BookmarkResponse>" } }
    * @responseBody 401 - <ApiErrorResponse>
@@ -168,7 +169,7 @@ export default class BookmarksController {
 
     const user = auth.user!
 
-    const bookmarkId = params.id
+    const bookmarkId = params.bookmarkId
 
     const bookmark = await Bookmark.query().where('id', bookmarkId).firstOrFail()
 
@@ -199,7 +200,7 @@ export default class BookmarksController {
    * @operationId pinBookmark
    * @summary Pin a bookmark
    * @description Pins a bookmark so it appears at the top of the folder. The authenticated user must have 'editor' access level in the parent folder.
-   * @paramPath id - string - Required. The UUID of the bookmark to pin.
+   * @paramPath bookmarkId - string - Required. The UUID of the bookmark to pin.
    * @responseBody 200 - { "success": true, "message": "Bookmark pinned successfully!", "data": { "bookmark": "<BookmarkResponse>" } }
    * @responseBody 401 - <ApiErrorResponse>
    * @responseBody 403 - <ApiErrorResponse>
@@ -210,7 +211,7 @@ export default class BookmarksController {
 
     const user = auth.user!
 
-    const bookmarkId = params.id
+    const bookmarkId = params.bookmarkId
 
     const bookmark = await Bookmark.query().where('id', bookmarkId).firstOrFail()
 
@@ -237,7 +238,7 @@ export default class BookmarksController {
    * @operationId unpinBookmark
    * @summary Unpin a bookmark
    * @description Removes the pinned status from a bookmark. The authenticated user must have 'editor' access level in the parent folder.
-   * @paramPath id - string - Required. The UUID of the bookmark to unpin.
+   * @paramPath bookmarkId - string - Required. The UUID of the bookmark to unpin.
    * @responseBody 200 - { "success": true, "message": "Bookmark unpinned successfully!", "data": { "bookmark": "<BookmarkResponse>" } }
    * @responseBody 401 - <ApiErrorResponse>
    * @responseBody 403 - <ApiErrorResponse>
@@ -248,7 +249,7 @@ export default class BookmarksController {
 
     const user = auth.user!
 
-    const bookmarkId = params.id
+    const bookmarkId = params.bookmarkId
 
     const bookmark = await Bookmark.query().where('id', bookmarkId).firstOrFail()
 

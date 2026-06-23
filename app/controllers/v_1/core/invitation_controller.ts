@@ -104,7 +104,7 @@ export default class InvitationsController {
    * @operationId declineInvitation
    * @summary Decline an invitation
    * @description Marks a pending invitation as declined. The authenticated user must be the recipient of the invite.
-   * @paramPath id - string - Required. The UUID of the invitation.
+   * @paramPath invitationId - string - Required. The UUID of the invitation.
    * @responseBody 200 - { "success": true, "message": "Invitation declined successfully.", "data": { "invitation": "<InvitationResponse>" } }
    * @responseBody 400 - <ApiErrorResponse>
    * @responseBody 404 - <ApiErrorResponse>
@@ -112,10 +112,12 @@ export default class InvitationsController {
   async destroy(ctx: HttpContext) {
     const { params, response, auth } = ctx
 
+    const invitationId = params.invitationId
+
     const user = auth.user!
 
     const invitation = await Invitation.query()
-      .where('id', params.id)
+      .where('id', invitationId)
       .where('email', user.email)
       .first()
 
@@ -146,7 +148,7 @@ export default class InvitationsController {
    * @operationId acceptInvitation
    * @summary Accept an invitation
    * @description Accepts a pending invitation and adds the user to the folder members.
-   * @paramPath id - string - Required. The UUID of the invitation.
+   * @paramPath invitationId - string - Required. The UUID of the invitation.
    * @responseBody 200 - { "success": true, "message": "Invitation accepted successfully.", "data": { "invitation": "<InvitationResponse>" } }
    * @responseBody 400 - <ApiErrorResponse>
    * @responseBody 404 - <ApiErrorResponse>
@@ -154,10 +156,12 @@ export default class InvitationsController {
   async accept(ctx: HttpContext) {
     const { params, response, auth } = ctx
 
+    const invitationId = params.invitationId
+
     const user = auth.user!
 
     const invitation = await Invitation.query()
-      .where('id', params.id)
+      .where('id', invitationId)
       .where('email', user.email)
       .first()
 

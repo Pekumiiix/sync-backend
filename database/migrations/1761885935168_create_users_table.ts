@@ -1,3 +1,4 @@
+import { USER_PLANS } from '#enums/user'
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
@@ -17,7 +18,10 @@ export default class extends BaseSchema {
       table.string('location').nullable()
       table.string('avatar_url').nullable()
 
-      table.enum('plan', ['free', 'basic', 'standard']).defaultTo('free')
+      table
+        .enum('plan', [...USER_PLANS])
+        .defaultTo('free')
+        .notNullable()
 
       table.string('email_verification_token').nullable()
       table.timestamp('email_verification_token_expires_at', { useTz: true }).nullable()

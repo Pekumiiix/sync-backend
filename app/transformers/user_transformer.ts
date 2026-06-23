@@ -1,4 +1,4 @@
-import { UserSettings } from '#interfaces/auth'
+import { UserSettings } from '#types/user'
 import type User from '#models/user'
 import { BaseTransformer } from '@adonisjs/core/transformers'
 
@@ -17,9 +17,9 @@ export default class UserTransformer extends BaseTransformer<User> {
       'isEmailVerified',
     ])
 
-    const rawSettings = this.resource.settings || {}
+    const rawSettings: UserSettings = this.resource.settings || {}
 
-    const formattedSettings: UserSettings = {
+    const formattedSettings = {
       management: {
         autoMergeDuplicate: rawSettings.autoMergeDuplicate ?? false,
       },
@@ -28,7 +28,7 @@ export default class UserTransformer extends BaseTransformer<User> {
         notifyOnNewBookmark: rawSettings.notifyOnNewBookmark ?? true,
       },
       sync: {
-        frequency: rawSettings.syncFrequencyInHours?.toString() ?? '3',
+        frequency: rawSettings.frequency?.toString() ?? '3',
       },
     }
 

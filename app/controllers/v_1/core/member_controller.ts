@@ -4,6 +4,7 @@ import Member from '#models/member'
 import MemberTransformer from '#transformers/member_transformer'
 import { updateMemberValidator } from '#validators/member'
 import { apiError } from '#utils/response'
+import { events } from '#generated/events'
 
 export default class MembersController {
   /**
@@ -118,11 +119,55 @@ export default class MembersController {
     const member = await Member.query()
       .where('id', memberId)
       .where('folderId', folderId)
+      .preload('user')
       .firstOrFail()
 
     await member.delete()
 
+    events.MemberRemoved.dispatch(folderId, member.user.firstName, user)
+
     const formattedResponse = ctx.serialize(null, 'Member removed successfully!')
+
+    return response.ok(formattedResponse)
+  }
+
+  /**
+   * @leave
+   * @tags Members
+   * @operationId leaveFolder
+   * @summary Leave a shared folder
+   * @description Allows the authenticated user to voluntarily leave a folder. Folder owners cannot leave their own folder; they must delete it instead.
+   * @paramPath folderId - string - Required. The UUID of the folder the user wishes to leave.
+   * @responseBody 200 - <ApiSuccessResponse>
+   * @responseBody 401 - <ApiErrorResponse>
+   * @responseBody 403 - <ApiErrorResponse>
+   * @responseBody 404 - <ApiErrorResponse>
+   */
+  async leave(ctx: HttpContext) {
+    const { response, params, auth } = ctx
+
+    const folderId = params.folderId
+    const user = auth.user!
+
+    const { permission } = await FolderService.getFolderWithPermissions(folderId, user)
+
+    if (permission.role === 'owner') {
+      return response.forbidden(
+        apiError('Folder owners cannot leave their own folder. Please delete the folder instead.')
+      )
+    }
+
+    const member = await user
+      .related('memberships')
+      .query()
+      .where('folderId', folderId)
+      .firstOrFail()
+
+    await member.delete()
+
+    events.MemberLeft.dispatch(folderId, user)
+
+    const formattedResponse = ctx.serialize(null, 'You have successfully left the folder.')
 
     return response.ok(formattedResponse)
   }

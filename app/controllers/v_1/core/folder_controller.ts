@@ -1,6 +1,7 @@
 import {
   createFolderValidator,
   getFolderParamValidator,
+  joinFolderValidator,
   updateFolderValidator,
 } from '#validators/folder'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -8,6 +9,10 @@ import { apiError } from '#utils/response'
 import FolderTransformer from '#transformers/folder_transformer'
 import { events } from '#generated/events'
 import FolderService from '#services/folder_service'
+import Folder from '#models/folder'
+import hash from '@adonisjs/core/services/hash'
+import Member from '#models/member'
+import db from '@adonisjs/lucid/services/db'
 
 export default class FoldersController {
   /**
@@ -212,6 +217,83 @@ export default class FoldersController {
       },
       'Folder retrieved successfully!'
     )
+
+    return response.ok(formattedResponse)
+  }
+
+  /**
+   * @join
+   * @operationId joinFolder
+   * @summary Join a protected folder
+   * @description Allows an authenticated user to join a folder. If the folder is password-protected, the correct password must be provided.
+   * @paramPath folderId - string - Required. The UUID of the folder to join.
+   * @requestBody <joinFolderValidator>
+   * @responseBody 200 - <ApiSuccessResponse>
+   * @responseBody 400 - <ApiErrorResponse>
+   * @responseBody 401 - <ApiErrorResponse>
+   * @responseBody 404 - <ApiErrorResponse>
+   * @responseBody 500 - <ApiErrorResponse>
+   */
+  async join(ctx: HttpContext) {
+    const { params, response, auth, request } = ctx
+
+    const { password } = await request.validateUsing(joinFolderValidator)
+
+    const folderId = params.folderId
+
+    const user = auth.user!
+
+    const folder = await Folder.query().where('id', folderId).firstOrFail()
+
+    if (folder.userId === user.id) {
+      return response.badRequest(
+        apiError('You are the owner of this folder and already have full access.')
+      )
+    }
+
+    const membership = await user
+      .related('memberships')
+      .query()
+      .where('folderId', folder.id)
+      .first()
+
+    if (membership) {
+      return response.badRequest(apiError('You are already a member of this folder.'))
+    }
+
+    if (folder.password !== null) {
+      const isPasswordValid = await hash.verify(folder.password, password || '')
+
+      if (!isPasswordValid) {
+        return response.unauthorized(apiError('Invalid password provided for this folder.'))
+      }
+    }
+
+    const trx = await db.transaction()
+
+    try {
+      await Member.create(
+        {
+          userId: user.id,
+          folderId: folder.id,
+          role: 'member',
+          accessLevel: 'viewer',
+        },
+        { client: trx }
+      )
+
+      await trx.commit()
+    } catch (error) {
+      await trx.rollback()
+
+      return response.internalServerError(
+        apiError('An error occurred while trying to join the folder.')
+      )
+    }
+
+    events.MemberJoined.dispatch(folder.id, user)
+
+    const formattedResponse = ctx.serialize(null, 'Successfully joined the folder.')
 
     return response.ok(formattedResponse)
   }

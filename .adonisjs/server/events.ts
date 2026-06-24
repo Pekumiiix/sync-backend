@@ -6,9 +6,17 @@
 import FolderCreated from '#events/folder_created'
 import PasswordResetRequested from '#events/password_reset_requested'
 import UserRegistered from '#events/user_registered'
+import BookmarkCreated from '#events/bookmark_created'
+import MemberLeft from '#events/member_left'
+import MemberJoined from '#events/member_joined'
+import MemberRemoved from '#events/member_removed'
 
 export const events = {
   FolderCreated: FolderCreated,
   PasswordResetRequested: PasswordResetRequested,
   UserRegistered: UserRegistered,
+  BookmarkCreated: BookmarkCreated,
+  MemberLeft: MemberLeft,
+  MemberJoined: MemberJoined,
+  MemberRemoved: MemberRemoved,
 }

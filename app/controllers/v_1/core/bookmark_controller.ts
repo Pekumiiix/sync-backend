@@ -9,6 +9,7 @@ import {
 } from '#validators/bookmark'
 import mql from '@microlink/mql'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
+import { events } from '#generated/events'
 
 export default class BookmarksController {
   /**
@@ -108,6 +109,8 @@ export default class BookmarksController {
       isPinned: false,
       browser,
     })
+
+    events.BookmarkCreated.dispatch(user, folderId)
 
     const formattedResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },

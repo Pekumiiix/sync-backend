@@ -1,11 +1,11 @@
-export type UserSettings = {
+export interface UserSettings {
   autoMergeDuplicate: boolean
   notifyOnNewMember: boolean
   notifyOnNewBookmark: boolean
   frequency: string
 }
 
-export type UserResponse = {
+export interface UserResponse {
   id: string
   firstName: string
   lastName: string
@@ -17,4 +17,13 @@ export type UserResponse = {
   createdAt: string
   updatedAt: string
   settings: UserSettings
+}
+
+export interface CreateAccountResponse {
+  success: boolean
+  message: string
+  data: {
+    user: UserResponse
+    token: string
+  }
 }

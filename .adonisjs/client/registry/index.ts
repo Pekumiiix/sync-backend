@@ -90,6 +90,12 @@ const routes = {
     tokens: [{"old":"/api/v1/folders","type":0,"val":"api","end":""},{"old":"/api/v1/folders","type":0,"val":"v1","end":""},{"old":"/api/v1/folders","type":0,"val":"folders","end":""}],
     types: placeholder as Registry['folder.folder.store']['types'],
   },
+  'folder.folder.join': {
+    methods: ["POST"],
+    pattern: '/api/v1/folders/:folderId/join',
+    tokens: [{"old":"/api/v1/folders/:folderId/join","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/join","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"join","end":""}],
+    types: placeholder as Registry['folder.folder.join']['types'],
+  },
   'folder.folder.destroy': {
     methods: ["DELETE"],
     pattern: '/api/v1/folders/:folderId',
@@ -149,6 +155,12 @@ const routes = {
     pattern: '/api/v1/folder/:folderId/member',
     tokens: [{"old":"/api/v1/folder/:folderId/member","type":0,"val":"api","end":""},{"old":"/api/v1/folder/:folderId/member","type":0,"val":"v1","end":""},{"old":"/api/v1/folder/:folderId/member","type":0,"val":"folder","end":""},{"old":"/api/v1/folder/:folderId/member","type":1,"val":"folderId","end":""},{"old":"/api/v1/folder/:folderId/member","type":0,"val":"member","end":""}],
     types: placeholder as Registry['members.member.index']['types'],
+  },
+  'members.member.leave': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/folder/:folderId/member/leave',
+    tokens: [{"old":"/api/v1/folder/:folderId/member/leave","type":0,"val":"api","end":""},{"old":"/api/v1/folder/:folderId/member/leave","type":0,"val":"v1","end":""},{"old":"/api/v1/folder/:folderId/member/leave","type":0,"val":"folder","end":""},{"old":"/api/v1/folder/:folderId/member/leave","type":1,"val":"folderId","end":""},{"old":"/api/v1/folder/:folderId/member/leave","type":0,"val":"member","end":""},{"old":"/api/v1/folder/:folderId/member/leave","type":0,"val":"leave","end":""}],
+    types: placeholder as Registry['members.member.leave']['types'],
   },
   'members.member.update': {
     methods: ["PATCH"],

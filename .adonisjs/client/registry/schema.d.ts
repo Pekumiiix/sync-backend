@@ -175,6 +175,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'folder.folder.join': {
+    methods: ["POST"]
+    pattern: '/api/v1/folders/:folderId/join'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/folder').joinFolderValidator)>>
+      paramsTuple: [ParamValue]
+      params: { folderId: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/folder').joinFolderValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['join']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['join']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'folder.folder.destroy': {
     methods: ["DELETE"]
     pattern: '/api/v1/folders/:folderId'
@@ -293,6 +305,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/member_controller').default['index']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/member_controller').default['index']>>>
+    }
+  }
+  'members.member.leave': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/folder/:folderId/member/leave'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { folderId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/member_controller').default['leave']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/member_controller').default['leave']>>>
     }
   }
   'members.member.update': {

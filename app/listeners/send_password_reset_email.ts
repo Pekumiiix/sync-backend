@@ -1,6 +1,5 @@
 import type PasswordResetRequested from '#events/password_reset_requested'
 import env from '#start/env'
-import logger from '@adonisjs/core/services/logger'
 import mail from '@adonisjs/mail/services/main'
 
 export default class SendPasswordResetEmail {
@@ -9,19 +8,15 @@ export default class SendPasswordResetEmail {
 
     const resetLink = `${env.get('FRONTEND_URL')}/reset-password?token=${resetToken}`
 
-    try {
-      await mail.send((message) => {
-        message.to(user.email)
-        message.from(env.get('MAIL_FROM_ADDRESS'), env.get('MAIL_FROM_NAME'))
-        message.subject('Reset your password')
+    await mail.send((message) => {
+      message.to(user.email)
+      message.from(env.get('MAIL_FROM_ADDRESS'), env.get('MAIL_FROM_NAME'))
+      message.subject('Reset your password')
 
-        message.htmlView('emails/reset-password', {
-          firstName: user.firstName,
-          resetLink: resetLink,
-        })
+      message.htmlView('emails/reset-password', {
+        firstName: user.firstName,
+        resetLink: resetLink,
       })
-    } catch (error) {
-      logger.error('Error sending password reset email:', error)
-    }
+    })
   }
 }

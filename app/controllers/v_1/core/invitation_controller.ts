@@ -8,6 +8,9 @@ import User from '#models/user'
 import InvitationTransformer from '#transformers/invitation_transformer'
 import { DateTime } from 'luxon'
 import Member from '#models/member'
+import Folder from '#models/folder'
+import db from '@adonisjs/lucid/services/db'
+import { events } from '#generated/events'
 
 export default class InvitationsController {
   /**
@@ -173,17 +176,41 @@ export default class InvitationsController {
       return response.badRequest(apiError('You can only accept pending invitations.'))
     }
 
-    invitation.status = 'accepted'
-    invitation.acceptedAt = DateTime.now()
+    const folder = await Folder.query().where('id', invitation.folderId).first()
 
-    await invitation.save()
+    if (!folder) {
+      return response.notFound(
+        apiError('The folder associated with this invitation does not exist.')
+      )
+    }
 
-    await Member.create({
-      folderId: invitation.folderId,
-      userId: user.id,
-      accessLevel: invitation.accessLevel,
-      role: 'member',
-    })
+    const trx = await db.transaction()
+
+    try {
+      invitation.useTransaction(trx)
+
+      invitation.status = 'accepted'
+      invitation.acceptedAt = DateTime.now()
+
+      await invitation.save()
+
+      await Member.create({
+        folderId: invitation.folderId,
+        userId: user.id,
+        accessLevel: invitation.accessLevel,
+        role: 'member',
+      })
+
+      await trx.commit()
+    } catch (error) {
+      await trx.rollback()
+
+      return response.internalServerError(
+        apiError('An error occurred while accepting the invitation.')
+      )
+    }
+
+    events.MemberJoined.dispatch(folder.id, user)
 
     const transformedInvitation = InvitationTransformer.transform(invitation)
 

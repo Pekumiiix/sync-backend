@@ -32,6 +32,9 @@ export type PaginationMeta = {
 export type NotificationData = {
   actorName: string
   actorAvatar: string | null
+
   folderName: string
   folderId: string
+
+  targetName: string | null
 }

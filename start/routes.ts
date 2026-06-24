@@ -61,6 +61,8 @@ router
         router.get('/', [controllers.v1.core.Folder, 'index'])
         router.post('/', [controllers.v1.core.Folder, 'store'])
 
+        router.post(':folderId/join', [controllers.v1.core.Folder, 'join'])
+
         router.delete(':folderId', [controllers.v1.core.Folder, 'destroy'])
         router.patch(':folderId', [controllers.v1.core.Folder, 'update'])
         router.get(':folderId', [controllers.v1.core.Folder, 'show'])
@@ -87,6 +89,8 @@ router
     router
       .group(() => {
         router.get('/', [controllers.v1.core.Member, 'index'])
+
+        router.delete('/leave', [controllers.v1.core.Member, 'leave'])
 
         router.patch(':memberId', [controllers.v1.core.Member, 'update'])
         router.delete(':memberId', [controllers.v1.core.Member, 'destroy'])

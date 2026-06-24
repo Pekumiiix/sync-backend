@@ -40,6 +40,7 @@ export interface ApiDefinition {
     folder: {
       index: typeof routes['folder.folder.index']
       store: typeof routes['folder.folder.store']
+      join: typeof routes['folder.folder.join']
       destroy: typeof routes['folder.folder.destroy']
       update: typeof routes['folder.folder.update']
       show: typeof routes['folder.folder.show']
@@ -58,6 +59,7 @@ export interface ApiDefinition {
   members: {
     member: {
       index: typeof routes['members.member.index']
+      leave: typeof routes['members.member.leave']
       update: typeof routes['members.member.update']
       destroy: typeof routes['members.member.destroy']
     }

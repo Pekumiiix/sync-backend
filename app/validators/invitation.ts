@@ -1,4 +1,4 @@
-import { ACCESS_LEVELS } from '#enums/access_level'
+import { ACCESS_LEVELS } from '#enums/member'
 import vine from '@vinejs/vine'
 
 export const storeInvitationValidator = vine.create({

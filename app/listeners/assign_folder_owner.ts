@@ -8,7 +8,7 @@ export default class AssignFolderOwner {
     await Member.create({
       folderId: folder.id,
       userId: user.id,
-      role: 'admin',
+      role: 'owner',
       accessLevel: 'editor',
     })
   }

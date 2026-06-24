@@ -13,7 +13,7 @@ export default class NewAccountController {
    * @summary Create a new user account
    * @description Registers a new user and returns an access token.
    * @requestBody <signupValidator>
-   * @responseBody 201 - { "success": true, "message": "Account created successfully!", "data": { "user": "<UserResponses>", "token": "string" } }
+   * @responseBody 201 - { "success": "true" }
    * @responseBody 422 - <ApiValidationError>
    */
   async store(ctx: HttpContext) {

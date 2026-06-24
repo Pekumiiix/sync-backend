@@ -1,20 +1,20 @@
-export type ApiErrorResponse = {
+export interface ApiErrorResponse {
   success: false
   message: string
   data: null
 }
 
-export type ApiValidationErrorItem = {
+export interface ApiValidationErrorItem {
   message: string
   rule: string
   field: string
 }
 
-export type ApiValidationError = {
+export interface ApiValidationError {
   errors: ApiValidationErrorItem[]
 }
 
-export type ApiSuccessResponse = {
+export interface ApiSuccessResponse {
   success: true
   message: string
   data: null

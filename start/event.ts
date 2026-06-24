@@ -1,11 +1,26 @@
 import emitter from '@adonisjs/core/services/emitter'
-import UserRegistered from '#events/user_registered'
-import FolderCreated from '#events/folder_created'
+import logger from '@adonisjs/core/services/logger'
+import { events } from '#generated/events'
+import { listeners } from '#generated/listeners'
 
-const SendVerificationEmail = () => import('#listeners/send_verification_email')
-const CreateDefaultFolders = () => import('#listeners/create_default_folders')
-const AssignFolderOwner = () => import('#listeners/assign_folder_owner')
+// User events
+emitter.on(events.UserRegistered, listeners.SendVerificationEmail)
+emitter.on(events.UserRegistered, listeners.CreateDefaultFolders)
 
-emitter.on(UserRegistered, SendVerificationEmail)
-emitter.on(UserRegistered, CreateDefaultFolders)
-emitter.on(FolderCreated, AssignFolderOwner)
+// Folder events
+emitter.on(events.FolderCreated, listeners.AssignFolderOwner)
+
+// Bookmark events
+emitter.on(events.BookmarkCreated, listeners.SendBookmarkCreatedNotification)
+
+// Password reset events
+emitter.on(events.PasswordResetRequested, listeners.SendPasswordResetEmail)
+
+// Notification events
+emitter.on(events.MemberLeft, listeners.SendMemberLeftNotification)
+emitter.on(events.MemberJoined, listeners.SendMemberJoinedNotification)
+emitter.on(events.MemberRemoved, listeners.SendMemberRemovedNotification)
+
+emitter.onError((event, error, data) => {
+  logger.error({ err: error, event, eventData: data }, 'An event listener failed in the background')
+})

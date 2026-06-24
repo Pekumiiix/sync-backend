@@ -1,37 +1,49 @@
+import { AccessLevelType, RoleType } from '#enums/member'
 import Folder from '#models/folder'
 import User from '#models/user'
+import { Exception } from '@adonisjs/core/exceptions'
 
 export default class FolderService {
   static async getFolderWithPermissions(folderId: string, user: User) {
     const folder = await Folder.query()
       .where('id', folderId)
-      .where((query) => {
-        query.where('userId', user.id).orWhereHas('members', (memberQuery) => {
-          memberQuery.where('userId', user.id)
-        })
-      })
       .preload('users', (query) => {
         query.select('id', 'firstName', 'lastName', 'avatarUrl').limit(3)
       })
       .firstOrFail()
 
-    let role = 'member'
-    let accessLevel = 'viewer'
+    const membership = await user
+      .related('memberships')
+      .query()
+      .where('folderId', folder.id)
+      .first()
 
-    if (folder.userId === user.id) {
-      role = 'admin'
-      accessLevel = 'editor'
-    } else {
-      const membership = await user
-        .related('memberships')
-        .query()
-        .where('folderId', folder.id)
-        .first()
+    const isOwner = folder.userId === user.id
+    const isMember = !!membership
 
-      if (membership) {
-        role = membership.role
-        accessLevel = membership.accessLevel
+    if (!isOwner && !isMember) {
+      if (folder.password !== null) {
+        throw new Exception('Provide a password to access this folder', {
+          code: 'E_PASSWORD_REQUIRED',
+          status: 401,
+        })
+      } else {
+        throw new Exception('You do not have permission to view this folder', {
+          code: 'E_UNAUTHORIZED_ACCESS',
+          status: 403,
+        })
       }
+    }
+
+    let role: RoleType = 'member'
+    let accessLevel: AccessLevelType = 'viewer'
+
+    if (isOwner) {
+      role = 'owner'
+      accessLevel = 'editor'
+    } else if (membership) {
+      role = membership.role
+      accessLevel = membership.accessLevel
     }
 
     const previewMembers = folder.users

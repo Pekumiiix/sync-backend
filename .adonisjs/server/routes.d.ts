@@ -18,6 +18,7 @@ export type ScannedRoutes = {
     'profile.profile.update': { paramsTuple?: []; params?: {} }
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.store': { paramsTuple?: []; params?: {} }
+    'folder.folder.join': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.update': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
@@ -28,6 +29,7 @@ export type ScannedRoutes = {
     'bookmarks.bookmark.pin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.unpin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'members.member.leave': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'members.member.update': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
     'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
     'invitations.invitation.index': { paramsTuple?: []; params?: {} }
@@ -69,6 +71,7 @@ export type ScannedRoutes = {
     'auth.verify_emails.resend': { paramsTuple?: []; params?: {} }
     'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
     'folder.folder.store': { paramsTuple?: []; params?: {} }
+    'folder.folder.join': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.fetch': { paramsTuple?: []; params?: {} }
     'invitations.invitation.store': { paramsTuple?: []; params?: {} }
@@ -79,6 +82,7 @@ export type ScannedRoutes = {
     'oauths.googles.destroy': { paramsTuple?: []; params?: {} }
     'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
+    'members.member.leave': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
     'notifications.notifications.destroy': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
   }

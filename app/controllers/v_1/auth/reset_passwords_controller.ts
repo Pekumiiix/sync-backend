@@ -3,17 +3,9 @@ import { resetPasswordValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
 import { apiError } from '#utils/response'
+import { ApiSuccessResponse } from '#interfaces/api'
 
 export default class ResetPasswordsController {
-  /**
-   * @store
-   * @operationId resetPassword
-   * @summary Reset password
-   * @description Resets the user's password using a valid reset token.
-   * @requestBody <resetPasswordValidator>
-   * @responseBody 200 - <ApiSuccessResponse>
-   * @responseBody 422 - <ApiValidationError>
-   */
   async store(ctx: HttpContext) {
     const { request, response } = ctx
 
@@ -35,7 +27,10 @@ export default class ResetPasswordsController {
 
     await user.save()
 
-    const formattedResponse = ctx.serialize(null, 'Password reset successfully!')
+    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+      null,
+      'Password reset successfully!'
+    )
 
     return response.ok(formattedResponse)
   }

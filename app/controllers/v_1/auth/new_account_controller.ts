@@ -5,17 +5,9 @@ import { DateTime } from 'luxon'
 import { generateVerificationCode } from '#utils/string'
 import UserTransformer from '#transformers/user_transformer'
 import { events } from '#generated/events'
+import { AuthDataResponse } from '#interfaces/user'
 
 export default class NewAccountController {
-  /**
-   * @store
-   * @operationId createAccount
-   * @summary Create a new user account
-   * @description Registers a new user and returns an access token.
-   * @requestBody <signupValidator>
-   * @responseBody 201 - { "success": "true" }
-   * @responseBody 422 - <ApiValidationError>
-   */
   async store(ctx: HttpContext) {
     const { request, response } = ctx
 
@@ -36,7 +28,7 @@ export default class NewAccountController {
 
     const token = await User.accessTokens.create(user)
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: AuthDataResponse = ctx.serialize(
       {
         user: UserTransformer.transform(user),
         token: token.value!.release(),

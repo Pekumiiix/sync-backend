@@ -38,7 +38,7 @@
     "#start/*": "./start/*.js",
     "#config/*": "./config/*.js",
     "#utils/*": "./app/utils/*.js",
-    "#types/*": "./app/types/*.js"
+    "#interfaces/*": "./app/interfaces/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^8.4.0",
@@ -48,6 +48,7 @@
     "@japa/assert": "^4.2.0",
     "@japa/plugin-adonisjs": "^5.2.0",
     "@japa/runner": "^5.3.0",
+    "@outloud/adonis-openapi-generator": "^1.0.7",
     "@poppinss/ts-exec": "^1.4.4",
     "@types/luxon": "^3.7.1",
     "@types/node": "~25.9.1",
@@ -69,9 +70,9 @@
     "@adonisjs/shield": "^9.0.0",
     "@japa/api-client": "^3.2.1",
     "@microlink/mql": "^0.16.1",
+    "@outloud/adonis-openapi": "^1.0.7",
     "@tuyau/core": "^1.2.2",
     "@vinejs/vine": "^4.4.0",
-    "adonis-autoswagger": "^3.73.0",
     "better-sqlite3": "^12.10.0",
     "luxon": "^3.7.2",
     "pg": "^8.21.0",

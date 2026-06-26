@@ -1,16 +1,16 @@
 import { NotificationType } from '#enums/notification'
 
-export type NotificationActor = {
+export interface NotificationActor {
   actorName: string
   actorAvatar: string | null
 }
 
-export type NotificationFolder = {
+export interface NotificationFolder {
   folderName: string
   folderId: string
 }
 
-export type NotificationItemResponse = {
+export interface NotificationItemResponse {
   id: string
   type: NotificationType
   createdAt: string
@@ -21,7 +21,7 @@ export type NotificationItemResponse = {
   message: string
 }
 
-export type PaginationMeta = {
+export interface PaginationMeta {
   total: number
   perPage: number
   currentPage: number
@@ -29,7 +29,7 @@ export type PaginationMeta = {
   firstPage: number
 }
 
-export type NotificationData = {
+export interface NotificationData {
   actorName: string
   actorAvatar: string | null
 
@@ -37,4 +37,21 @@ export type NotificationData = {
   folderId: string
 
   targetName: string | null
+}
+
+export interface ListNotificationsResponse {
+  data: {
+    notifications: NotificationItemResponse[]
+    meta: PaginationMeta
+  }
+  success: boolean
+  message: string
+}
+
+export interface NotificationSuccessResponse {
+  data: {
+    notification: NotificationItemResponse
+  }
+  success: true
+  message: string
 }

@@ -1,4 +1,5 @@
 import { events } from '#generated/events'
+import { ApiSuccessResponse } from '#interfaces/api'
 import User from '#models/user'
 import { forgotPasswordValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -6,15 +7,6 @@ import { DateTime } from 'luxon'
 import crypto from 'node:crypto'
 
 export default class ForgotPasswordsController {
-  /**
-   * @store
-   * @operationId requestPasswordReset
-   * @summary Request password reset
-   * @description Initiates the password reset process by sending a reset link to the user's email.
-   * @requestBody <forgotPasswordValidator>
-   * @responseBody 200 - <ApiSuccessResponse>
-   * @responseBody 422 - <ApiValidationError>
-   */
   async store(ctx: HttpContext) {
     const { request, response } = ctx
 
@@ -34,7 +26,7 @@ export default class ForgotPasswordsController {
       events.PasswordResetRequested.dispatch(user, resetToken)
     }
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = ctx.serialize(
       null,
       'If an account with that email exists, a password reset link has been sent.'
     )

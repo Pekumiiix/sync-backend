@@ -6,13 +6,13 @@
 
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
-import type { JSON } from '#types/db'
+import type { JSON } from '#interfaces/db'
 import type { AccessLevelType, RoleType } from '#enums/member'
 import type { InvitationStatusType } from '#enums/invitation'
-import type { NotificationData } from '#types/notifications'
+import type { NotificationData } from '#interfaces/notifications'
 import type { NotificationType } from '#enums/notification'
 import type { PlanType } from '#enums/user'
-import type { UserSettings } from '#types/user'
+import type { UserSettings } from '#interfaces/user'
 
 export class AuthAccessTokenSchema extends BaseModel {
   static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const

@@ -6,10 +6,10 @@
 export const listeners = {
   AssignFolderOwner: () => import('#listeners/assign_folder_owner'),
   CreateDefaultFolders: () => import('#listeners/create_default_folders'),
+  SendBookmarkCreatedNotification: () => import('#listeners/send_bookmark_created_notification'),
+  SendMemberJoinedNotification: () => import('#listeners/send_member_joined_notification'),
+  SendMemberLeftNotification: () => import('#listeners/send_member_left_notification'),
+  SendMemberRemovedNotification: () => import('#listeners/send_member_removed_notification'),
   SendPasswordResetEmail: () => import('#listeners/send_password_reset_email'),
   SendVerificationEmail: () => import('#listeners/send_verification_email'),
-  SendMemberLeftNotification: () => import('#listeners/send_member_left_notification'),
-  SendMemberJoinedNotification: () => import('#listeners/send_member_joined_notification'),
-  SendMemberRemovedNotification: () => import('#listeners/send_member_removed_notification'),
-  SendBookmarkCreatedNotification: () => import('#listeners/send_bookmark_created_notification'),
 }

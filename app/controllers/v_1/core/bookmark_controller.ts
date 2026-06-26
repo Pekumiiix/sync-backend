@@ -10,6 +10,8 @@ import {
 import mql from '@microlink/mql'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
 import { events } from '#generated/events'
+import { StoreBookmarkResponse } from '#interfaces/bookmarks'
+import { ApiSuccessResponse } from '#interfaces/api'
 
 export default class BookmarksController {
   /**
@@ -59,16 +61,6 @@ export default class BookmarksController {
     }
   }
 
-  /**
-   * @store
-   * @operationId createBookmark
-   * @summary Create a new bookmark
-   * @description Saves a manually edited or pre-scraped bookmark to a specified folder. The authenticated user must have 'editor' access level in the parent folder.
-   * @requestBody <createBookmarkValidator>
-   * @responseBody 201 - { "success": true, "message": "Bookmark created successfully!", "data": { "bookmark": "<BookmarkResponse>" } }
-   * @responseBody 403 - <ApiErrorResponse>
-   * @responseBody 422 - <ApiValidationError>
-   */
   async store(ctx: HttpContext) {
     const { request, response, auth } = ctx
 
@@ -112,7 +104,7 @@ export default class BookmarksController {
 
     events.BookmarkCreated.dispatch(user, folderId)
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: StoreBookmarkResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark created successfully!'
     )
@@ -120,16 +112,6 @@ export default class BookmarksController {
     return response.created(formattedResponse)
   }
 
-  /**
-   * @destroy
-   * @operationId deleteBookmark
-   * @summary Delete a bookmark
-   * @paramPath bookmarkId - string - Required. The UUID of the bookmark to delete.
-   * @description Deletes a bookmark from a folder. The user must have 'editor' access level in the parent folder to perform this action.
-   * @responseBody 200 - <ApiSuccessMessage>
-   * @responseBody 403 - <ApiErrorResponse>
-   * @responseBody 404 - <ApiErrorResponse>
-   */
   async destroy(ctx: HttpContext) {
     const { response, auth, params } = ctx
 
@@ -147,24 +129,14 @@ export default class BookmarksController {
 
     await bookmark.delete()
 
-    const formattedResponse = ctx.serialize(null, 'Bookmark deleted successfully!')
+    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+      null,
+      'Bookmark deleted successfully!'
+    )
 
     return response.ok(formattedResponse)
   }
 
-  /**
-   * @update
-   * @operationId updateBookmark
-   * @summary Update a bookmark
-   * @description Updates the title, description, or tags of an existing bookmark. The authenticated user must have 'editor' access level in the parent folder.
-   * @paramPath bookmarkId - string - Required. The UUID of the bookmark to update.
-   * @requestBody <updateBookmarkValidator>
-   * @responseBody 200 - { "success": true, "message": "Bookmark updated successfully!", "data": { "bookmark": "<BookmarkResponse>" } }
-   * @responseBody 401 - <ApiErrorResponse>
-   * @responseBody 403 - <ApiErrorResponse>
-   * @responseBody 404 - <ApiErrorResponse>
-   * @responseBody 422 - <ApiValidationError>
-   */
   async update(ctx: HttpContext) {
     const { response, auth, params, request } = ctx
 
@@ -190,7 +162,7 @@ export default class BookmarksController {
 
     await bookmark.save()
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: StoreBookmarkResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark updated successfully!'
     )
@@ -198,17 +170,6 @@ export default class BookmarksController {
     return response.ok(formattedResponse)
   }
 
-  /**
-   * @pin
-   * @operationId pinBookmark
-   * @summary Pin a bookmark
-   * @description Pins a bookmark so it appears at the top of the folder. The authenticated user must have 'editor' access level in the parent folder.
-   * @paramPath bookmarkId - string - Required. The UUID of the bookmark to pin.
-   * @responseBody 200 - { "success": true, "message": "Bookmark pinned successfully!", "data": { "bookmark": "<BookmarkResponse>" } }
-   * @responseBody 401 - <ApiErrorResponse>
-   * @responseBody 403 - <ApiErrorResponse>
-   * @responseBody 404 - <ApiErrorResponse>
-   */
   async pin(ctx: HttpContext) {
     const { response, auth, params } = ctx
 
@@ -228,7 +189,7 @@ export default class BookmarksController {
 
     await bookmark.save()
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: StoreBookmarkResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark pinned successfully!'
     )
@@ -236,17 +197,6 @@ export default class BookmarksController {
     return response.ok(formattedResponse)
   }
 
-  /**
-   * @unpin
-   * @operationId unpinBookmark
-   * @summary Unpin a bookmark
-   * @description Removes the pinned status from a bookmark. The authenticated user must have 'editor' access level in the parent folder.
-   * @paramPath bookmarkId - string - Required. The UUID of the bookmark to unpin.
-   * @responseBody 200 - { "success": true, "message": "Bookmark unpinned successfully!", "data": { "bookmark": "<BookmarkResponse>" } }
-   * @responseBody 401 - <ApiErrorResponse>
-   * @responseBody 403 - <ApiErrorResponse>
-   * @responseBody 404 - <ApiErrorResponse>
-   */
   async unpin(ctx: HttpContext) {
     const { response, auth, params } = ctx
 
@@ -266,7 +216,7 @@ export default class BookmarksController {
 
     await bookmark.save()
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: StoreBookmarkResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark unpinned successfully!'
     )

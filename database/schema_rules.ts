@@ -5,7 +5,7 @@ export default {
     jsonb: {
       decorator: '@column()',
       tsType: 'JSON<any>',
-      imports: [{ source: '#types/db', typeImports: ['JSON'] }],
+      imports: [{ source: '#interfaces/db', typeImports: ['JSON'] }],
     },
   },
 
@@ -15,7 +15,7 @@ export default {
         settings: {
           decorators: [{ name: '@column' }],
           tsType: 'JSON<UserSettings>',
-          imports: [{ source: '#types/user', typeImports: ['UserSettings'] }],
+          imports: [{ source: '#interfaces/user', typeImports: ['UserSettings'] }],
         },
         plan: {
           decorators: [{ name: '@column' }],
@@ -29,7 +29,7 @@ export default {
         recent_bookmarks_images: {
           decorators: [{ name: '@column' }],
           tsType: 'JSON<string[]>',
-          imports: [{ source: '#types/db', typeImports: ['JSON'] }],
+          imports: [{ source: '#interfaces/db', typeImports: ['JSON'] }],
         },
       },
     },
@@ -38,7 +38,7 @@ export default {
         tags: {
           decorators: [{ name: '@column' }],
           tsType: 'JSON<string[]>',
-          imports: [{ source: '#types/db', typeImports: ['JSON'] }],
+          imports: [{ source: '#interfaces/db', typeImports: ['JSON'] }],
         },
       },
     },
@@ -75,7 +75,7 @@ export default {
         data: {
           decorators: [{ name: '@column' }],
           tsType: 'JSON<NotificationData>',
-          imports: [{ source: '#types/notifications', typeImports: ['NotificationData'] }],
+          imports: [{ source: '#interfaces/notifications', typeImports: ['NotificationData'] }],
         },
         type: {
           decorators: [{ name: '@column' }],

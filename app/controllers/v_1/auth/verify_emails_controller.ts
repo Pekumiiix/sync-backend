@@ -5,18 +5,9 @@ import { DateTime } from 'luxon'
 import { generateVerificationCode } from '#utils/string'
 import { apiError } from '#utils/response'
 import { events } from '#generated/events'
+import { ApiSuccessResponse } from '#interfaces/api'
 
 export default class VerifyEmailController {
-  /**
-   * @store
-   * @operationId verifyEmail
-   * @summary Verify email
-   * @description Verifies the user's email address using a valid verification token.
-   * @requestBody <verifyEmailValidator>
-   * @responseBody 200 - <ApiSuccessResponse>
-   * @responseBody 400 - <ApiErrorResponse>
-   * @responseBody 422 - <ApiValidationError>
-   */
   async store(ctx: HttpContext) {
     const { request, response } = ctx
 
@@ -39,19 +30,11 @@ export default class VerifyEmailController {
 
     await user.save()
 
-    const formattedData = ctx.serialize(null, 'Email verified successfully!')
+    const formattedData: ApiSuccessResponse = ctx.serialize(null, 'Email verified successfully!')
 
     return response.ok(formattedData)
   }
 
-  /**
-   * @resend
-   * @operationId resendEmailVerification
-   * @summary Resend email verification
-   * @description Generates a new verification code and resends the email to the authenticated user.
-   * @responseBody 200 - <ApiSuccessResponse>
-   * @responseBody 400 - <ApiErrorResponse>
-   */
   async resend(ctx: HttpContext) {
     const { response, auth } = ctx
 
@@ -70,7 +53,10 @@ export default class VerifyEmailController {
 
     events.UserRegistered.dispatch(user, verificationCode)
 
-    const formattedResponse = ctx.serialize(null, 'A new verification code has been sent!')
+    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+      null,
+      'A new verification code has been sent!'
+    )
 
     return response.ok(formattedResponse)
   }

@@ -1,4 +1,4 @@
-import { UserSettings } from '#types/user'
+import type { UserSettings } from '#interfaces/user'
 import type User from '#models/user'
 import { BaseTransformer } from '@adonisjs/core/transformers'
 

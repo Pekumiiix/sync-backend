@@ -39,13 +39,13 @@ class ApiSerializer extends BaseSerializer<{
 const serializer = new ApiSerializer()
 
 const serialize = Object.assign(
-  function (this: HttpContext, data: any, message: string = 'Operation successful') {
+  function <T>(this: HttpContext, data: any, message: string = 'Operation successful') {
     const serializedData = serializer.serialize(data, this.containerResolver)
 
     return {
       success: true,
       message: message,
-      ...serializedData,
+      ...(serializedData as T),
     }
   },
   {

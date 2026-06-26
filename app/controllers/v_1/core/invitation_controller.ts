@@ -11,17 +11,10 @@ import Member from '#models/member'
 import Folder from '#models/folder'
 import db from '@adonisjs/lucid/services/db'
 import { events } from '#generated/events'
+import { ApiSuccessResponse } from '#interfaces/api'
+import { InvitationSuccessResponse, ListInvitationsResponse } from '#interfaces/invitations'
 
 export default class InvitationsController {
-  /**
-   * @index
-   * @operationId getReceivedInvitations
-   * @summary Get received invitations
-   * @description Fetches all pending folder invitations sent to the authenticated user's email address, ordered by newest first.
-   * @responseBody 200 - { "success": true, "message": "Invitations retrieved successfully.", "data": { "pendingInvitations": "<InvitationResponse[]>", "resolvedInvitations": "<InvitationResponse[]>" } }
-   * @responseBody 401 - <ApiErrorResponse>
-   * @responseBody 403 - <ApiErrorResponse>
-   */
   async index(ctx: HttpContext) {
     const { response, auth } = ctx
 
@@ -41,7 +34,7 @@ export default class InvitationsController {
       .preload('folder')
       .orderBy('updatedAt', 'desc')
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: ListInvitationsResponse = ctx.serialize(
       {
         pendingInvitations: InvitationTransformer.transform(invitations),
         resolvedInvitations: InvitationTransformer.transform(resolvedInvitations),
@@ -52,17 +45,6 @@ export default class InvitationsController {
     return response.ok(formattedResponse)
   }
 
-  /**
-   * @store
-   * @operationId sendInvitation
-   * @summary Send a folder invitation
-   * @description Creates a pending invitation for a user to join a folder. The sender must be the folder owner.
-   * @requestBody <storeInvitationValidator>
-   * @responseBody 201 - { "success": true, "message": "Invitation sent successfully.", "data": "null" }
-   * @responseBody 403 - <ApiErrorResponse>
-   * @responseBody 404 - <ApiErrorResponse>
-   * @responseBody 422 - <ApiValidationError>
-   */
   async store(ctx: HttpContext) {
     const { request, response, auth } = ctx
 
@@ -97,21 +79,14 @@ export default class InvitationsController {
       expiresAt: DateTime.now().plus({ days: 7 }),
     })
 
-    const formattedResponse = ctx.serialize(null, 'Invitation sent successfully.')
+    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+      null,
+      'Invitation sent successfully.'
+    )
 
     return response.created(formattedResponse)
   }
 
-  /**
-   * @destroy
-   * @operationId declineInvitation
-   * @summary Decline an invitation
-   * @description Marks a pending invitation as declined. The authenticated user must be the recipient of the invite.
-   * @paramPath invitationId - string - Required. The UUID of the invitation.
-   * @responseBody 200 - { "success": true, "message": "Invitation declined successfully.", "data": { "invitation": "<InvitationResponse>" } }
-   * @responseBody 400 - <ApiErrorResponse>
-   * @responseBody 404 - <ApiErrorResponse>
-   */
   async destroy(ctx: HttpContext) {
     const { params, response, auth } = ctx
 
@@ -138,7 +113,7 @@ export default class InvitationsController {
 
     const transformedInvitation = InvitationTransformer.transform(invitation)
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: InvitationSuccessResponse = ctx.serialize(
       { invitation: transformedInvitation },
       'Invitation declined successfully.'
     )
@@ -146,16 +121,6 @@ export default class InvitationsController {
     response.ok(formattedResponse)
   }
 
-  /**
-   * @accept
-   * @operationId acceptInvitation
-   * @summary Accept an invitation
-   * @description Accepts a pending invitation and adds the user to the folder members.
-   * @paramPath invitationId - string - Required. The UUID of the invitation.
-   * @responseBody 200 - { "success": true, "message": "Invitation accepted successfully.", "data": { "invitation": "<InvitationResponse>" } }
-   * @responseBody 400 - <ApiErrorResponse>
-   * @responseBody 404 - <ApiErrorResponse>
-   */
   async accept(ctx: HttpContext) {
     const { params, response, auth } = ctx
 
@@ -214,7 +179,7 @@ export default class InvitationsController {
 
     const transformedInvitation = InvitationTransformer.transform(invitation)
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: InvitationSuccessResponse = ctx.serialize(
       { invitation: transformedInvitation },
       'Invitation accepted successfully.'
     )

@@ -1,3 +1,4 @@
+import { SUPPORTED_BROWSERS } from '#enums/browser'
 import vine from '@vinejs/vine'
 
 const name = () => vine.string().minLength(2).maxLength(255)
@@ -19,9 +20,7 @@ export const updateFolderValidator = vine.create({
 export const getFolderParamValidator = vine.create({
   page: vine.number().optional(),
   limit: vine.number().optional(),
-  sortByBrowser: vine
-    .enum(['chrome', 'firefox', 'edge', 'safari', 'arc', 'brave', 'all'])
-    .optional(),
+  sortByBrowser: vine.enum([...SUPPORTED_BROWSERS]).optional(),
   sortByDate: vine.enum(['oldest', 'newest']).optional(),
   sortByTitle: vine.enum(['asc', 'desc']).optional(),
 })

@@ -13,16 +13,10 @@ import Folder from '#models/folder'
 import hash from '@adonisjs/core/services/hash'
 import Member from '#models/member'
 import db from '@adonisjs/lucid/services/db'
+import { FolderIndexResponse, FolderStoreResponse, ShowFolderResponse } from '#interfaces/folders'
+import { ApiSuccessResponse } from '#interfaces/api'
 
 export default class FoldersController {
-  /**
-   * @index
-   * @operationId getFolders
-   * @summary Retrieve all folders
-   * @description Fetches all folders for the authenticated user.
-   * @responseBody 200 - { "success": true, "message": "Folders retrieved successfully!", "data": "<FolderIndexData>" }
-   * @responseBody 401 - <ApiErrorResponse>
-   */
   async index(ctx: HttpContext) {
     const { response, auth } = ctx
 
@@ -32,7 +26,7 @@ export default class FoldersController {
 
     const sharedFolders = await user.related('sharedFolders').query().orderBy('createdAt', 'asc')
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: FolderIndexResponse = ctx.serialize(
       {
         systemFolders: FolderTransformer.transform(ownedFolders.filter((f) => f.isSystem)),
         ownedFolders: FolderTransformer.transform(ownedFolders.filter((f) => !f.isSystem)),
@@ -44,15 +38,6 @@ export default class FoldersController {
     return response.ok(formattedResponse)
   }
 
-  /**
-   * @store
-   * @operationId createFolder
-   * @summary Create a new folder
-   * @description Creates a new custom folder for the authenticated user.
-   * @requestBody <createFolderValidator>
-   * @responseBody 201 - { "success": true, "message": "Folder created successfully!", "data": "<FolderSingleData>" }
-   * @responseBody 422 - <ApiValidationError>
-   */
   async store(ctx: HttpContext) {
     const { request, response, auth } = ctx
 
@@ -66,7 +51,7 @@ export default class FoldersController {
 
     await events.FolderCreated.dispatch(folder, user)
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: FolderStoreResponse = ctx.serialize(
       { folder: FolderTransformer.transform(folder) },
       'Folder created successfully!'
     )
@@ -74,16 +59,6 @@ export default class FoldersController {
     return response.created(formattedResponse)
   }
 
-  /**
-   * @destroy
-   * @operationId deleteFolder
-   * @summary Delete a folder
-   * @paramPath folderId - string - Required. The UUID of the folder to delete.
-   * @description Deletes a custom folder and automatically cascades to delete all bookmarks inside it. System folders cannot be deleted.
-   * @responseBody 200 - <ApiSuccessMessage>
-   * @responseBody 400 - <ApiErrorResponse>
-   * @responseBody 404 - <ApiErrorResponse>
-   */
   async destroy(ctx: HttpContext) {
     const { params, response, auth } = ctx
 
@@ -99,23 +74,14 @@ export default class FoldersController {
 
     await folder.delete()
 
-    const formattedResponse = ctx.serialize(null, 'Folder and its bookmarks deleted successfully!')
+    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+      null,
+      'Folder and its bookmarks deleted successfully!'
+    )
 
     return response.ok(formattedResponse)
   }
 
-  /**
-   * @update
-   * @operationId updateFolder
-   * @summary Update a folder
-   * @description Renames an existing custom folder. Users can only update folders that belong to them.
-   * @paramPath folderId - string - Required. The UUID of the folder to update.
-   * @requestBody <updateFolderValidator>
-   * @responseBody 200 - { "success": true, "message": "Folder updated successfully!", "data": "<FolderSingleData>" }
-   * @responseBody 403 - <ApiErrorResponse>
-   * @responseBody 404 - <ApiErrorResponse>
-   * @responseBody 422 - <ApiValidationError>
-   */
   async update(ctx: HttpContext) {
     const { params, request, response, auth } = ctx
 
@@ -135,7 +101,7 @@ export default class FoldersController {
 
     await folder.save()
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: FolderStoreResponse = ctx.serialize(
       { folder: FolderTransformer.transform(folder) },
       'Folder updated successfully!'
     )
@@ -143,21 +109,6 @@ export default class FoldersController {
     return response.ok(formattedResponse)
   }
 
-  /**
-   * @show
-   * @operationId getFolder
-   * @summary Retrieve a single folder
-   * @description Fetches a specific folder and its paginated bookmarks. Supports filtering by browser and sorting by date or title.
-   * @paramPath folderId - string - Required. The UUID of the folder.
-   * @paramQuery page - number - Optional. The page number for pagination (default: 1).
-   * @paramQuery limit - number - Optional. Items per page (default: 20).
-   * @paramQuery sortByBrowser - string - Optional. Filter by browser (e.g., 'chrome', 'arc', 'all').
-   * @paramQuery sortByDate - string - Optional. 'newest' or 'oldest' (default: 'newest').
-   * @paramQuery sortByTitle - string - Optional. 'asc' or 'desc'.
-   * @responseBody 200 - { "success": true, "message": "Folder retrieved successfully!", "data": "<FolderShowData>" }
-   * @responseBody 404 - <ApiErrorResponse>
-   * @responseBody 422 - <ApiValidationError>
-   */
   async show(ctx: HttpContext) {
     const { params, response, auth, request } = ctx
 
@@ -167,13 +118,15 @@ export default class FoldersController {
       sortByBrowser = 'all',
       sortByDate = 'newest',
       sortByTitle,
-    } = await request.validateUsing(getFolderParamValidator)
+    } = await request.validateUsing(getFolderParamValidator, { data: request.qs() })
 
     const folderId = params.folderId
 
     const user = auth.user!
 
     const { folder, permission } = await FolderService.getFolderWithPermissions(folderId, user)
+
+    const members = await Member.query().where('folder_id', folder.id).preload('user').limit(3)
 
     const bookmarksQuery = folder.related('bookmarks').query().preload('user')
 
@@ -198,7 +151,7 @@ export default class FoldersController {
     const bookmarksArray = paginatedBookmarks.all()
     const meta = paginatedBookmarks.getMeta()
 
-    const formattedResponse = ctx.serialize(
+    const formattedResponse: ShowFolderResponse = ctx.serialize(
       {
         folder: {
           id: folder.id,
@@ -208,8 +161,14 @@ export default class FoldersController {
           memberCount: folder.memberCount,
         },
         permission,
+        previewMembers: members.map((member) => ({
+          id: member.user.id,
+          firstName: member.user.firstName,
+          lastName: member.user.lastName,
+          avatarUrl: member.user.avatarUrl,
+        })),
         pinnedBookmarks: bookmarksArray.filter((b) => b.isPinned),
-        data: bookmarksArray.filter((b) => !b.isPinned),
+        bookmarks: bookmarksArray.filter((b) => !b.isPinned),
         meta: {
           currentPage: meta.currentPage,
           totalPages: meta.lastPage,
@@ -221,19 +180,6 @@ export default class FoldersController {
     return response.ok(formattedResponse)
   }
 
-  /**
-   * @join
-   * @operationId joinFolder
-   * @summary Join a protected folder
-   * @description Allows an authenticated user to join a folder. If the folder is password-protected, the correct password must be provided.
-   * @paramPath folderId - string - Required. The UUID of the folder to join.
-   * @requestBody <joinFolderValidator>
-   * @responseBody 200 - <ApiSuccessResponse>
-   * @responseBody 400 - <ApiErrorResponse>
-   * @responseBody 401 - <ApiErrorResponse>
-   * @responseBody 404 - <ApiErrorResponse>
-   * @responseBody 500 - <ApiErrorResponse>
-   */
   async join(ctx: HttpContext) {
     const { params, response, auth, request } = ctx
 
@@ -293,7 +239,10 @@ export default class FoldersController {
 
     events.MemberJoined.dispatch(folder.id, user)
 
-    const formattedResponse = ctx.serialize(null, 'Successfully joined the folder.')
+    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+      null,
+      'Successfully joined the folder.'
+    )
 
     return response.ok(formattedResponse)
   }

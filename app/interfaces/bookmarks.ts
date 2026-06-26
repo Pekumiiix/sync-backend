@@ -15,7 +15,7 @@ export type BookmarkAddedBy = {
   lastName: string
 }
 
-export type BookmarkResponse = {
+export type BookmarkData = {
   id: string
   folderId: string
   title: string | null
@@ -31,4 +31,12 @@ export type BookmarkResponse = {
   createdAt: string
   updatedAt: string
   addedBy: BookmarkAddedBy
+}
+
+export interface StoreBookmarkResponse {
+  success: true
+  message: string
+  data: {
+    bookmark: BookmarkData
+  }
 }

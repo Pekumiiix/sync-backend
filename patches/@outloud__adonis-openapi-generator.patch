@@ -1,0 +1,46 @@
+diff --git a/build/index.js b/build/index.js
+index b0c4c569c6bd3fe2d26a18cda06f278f3af88b38..4be08b20f748993f312de71fdfbe256e7440ff5f 100644
+--- a/build/index.js
++++ b/build/index.js
+@@ -1,11 +1,13 @@
+ import { join } from "node:path";
+ import fs from "node:fs";
+-import { fileURLToPath } from "node:url";
++import { fileURLToPath, pathToFileURL } from "node:url";
+ import { catchError, toArray, uniq } from "@outloud/utils";
+ import equal from "fast-deep-equal";
+ import stringHelpers from "@adonisjs/core/helpers/string";
+ import defu from "defu";
+ 
++const toFileUrl = (value) => value.startsWith("file:") ? value : pathToFileURL(value).href;
++
+ //#region src/route.ts
+ const routeType = {
+ 	body: /^[a-zA-Z<]*\(typeof import\((?:'|")([^']+)(?:'|")\)\.(\w+)\)[a-zA-Z>]*$/,
+@@ -172,7 +174,7 @@ var Reference = class {
+ 	async load() {
+ 		let fullPath = this.path;
+ 		if (!/\.(?:js|ts)x?$/.test(fullPath)) fullPath += ".js";
+-		return (await import(fullPath))[this.name];
++		return (await import(toFileUrl(fullPath)))[this.name];
+ 	}
+ 	test(name, path) {
+ 		if (name && !compare(this.name, name)) return false;
+@@ -382,7 +384,7 @@ var Context = class Context {
+ 		if (data) return this.ref(data.name, data.path);
+ 	}
+ 	ref(name, path, initial) {
+-		path = fileURLToPath(this.data.resolve(path, this.data.root));
++		path = fileURLToPath(toFileUrl(this.data.resolve(path, this.data.root)));
+ 		return new Reference(name, path, initial);
+ 	}
+ 	async withRef(reference, cb) {
+@@ -602,7 +604,7 @@ var Generator = class {
+ 		return this.project.addSourceFileAtPath(path);
+ 	}
+ 	async loadRoutes() {
+-		const { routes } = await import(join(this.rootPath, ".adonisjs/client/registry/index.ts"));
++		const { routes } = await import(toFileUrl(join(this.rootPath, ".adonisjs/client/registry/index.ts")));
+ 		const context = this.context();
+ 		this.routes = Object.entries(routes).map(([name, info]) => {
+ 			const types = context.propType([name, "types"]);

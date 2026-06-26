@@ -5,6 +5,17 @@ export interface UserSettings {
   frequency: string
 }
 
+export interface UserSettingsResponse {
+  autoMergeDuplicate: boolean
+  notification: {
+    notifyOnNewMember: boolean
+    notifyOnNewBookmark: boolean
+  }
+  sync: {
+    frequency: string
+  }
+}
+
 export interface UserResponse {
   id: string
   firstName: string
@@ -16,14 +27,16 @@ export interface UserResponse {
   plan: string
   createdAt: string
   updatedAt: string
-  settings: UserSettings
+  settings: UserSettingsResponse
 }
 
-export interface CreateAccountResponse {
+export interface AuthData {
+  user: UserResponse
+  token: string
+}
+
+export interface AuthDataResponse {
   success: boolean
   message: string
-  data: {
-    user: UserResponse
-    token: string
-  }
+  data: AuthData
 }

@@ -3,28 +3,14 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { apiError } from '#utils/response'
 import OauthIdentity from '#models/o_auth_identity'
 import UserTransformer from '#transformers/user_transformer'
+import { AuthDataResponse } from '#interfaces/user'
+import { ApiSuccessResponse } from '#interfaces/api'
 
 export default class OauthsController {
-  /**
-   * @redirect
-   * @operationId redirectGoogle
-   * @summary Redirect to Google OAuth
-   * @description Initiates the Google OAuth 2.0 login flow. Note: This endpoint does not return a JSON payload. It returns a 302 status code that redirects the client directly to the Google consent screen.
-   * @response 302 - Redirects to the Google authentication page.
-   */
   async redirect({ ally }: HttpContext) {
     return ally.use('google').redirect()
   }
 
-  /**
-   * @store
-   * @operationId handleGoogleCallback
-   * @summary Google OAuth Callback
-   * @description Handles the redirect back from Google OAuth. It verifies the Google user, creates or links their account, and returns an access token for API authentication.
-   * @responseBody 200 - { "success": true, "message": "Logged in successfully", "data": "<AuthStoreData>" }
-   * @responseBody 400 - <ApiErrorResponse> - Bad Request
-   * @responseBody 401 - <ApiErrorResponse> - Unauthorized
-   */
   async store(ctx: HttpContext) {
     const { response, ally } = ctx
 
@@ -67,7 +53,7 @@ export default class OauthsController {
 
     const token = await User.accessTokens.create(user)
 
-    const formatedResponse = ctx.serialize(
+    const formatedResponse: AuthDataResponse = ctx.serialize(
       {
         user: UserTransformer.transform(user),
         token: token.value!.release(),
@@ -78,17 +64,6 @@ export default class OauthsController {
     return response.ok(formatedResponse)
   }
 
-  /**
-   * @destroy
-   * @operationId disconnectGoogle
-   * @security BearerAuth
-   * @summary Disconnect Google Account
-   * @description Removes the Google OAuth connection from the authenticated user's account. Will fail if the user has no password and this is their only login method.
-   * @responseBody 200 - { "success": true, "message": "Google account disconnected successfully.", "data": "null" }
-   * @responseBody 400 - <ApiErrorResponse> - Bad Request
-   * @responseBody 401 - <ApiErrorResponse> - Unauthorized
-   * @responseBody 404 - <ApiErrorResponse>
-   */
   async destroy(ctx: HttpContext) {
     const { response, auth } = ctx
 
@@ -115,7 +90,10 @@ export default class OauthsController {
 
     await identity.delete()
 
-    const formatedResponse = ctx.serialize(null, 'Google account disconnected successfully.')
+    const formatedResponse: ApiSuccessResponse = ctx.serialize(
+      null,
+      'Google account disconnected successfully.'
+    )
 
     return response.ok(formatedResponse)
   }

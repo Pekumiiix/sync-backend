@@ -23,12 +23,7 @@ export default class ProfileController {
 
     const user = auth.user!
 
-    user.merge({
-      firstName: firstName || user.firstName,
-      lastName: lastName || user.lastName,
-      avatarUrl: avatarUrl || user.avatarUrl,
-      location: location || user.location,
-    })
+    user.merge({ firstName, lastName, avatarUrl, location })
 
     await user.save()
 

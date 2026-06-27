@@ -8,13 +8,16 @@ import type { HttpContext } from '@adonisjs/core/http'
 import { apiError } from '#utils/response'
 import FolderTransformer from '#transformers/folder_transformer'
 import { events } from '#generated/events'
-import FolderService from '#services/folder_service'
+import { FolderService } from '#services/folder_service'
 import Folder from '#models/folder'
 import hash from '@adonisjs/core/services/hash'
 import Member from '#models/member'
 import db from '@adonisjs/lucid/services/db'
 import { FolderIndexResponse, FolderStoreResponse, ShowFolderResponse } from '#interfaces/folders'
 import { ApiSuccessResponse } from '#interfaces/api'
+import { MemberService } from '#services/member_service'
+import { BookmarkService } from '#services/bookmark_service'
+import BookmarkTransformer from '#transformers/bookmark_transformer'
 
 export default class FoldersController {
   async index(ctx: HttpContext) {
@@ -22,14 +25,12 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const ownedFolders = await user.related('ownedFolders').query().orderBy('createdAt', 'asc')
-
-    const sharedFolders = await user.related('sharedFolders').query().orderBy('createdAt', 'asc')
+    const { systemFolders, ownedFolders, sharedFolders } = await FolderService.getFolders(user)
 
     const formattedResponse: FolderIndexResponse = ctx.serialize(
       {
-        systemFolders: FolderTransformer.transform(ownedFolders.filter((f) => f.isSystem)),
-        ownedFolders: FolderTransformer.transform(ownedFolders.filter((f) => !f.isSystem)),
+        systemFolders: FolderTransformer.transform(systemFolders),
+        ownedFolders: FolderTransformer.transform(ownedFolders),
         sharedFolders: FolderTransformer.transform(sharedFolders), //TODO: Transform shared folders to include permission data
       },
       'Folders retrieved successfully!'
@@ -66,7 +67,13 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const folder = await user.related('ownedFolders').query().where('id', folderId).firstOrFail()
+    const folder = await user.related('ownedFolders').query().where('id', folderId).first()
+
+    if (!folder) {
+      return response.notFound(
+        apiError('Folder not found or you do not have permission to delete it.')
+      )
+    }
 
     if (folder.isSystem) {
       return response.badRequest(apiError('System folders cannot be deleted.'))
@@ -112,13 +119,7 @@ export default class FoldersController {
   async show(ctx: HttpContext) {
     const { params, response, auth, request } = ctx
 
-    const {
-      page = 1,
-      limit = 20,
-      sortByBrowser = 'all',
-      sortByDate = 'newest',
-      sortByTitle,
-    } = await request.validateUsing(getFolderParamValidator, { data: request.qs() })
+    const query = await request.validateUsing(getFolderParamValidator, { data: request.qs() })
 
     const folderId = params.folderId
 
@@ -126,29 +127,14 @@ export default class FoldersController {
 
     const { folder, permission } = await FolderService.getFolderWithPermissions(folderId, user)
 
-    const members = await Member.query().where('folder_id', folder.id).preload('user').limit(3)
+    const previewMembers = await MemberService.getFolderPreviews(folder.id, 3)
 
-    const bookmarksQuery = folder.related('bookmarks').query().preload('user')
+    const [pinnedBookmarks, paginatedBookmarks] = await Promise.all([
+      BookmarkService.pinnedBookmarks(folder),
+      BookmarkService.getPaginatedBookmarks(folder, query),
+    ])
 
-    if (sortByBrowser !== 'all') {
-      bookmarksQuery.where('browser', sortByBrowser)
-    }
-
-    if (sortByDate === 'oldest') {
-      bookmarksQuery.orderBy('createdAt', 'asc')
-    } else {
-      bookmarksQuery.orderBy('createdAt', 'desc')
-    }
-
-    if (sortByTitle && sortByTitle === 'asc') {
-      bookmarksQuery.orderBy('title', 'asc')
-    } else if (sortByTitle === 'desc') {
-      bookmarksQuery.orderBy('title', 'desc')
-    }
-
-    const paginatedBookmarks = await bookmarksQuery.paginate(page, limit)
-
-    const bookmarksArray = paginatedBookmarks.all()
+    const unpinnedBookmarks = paginatedBookmarks.all()
     const meta = paginatedBookmarks.getMeta()
 
     const formattedResponse: ShowFolderResponse = ctx.serialize(
@@ -161,14 +147,9 @@ export default class FoldersController {
           memberCount: folder.memberCount,
         },
         permission,
-        previewMembers: members.map((member) => ({
-          id: member.user.id,
-          firstName: member.user.firstName,
-          lastName: member.user.lastName,
-          avatarUrl: member.user.avatarUrl,
-        })),
-        pinnedBookmarks: bookmarksArray.filter((b) => b.isPinned),
-        bookmarks: bookmarksArray.filter((b) => !b.isPinned),
+        previewMembers,
+        pinnedBookmarks,
+        bookmarks: BookmarkTransformer.transform(unpinnedBookmarks),
         meta: {
           currentPage: meta.currentPage,
           totalPages: meta.lastPage,
@@ -200,7 +181,7 @@ export default class FoldersController {
     const membership = await user
       .related('memberships')
       .query()
-      .where('folderId', folder.id)
+      .where('folder_id', folder.id)
       .first()
 
     if (membership) {

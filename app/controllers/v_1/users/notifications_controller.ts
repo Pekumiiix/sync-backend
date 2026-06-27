@@ -1,7 +1,8 @@
 import { ApiSuccessResponse } from '#interfaces/api'
 import { ListNotificationsResponse, NotificationSuccessResponse } from '#interfaces/notifications'
-import NotificationService from '#services/notification_service'
+import { NotificationService } from '#services/notification_service'
 import NotificationTransformer from '#transformers/notification_transformer'
+import { notificationQueryParam } from '#validators/notification'
 import type { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
 
@@ -9,10 +10,9 @@ export default class NotificationsController {
   async index(ctx: HttpContext) {
     const { auth, response, request } = ctx
 
-    const qs = request.qs()
-
-    const page = qs.page ? Math.max(1, parseInt(qs.page, 10)) : 1
-    const limit = qs.limit ? Math.max(1, parseInt(qs.limit, 10)) : 10
+    const { page = 1, limit = 10 } = await request.validateUsing(notificationQueryParam, {
+      data: request.qs(),
+    })
 
     const user = auth.user!
 
@@ -21,7 +21,7 @@ export default class NotificationsController {
 
     const formattedResponse: ListNotificationsResponse = ctx.serialize(
       {
-        notifications: NotificationTransformer.transform(notifications),
+        notifications: NotificationTransformer.transform(notifications.all()),
         meta: { unreadCount, totalCount, currentPage },
       },
       'Notifications retrieved.'
@@ -42,6 +42,18 @@ export default class NotificationsController {
     await notification.delete()
 
     const formattedResponse: ApiSuccessResponse = ctx.serialize(null, 'Notification deleted.')
+
+    return response.ok(formattedResponse)
+  }
+
+  async destroyAll(ctx: HttpContext) {
+    const { auth, response } = ctx
+
+    const user = auth.user!
+
+    await user.related('notifications').query().delete()
+
+    const formattedResponse: ApiSuccessResponse = ctx.serialize(null, 'All notifications deleted.')
 
     return response.ok(formattedResponse)
   }

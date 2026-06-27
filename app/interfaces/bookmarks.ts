@@ -40,3 +40,25 @@ export interface StoreBookmarkResponse {
     bookmark: BookmarkData
   }
 }
+
+export interface IndexBookmarksResponse {
+  success: true
+  message: string
+  data: {
+    bookmarks: BookmarkData[]
+    pinnedBookmarks: BookmarkData[]
+    meta: {
+      currentPage: number
+      totalPages: number
+      totalCount: number
+    }
+  }
+}
+
+export interface FetchBookmarkPreviewResponse {
+  success: true
+  message: string
+  data: {
+    openGraphData: UrlData
+  }
+}

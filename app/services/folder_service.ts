@@ -3,19 +3,29 @@ import Folder from '#models/folder'
 import User from '#models/user'
 import { Exception } from '@adonisjs/core/exceptions'
 
-export default class FolderService {
+export class FolderService {
+  static async getFolders(user: User) {
+    const [systemFolders, ownedFolders, sharedFolders] = await Promise.all([
+      user.related('ownedFolders').query().where('is_system', true).orderBy('created_at', 'asc'),
+      user.related('ownedFolders').query().where('is_system', false).orderBy('created_at', 'asc'),
+      user.related('sharedFolders').query().orderBy('created_at', 'asc'),
+    ])
+
+    return { systemFolders, ownedFolders, sharedFolders }
+  }
+
   static async getFolderWithPermissions(folderId: string, user: User) {
     const folder = await Folder.query()
       .where('id', folderId)
       .preload('users', (query) => {
-        query.select('id', 'firstName', 'lastName', 'avatarUrl').limit(3)
+        query.select('id', 'first_name', 'last_name', 'avatar_url').limit(3)
       })
       .firstOrFail()
 
     const membership = await user
       .related('memberships')
       .query()
-      .where('folderId', folder.id)
+      .where('folder_id', folder.id)
       .first()
 
     const isOwner = folder.userId === user.id

@@ -29,6 +29,12 @@ export interface PaginationMeta {
   firstPage: number
 }
 
+export interface INotificationMeta {
+  unreadCount: number
+  totalCount: number
+  currentPage: number
+}
+
 export interface NotificationData {
   actorName: string
   actorAvatar: string | null
@@ -42,7 +48,7 @@ export interface NotificationData {
 export interface ListNotificationsResponse {
   data: {
     notifications: NotificationItemResponse[]
-    meta: PaginationMeta
+    meta: INotificationMeta
   }
   success: boolean
   message: string

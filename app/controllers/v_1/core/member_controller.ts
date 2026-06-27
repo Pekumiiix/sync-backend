@@ -1,5 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import FolderService from '#services/folder_service'
+import { FolderService } from '#services/folder_service'
 import Member from '#models/member'
 import MemberTransformer from '#transformers/member_transformer'
 import { updateMemberValidator } from '#validators/member'
@@ -50,7 +50,7 @@ export default class MembersController {
 
     const member = await Member.query()
       .where('id', memberId)
-      .where('folderId', folderId)
+      .where('folder_id', folderId)
       .firstOrFail()
 
     member.accessLevel = accessLevel
@@ -74,13 +74,21 @@ export default class MembersController {
 
     const { permission } = await FolderService.getFolderWithPermissions(folderId, user)
 
+    if (memberId === user.id) {
+      return response.forbidden(
+        apiError(
+          'You cannot remove yourself from the folder. Please use the leave endpoint instead.'
+        )
+      )
+    }
+
     if (permission.role !== 'owner') {
       return response.forbidden(apiError('Only folder owners can remove members'))
     }
 
     const member = await Member.query()
       .where('id', memberId)
-      .where('folderId', folderId)
+      .where('folder_id', folderId)
       .preload('user')
       .firstOrFail()
 
@@ -113,7 +121,7 @@ export default class MembersController {
     const member = await user
       .related('memberships')
       .query()
-      .where('folderId', folderId)
+      .where('folder_id', folderId)
       .firstOrFail()
 
     await member.delete()

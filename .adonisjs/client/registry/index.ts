@@ -120,6 +120,12 @@ const routes = {
     tokens: [{"old":"/api/v1/bookmarks","type":0,"val":"api","end":""},{"old":"/api/v1/bookmarks","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmarks","type":0,"val":"bookmarks","end":""}],
     types: placeholder as Registry['bookmarks.bookmark.store']['types'],
   },
+  'bookmarks.bookmark.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/bookmarks',
+    tokens: [{"old":"/api/v1/bookmarks","type":0,"val":"api","end":""},{"old":"/api/v1/bookmarks","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmarks","type":0,"val":"bookmarks","end":""}],
+    types: placeholder as Registry['bookmarks.bookmark.index']['types'],
+  },
   'bookmarks.bookmark.fetch': {
     methods: ["POST"],
     pattern: '/api/v1/bookmarks/preview',
@@ -149,6 +155,12 @@ const routes = {
     pattern: '/api/v1/bookmarks/:bookmarkId/unpin',
     tokens: [{"old":"/api/v1/bookmarks/:bookmarkId/unpin","type":0,"val":"api","end":""},{"old":"/api/v1/bookmarks/:bookmarkId/unpin","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmarks/:bookmarkId/unpin","type":0,"val":"bookmarks","end":""},{"old":"/api/v1/bookmarks/:bookmarkId/unpin","type":1,"val":"bookmarkId","end":""},{"old":"/api/v1/bookmarks/:bookmarkId/unpin","type":0,"val":"unpin","end":""}],
     types: placeholder as Registry['bookmarks.bookmark.unpin']['types'],
+  },
+  'bookmarks.bookmark.move': {
+    methods: ["PATCH"],
+    pattern: '/api/v1/bookmarks/:bookmarkId/move',
+    tokens: [{"old":"/api/v1/bookmarks/:bookmarkId/move","type":0,"val":"api","end":""},{"old":"/api/v1/bookmarks/:bookmarkId/move","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmarks/:bookmarkId/move","type":0,"val":"bookmarks","end":""},{"old":"/api/v1/bookmarks/:bookmarkId/move","type":1,"val":"bookmarkId","end":""},{"old":"/api/v1/bookmarks/:bookmarkId/move","type":0,"val":"move","end":""}],
+    types: placeholder as Registry['bookmarks.bookmark.move']['types'],
   },
   'members.member.index': {
     methods: ["GET","HEAD"],
@@ -204,10 +216,16 @@ const routes = {
     tokens: [{"old":"/api/v1/notifications","type":0,"val":"api","end":""},{"old":"/api/v1/notifications","type":0,"val":"v1","end":""},{"old":"/api/v1/notifications","type":0,"val":"notifications","end":""}],
     types: placeholder as Registry['notifications.notifications.index']['types'],
   },
+  'notifications.notifications.destroy_all': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/notifications',
+    tokens: [{"old":"/api/v1/notifications","type":0,"val":"api","end":""},{"old":"/api/v1/notifications","type":0,"val":"v1","end":""},{"old":"/api/v1/notifications","type":0,"val":"notifications","end":""}],
+    types: placeholder as Registry['notifications.notifications.destroy_all']['types'],
+  },
   'notifications.notifications.mark_all_as_read': {
     methods: ["PATCH"],
-    pattern: '/api/v1/notifications/mark-all-read',
-    tokens: [{"old":"/api/v1/notifications/mark-all-read","type":0,"val":"api","end":""},{"old":"/api/v1/notifications/mark-all-read","type":0,"val":"v1","end":""},{"old":"/api/v1/notifications/mark-all-read","type":0,"val":"notifications","end":""},{"old":"/api/v1/notifications/mark-all-read","type":0,"val":"mark-all-read","end":""}],
+    pattern: '/api/v1/notifications/mark-all-as-read',
+    tokens: [{"old":"/api/v1/notifications/mark-all-as-read","type":0,"val":"api","end":""},{"old":"/api/v1/notifications/mark-all-as-read","type":0,"val":"v1","end":""},{"old":"/api/v1/notifications/mark-all-as-read","type":0,"val":"notifications","end":""},{"old":"/api/v1/notifications/mark-all-as-read","type":0,"val":"mark-all-as-read","end":""}],
     types: placeholder as Registry['notifications.notifications.mark_all_as_read']['types'],
   },
   'notifications.notifications.destroy': {

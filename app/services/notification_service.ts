@@ -1,6 +1,6 @@
 import User from '#models/user'
 
-export default class NotificationService {
+export class NotificationService {
   static async getNotification(notificationId: string, user: User) {
     const notification = await user
       .related('notifications')
@@ -12,25 +12,16 @@ export default class NotificationService {
   }
 
   static async getUserNotifications(user: User, page: number, limit: number) {
-    const paginatedNotifications = await user
-      .related('notifications')
-      .query()
-      .orderBy('created_at', 'desc')
-      .paginate(page, limit)
+    const [notifications, unreadCount] = await Promise.all([
+      user.related('notifications').query().paginate(page, limit),
+      user.related('notifications').query().where('is_read', false).count('* as count'),
+    ])
 
-    const unreadResult = await user
-      .related('notifications')
-      .query()
-      .whereNull('read_at')
-      .count('* as total')
-
-    const unreadCount = Number(unreadResult[0].$extras.total) || 0
-
-    const meta = paginatedNotifications.getMeta()
+    const meta = notifications.getMeta()
 
     return {
-      notifications: paginatedNotifications,
-      unreadCount,
+      notifications,
+      unreadCount: unreadCount[0].$extras.count,
       totalCount: meta.total,
       currentPage: meta.currentPage,
       totalPages: meta.lastPage,

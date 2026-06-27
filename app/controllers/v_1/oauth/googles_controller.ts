@@ -1,7 +1,6 @@
 import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import { apiError } from '#utils/response'
-import OauthIdentity from '#models/o_auth_identity'
 import UserTransformer from '#transformers/user_transformer'
 import { AuthDataResponse } from '#interfaces/user'
 import { ApiSuccessResponse } from '#interfaces/api'
@@ -43,8 +42,7 @@ export default class OauthsController {
         })
       }
 
-      await OauthIdentity.create({
-        userId: user.id,
+      await user.related('oauthIdentities').create({
         provider: 'google',
         providerId: googleUser.id,
         accessToken: googleUser.token.token,
@@ -79,8 +77,9 @@ export default class OauthsController {
       )
     }
 
-    const identity = await OauthIdentity.query()
-      .where('userId', user.id)
+    const identity = await user
+      .related('oauthIdentities')
+      .query()
       .where('provider', 'google')
       .first()
 

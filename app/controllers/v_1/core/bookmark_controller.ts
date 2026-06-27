@@ -1,30 +1,56 @@
 import Bookmark from '#models/bookmark'
 import type { HttpContext } from '@adonisjs/core/http'
-import FolderService from '#services/folder_service'
+import { FolderService } from '#services/folder_service'
 import { apiError } from '#utils/response'
 import {
   createBookmarkValidator,
   fetchUrlDataValidator,
+  getBookmarksQueryValidator,
+  moveBookmarkValidator,
   updateBookmarkValidator,
 } from '#validators/bookmark'
 import mql from '@microlink/mql'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
 import { events } from '#generated/events'
-import { StoreBookmarkResponse } from '#interfaces/bookmarks'
+import {
+  FetchBookmarkPreviewResponse,
+  IndexBookmarksResponse,
+  StoreBookmarkResponse,
+} from '#interfaces/bookmarks'
 import { ApiSuccessResponse } from '#interfaces/api'
+import { BookmarkService } from '#services/bookmark_service'
 
 export default class BookmarksController {
-  /**
-   * @fetch
-   * @operationId fetchUrlData
-   * @summary Fetch URL data
-   * @description Scrapes OpenGraph data from a provided URL.
-   * @requestBody <fetchUrlDataValidator>
-   * @responseBody 200 - { "success": true, "message": "URL data fetched successfully!", "data": { "openGraphData": "<UrlData>" } }
-   * @responseBody 400 - <ApiErrorResponse>
-   * @responseBody 401 - <ApiErrorResponse>
-   * @responseBody 403 - <ApiErrorResponse>
-   */
+  async index(ctx: HttpContext) {
+    const { response, auth, request } = ctx
+
+    const user = auth.user!
+
+    const query = await request.validateUsing(getBookmarksQueryValidator, { data: request.qs() })
+
+    const { pinnedBookmarks, paginatedBookmarks } = await BookmarkService.getAllForUser(
+      user.id,
+      query
+    )
+
+    const meta = paginatedBookmarks.getMeta()
+
+    const formattedResponse: IndexBookmarksResponse = ctx.serialize(
+      {
+        bookmarks: BookmarkTransformer.transform(paginatedBookmarks.all()),
+        pinnedBookmarks: BookmarkTransformer.transform(pinnedBookmarks),
+        meta: {
+          currentPage: meta.currentPage,
+          totalPages: meta.lastPage,
+          totalCount: meta.total,
+        },
+      },
+      'Bookmarks retrieved successfully!'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
   async fetch(ctx: HttpContext) {
     const { request, response } = ctx
 
@@ -50,7 +76,10 @@ export default class BookmarksController {
           url: parsedUrl.href,
         }
 
-        const formattedResponse = ctx.serialize({ openGraphData }, 'URL data fetched successfully!')
+        const formattedResponse: FetchBookmarkPreviewResponse = ctx.serialize(
+          { openGraphData },
+          'URL data fetched successfully!'
+        )
 
         return response.ok(formattedResponse)
       } else {
@@ -79,7 +108,7 @@ export default class BookmarksController {
 
     const user = auth.user!
 
-    const { permission } = await FolderService.getFolderWithPermissions(folderId, user)
+    const { folder, permission } = await FolderService.getFolderWithPermissions(folderId, user)
 
     if (permission.accessLevel !== 'editor') {
       return response.forbidden(
@@ -87,17 +116,16 @@ export default class BookmarksController {
       )
     }
 
-    const bookmark = await Bookmark.create({
-      folderId,
+    const bookmark = await folder.related('bookmarks').create({
       userId: user.id,
       title,
-      description: description || null,
-      websiteName: websiteName || null,
+      description,
+      websiteName,
       url,
       domain,
-      faviconUrl: faviconUrl || null,
-      coverImageUrl: coverImageUrl || null,
-      tags: tags || [],
+      faviconUrl,
+      coverImageUrl,
+      tags,
       isPinned: false,
       browser,
     })
@@ -154,11 +182,7 @@ export default class BookmarksController {
       return response.forbidden(apiError('You do not have permission to update this bookmark.'))
     }
 
-    bookmark.merge({
-      title: title || bookmark.title,
-      description: description || bookmark.description,
-      tags: tags || bookmark.tags,
-    })
+    bookmark.merge({ title, description, tags })
 
     await bookmark.save()
 
@@ -219,6 +243,49 @@ export default class BookmarksController {
     const formattedResponse: StoreBookmarkResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark unpinned successfully!'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
+  async move(ctx: HttpContext) {
+    const { response, auth, params, request } = ctx
+
+    const user = auth.user!
+
+    const bookmarkId = params.bookmarkId
+
+    const { folderId: newFolderId } = await request.validateUsing(moveBookmarkValidator)
+
+    const bookmark = await Bookmark.query().where('id', bookmarkId).firstOrFail()
+
+    const { permission: currentFolderPermission } = await FolderService.getFolderWithPermissions(
+      bookmark.folderId,
+      user
+    )
+
+    if (currentFolderPermission.accessLevel !== 'editor') {
+      return response.forbidden(apiError('You do not have permission to move this bookmark.'))
+    }
+
+    const { permission: newFolderPermission } = await FolderService.getFolderWithPermissions(
+      newFolderId,
+      user
+    )
+
+    if (newFolderPermission.accessLevel !== 'editor') {
+      return response.forbidden(
+        apiError('You do not have permission to move the bookmark to the new folder.')
+      )
+    }
+
+    bookmark.folderId = newFolderId
+
+    await bookmark.save()
+
+    const formattedResponse: StoreBookmarkResponse = ctx.serialize(
+      { bookmark: BookmarkTransformer.transform(bookmark) },
+      'Bookmark moved successfully!'
     )
 
     return response.ok(formattedResponse)

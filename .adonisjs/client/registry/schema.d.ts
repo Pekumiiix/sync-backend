@@ -71,12 +71,12 @@ export interface Registry {
     methods: ["POST"]
     pattern: '/api/v1/auth/verify-email/resend'
     types: {
-      body: {}
+      body: ExtractBody<InferInput<(typeof import('#validators/user').resendVerificationEmailValidator)>>
       paramsTuple: []
       params: {}
-      query: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/user').resendVerificationEmailValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_emails_controller').default['resend']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_emails_controller').default['resend']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_emails_controller').default['resend']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'oauths.googles.redirect': {
@@ -235,6 +235,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'bookmarks.bookmark.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/bookmarks'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/bookmark').getBookmarksQueryValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'bookmarks.bookmark.fetch': {
     methods: ["POST"]
     pattern: '/api/v1/bookmarks/preview'
@@ -293,6 +305,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['unpin']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['unpin']>>>
+    }
+  }
+  'bookmarks.bookmark.move': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/bookmarks/:bookmarkId/move'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/bookmark').moveBookmarkValidator)>>
+      paramsTuple: [ParamValue]
+      params: { bookmarkId: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/bookmark').moveBookmarkValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['move']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['move']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'members.member.index': {
@@ -398,14 +422,26 @@ export interface Registry {
       body: {}
       paramsTuple: []
       params: {}
-      query: {}
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/notification').notificationQueryParam)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'notifications.notifications.destroy_all': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/notifications'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['destroyAll']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['destroyAll']>>>
     }
   }
   'notifications.notifications.mark_all_as_read': {
     methods: ["PATCH"]
-    pattern: '/api/v1/notifications/mark-all-read'
+    pattern: '/api/v1/notifications/mark-all-as-read'
     types: {
       body: {}
       paramsTuple: []

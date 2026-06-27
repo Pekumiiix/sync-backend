@@ -185,6 +185,17 @@ export class OauthIdentitySchema extends BaseModel {
   declare userId: string
 }
 
+export class RateLimitSchema extends BaseModel {
+  static $columns = ['expire', 'key', 'points'] as const
+  $columns = RateLimitSchema.$columns
+  @column()
+  declare expire: bigint | number | null
+  @column({ isPrimary: true })
+  declare key: string
+  @column()
+  declare points: number
+}
+
 export class UserSchema extends BaseModel {
   static $columns = ['avatarUrl', 'createdAt', 'email', 'emailVerificationToken', 'emailVerificationTokenExpiresAt', 'firstName', 'id', 'isEmailVerified', 'lastName', 'location', 'password', 'plan', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'settings', 'updatedAt'] as const
   $columns = UserSchema.$columns

@@ -49,11 +49,13 @@ export interface ApiDefinition {
   bookmarks: {
     bookmark: {
       store: typeof routes['bookmarks.bookmark.store']
+      index: typeof routes['bookmarks.bookmark.index']
       fetch: typeof routes['bookmarks.bookmark.fetch']
       update: typeof routes['bookmarks.bookmark.update']
       destroy: typeof routes['bookmarks.bookmark.destroy']
       pin: typeof routes['bookmarks.bookmark.pin']
       unpin: typeof routes['bookmarks.bookmark.unpin']
+      move: typeof routes['bookmarks.bookmark.move']
     }
   }
   members: {
@@ -75,6 +77,7 @@ export interface ApiDefinition {
   notifications: {
     notifications: {
       index: typeof routes['notifications.notifications.index']
+      destroyAll: typeof routes['notifications.notifications.destroy_all']
       markAllAsRead: typeof routes['notifications.notifications.mark_all_as_read']
       destroy: typeof routes['notifications.notifications.destroy']
       markAsRead: typeof routes['notifications.notifications.mark_as_read']

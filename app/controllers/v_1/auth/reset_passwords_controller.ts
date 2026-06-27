@@ -11,7 +11,7 @@ export default class ResetPasswordsController {
 
     const { token, password } = await request.validateUsing(resetPasswordValidator)
 
-    const user = await User.findBy('resetPasswordToken', token)
+    const user = await User.findBy('reset_password_token', token)
 
     if (!user) {
       return response.badRequest(apiError('Invalid password reset token.'))
@@ -29,7 +29,7 @@ export default class ResetPasswordsController {
 
     const formattedResponse: ApiSuccessResponse = ctx.serialize(
       null,
-      'Password reset successfully!'
+      'Password reset was successful!'
     )
 
     return response.ok(formattedResponse)

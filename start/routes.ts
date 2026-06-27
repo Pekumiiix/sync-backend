@@ -10,28 +10,40 @@
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 import { controllers } from '#generated/controllers'
+import { authThrottle, resendThrottle } from '#start/limiter'
 
 router
   .group(() => {
+    // Authentication routes
     router
       .group(() => {
         router
           .post('sign-up', [controllers.v1.auth.NewAccount, 'store'])
+          .use(authThrottle)
+          .use(middleware.guest())
           .openapi({ summary: 'Create a new user account' })
         router
           .post('sign-in', [controllers.v1.auth.AccessTokens, 'store'])
+          .use(authThrottle)
+          .use(middleware.guest())
           .openapi({ summary: 'Sign in a user and generate an access token' })
         router
           .post('forgot-password', [controllers.v1.auth.ForgotPasswords, 'store'])
+          .use(authThrottle)
+          .use(middleware.guest())
           .openapi({ summary: 'Request a password reset' })
         router
           .post('reset-password', [controllers.v1.auth.ResetPasswords, 'store'])
+          .use(authThrottle)
+          .use(middleware.guest())
           .openapi({ summary: 'Reset user password' })
         router
           .post('verify-email', [controllers.v1.auth.VerifyEmails, 'store'])
+          .use(authThrottle)
           .openapi({ summary: 'Verify user email' })
         router
           .post('verify-email/resend', [controllers.v1.auth.VerifyEmails, 'resend'])
+          .use(resendThrottle)
           .openapi({ summary: 'Resend email verification link' })
       })
       .prefix('auth')
@@ -41,13 +53,18 @@ router
         description: 'Authentication related endpoints',
       })
 
+    // OAuth routes
     router
       .group(() => {
         router
           .get('google', [controllers.v1.oauth.Googles, 'redirect'])
+          .use(middleware.guest())
+          .use(authThrottle)
           .openapi({ summary: 'Redirect to Google OAuth' })
         router
           .get('google/callback', [controllers.v1.oauth.Googles, 'store'])
+          .use(middleware.guest())
+          .use(authThrottle)
           .openapi({ summary: 'Handle Google OAuth callback' })
         router
           .delete('google/disconnect', [controllers.v1.oauth.Googles, 'destroy'])
@@ -117,6 +134,9 @@ router
         router
           .post('/', [controllers.v1.core.Bookmark, 'store'])
           .openapi({ summary: 'Add a new bookmark' })
+        router
+          .get('/', [controllers.v1.core.Bookmark, 'index'])
+          .openapi({ summary: 'List all bookmarks' })
 
         router
           .post('preview', [controllers.v1.core.Bookmark, 'fetch'])
@@ -134,6 +154,9 @@ router
         router
           .patch(':bookmarkId/unpin', [controllers.v1.core.Bookmark, 'unpin'])
           .openapi({ summary: 'Unpin a bookmark' })
+        router
+          .patch(':bookmarkId/move', [controllers.v1.core.Bookmark, 'move'])
+          .openapi({ summary: 'Move a bookmark to a different folder' })
       })
       .prefix('bookmarks')
       .as('bookmarks')
@@ -197,9 +220,11 @@ router
         router
           .get('/', [controllers.v1.users.Notifications, 'index'])
           .openapi({ summary: 'List all notifications' })
-
         router
-          .patch('mark-all-read', [controllers.v1.users.Notifications, 'markAllAsRead'])
+          .delete('/', [controllers.v1.users.Notifications, 'destroyAll'])
+          .openapi({ summary: 'Delete all notifications' })
+        router
+          .patch('mark-all-as-read', [controllers.v1.users.Notifications, 'markAllAsRead'])
           .openapi({ summary: 'Mark all notifications as read' })
 
         router

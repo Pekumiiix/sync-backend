@@ -23,11 +23,13 @@ export type ScannedRoutes = {
     'folder.folder.update': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.fetch': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.update': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.pin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.unpin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
+    'bookmarks.bookmark.move': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'members.member.leave': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'members.member.update': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
@@ -37,6 +39,7 @@ export type ScannedRoutes = {
     'invitations.invitation.destroy': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
     'invitations.invitation.accept': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
     'notifications.notifications.index': { paramsTuple?: []; params?: {} }
+    'notifications.notifications.destroy_all': { paramsTuple?: []; params?: {} }
     'notifications.notifications.mark_all_as_read': { paramsTuple?: []; params?: {} }
     'notifications.notifications.destroy': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
     'notifications.notifications.mark_as_read': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
@@ -48,6 +51,7 @@ export type ScannedRoutes = {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
     'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'invitations.invitation.index': { paramsTuple?: []; params?: {} }
     'notifications.notifications.index': { paramsTuple?: []; params?: {} }
@@ -58,6 +62,7 @@ export type ScannedRoutes = {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
     'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'invitations.invitation.index': { paramsTuple?: []; params?: {} }
     'notifications.notifications.index': { paramsTuple?: []; params?: {} }
@@ -84,6 +89,7 @@ export type ScannedRoutes = {
     'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'members.member.leave': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
+    'notifications.notifications.destroy_all': { paramsTuple?: []; params?: {} }
     'notifications.notifications.destroy': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
   }
   PATCH: {
@@ -92,6 +98,7 @@ export type ScannedRoutes = {
     'bookmarks.bookmark.update': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.pin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.unpin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
+    'bookmarks.bookmark.move': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'members.member.update': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
     'notifications.notifications.mark_all_as_read': { paramsTuple?: []; params?: {} }
     'notifications.notifications.mark_as_read': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }

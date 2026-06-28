@@ -3,10 +3,9 @@ import { FolderService } from '#services/folder_service'
 import Member from '#models/member'
 import MemberTransformer from '#transformers/member_transformer'
 import { updateMemberValidator } from '#validators/member'
-import { apiError } from '#utils/response'
-import { events } from '#generated/events'
 import { ApiSuccessResponse } from '#interfaces/api'
 import { MemberListResponse, UpdateMemberResponse } from '#interfaces/members'
+import { MemberService } from '#services/member_service'
 
 export default class MembersController {
   async index(ctx: HttpContext) {
@@ -42,11 +41,7 @@ export default class MembersController {
 
     const user = auth.user!
 
-    const { permission } = await FolderService.getFolderWithPermissions(folderId, user)
-
-    if (permission.role !== 'owner') {
-      return response.forbidden(apiError('Only folder owners can update member permissions'))
-    }
+    await MemberService.requireRoles(user.id, folderId, 'owner')
 
     const member = await Member.query()
       .where('id', memberId)
@@ -54,6 +49,7 @@ export default class MembersController {
       .firstOrFail()
 
     member.accessLevel = accessLevel
+
     await member.save()
 
     const formattedResponse: UpdateMemberResponse = ctx.serialize(
@@ -65,40 +61,19 @@ export default class MembersController {
   }
 
   async destroy(ctx: HttpContext) {
-    const { response, params, auth } = ctx
+    const { params, response, auth } = ctx
 
     const folderId = params.folderId
-    const memberId = params.memberId
 
-    const user = auth.user!
+    const initiator = auth.user!
 
-    const { permission } = await FolderService.getFolderWithPermissions(folderId, user)
+    await MemberService.requireRoles(initiator.id, folderId, 'owner')
 
-    if (memberId === user.id) {
-      return response.forbidden(
-        apiError(
-          'You cannot remove yourself from the folder. Please use the leave endpoint instead.'
-        )
-      )
-    }
-
-    if (permission.role !== 'owner') {
-      return response.forbidden(apiError('Only folder owners can remove members'))
-    }
-
-    const member = await Member.query()
-      .where('id', memberId)
-      .where('folder_id', folderId)
-      .preload('user')
-      .firstOrFail()
-
-    await member.delete()
-
-    events.MemberRemoved.dispatch(folderId, member.user.firstName, user)
+    await MemberService.destroyMember(folderId, params.memberId, initiator)
 
     const formattedResponse: ApiSuccessResponse = ctx.serialize(
       null,
-      'Member removed successfully!'
+      'Member successfully removed from the folder.'
     )
 
     return response.ok(formattedResponse)
@@ -108,25 +83,10 @@ export default class MembersController {
     const { response, params, auth } = ctx
 
     const folderId = params.folderId
+
     const user = auth.user!
 
-    const { permission } = await FolderService.getFolderWithPermissions(folderId, user)
-
-    if (permission.role === 'owner') {
-      return response.forbidden(
-        apiError('Folder owners cannot leave their own folder. Please delete the folder instead.')
-      )
-    }
-
-    const member = await user
-      .related('memberships')
-      .query()
-      .where('folder_id', folderId)
-      .firstOrFail()
-
-    await member.delete()
-
-    events.MemberLeft.dispatch(folderId, user)
+    await MemberService.leaveFolder(folderId, user)
 
     const formattedResponse: ApiSuccessResponse = ctx.serialize(
       null,

@@ -22,6 +22,9 @@ export default class BookmarkTransformer extends BaseTransformer<Bookmark> {
 
     return {
       ...baseData,
+      folder: this.resource.folder
+        ? { id: this.resource.folder.id, name: this.resource.folder.name }
+        : null,
       addedBy: this.resource.user
         ? {
             id: this.resource.user.id,

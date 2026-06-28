@@ -13,11 +13,11 @@ export default class Bookmark extends BookmarkSchema {
 
   @afterCreate()
   static async incrementBookmarkCount(bookmark: Bookmark) {
-    await Folder.query().where('id', bookmark.folderId).increment('bookmarkCount', 1)
+    await Folder.query().where('id', bookmark.folderId).increment('bookmark_count', 1)
   }
 
   @afterDelete()
   static async decrementBookmarkCount(bookmark: Bookmark) {
-    await Folder.query().where('id', bookmark.folderId).decrement('bookmarkCount', 1)
+    await Folder.query().where('id', bookmark.folderId).decrement('bookmark_count', 1)
   }
 }

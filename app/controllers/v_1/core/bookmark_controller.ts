@@ -11,7 +11,6 @@ import {
 } from '#validators/bookmark'
 import mql from '@microlink/mql'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
-import { events } from '#generated/events'
 import {
   FetchBookmarkPreviewResponse,
   IndexBookmarksResponse,
@@ -19,6 +18,7 @@ import {
 } from '#interfaces/bookmarks'
 import { ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
+import { Exception } from '@adonisjs/core/exceptions'
 
 export default class BookmarksController {
   async index(ctx: HttpContext) {
@@ -65,72 +65,39 @@ export default class BookmarksController {
     try {
       const { status, data } = (await mql(url)) as any
 
-      if (status === 'success') {
-        openGraphData = {
-          title: data.title,
-          description: data.description,
-          coverImageUrl: data.image?.url || null,
-          faviconUrl: data.logo?.url || null,
-          websiteName: data.publisher || null,
-          domain,
-          url: parsedUrl.href,
-        }
-
-        const formattedResponse: FetchBookmarkPreviewResponse = ctx.serialize(
-          { openGraphData },
-          'URL data fetched successfully!'
-        )
-
-        return response.ok(formattedResponse)
-      } else {
-        return response.badRequest(apiError('Failed to fetch URL data.'))
+      if (status !== 'success') {
+        throw new Exception('Failed to fetch URL data from Microlink.', { status: 400 })
       }
+
+      openGraphData = {
+        title: data.title,
+        description: data.description,
+        coverImageUrl: data.image?.url || null,
+        faviconUrl: data.logo?.url || null,
+        websiteName: data.publisher || null,
+        domain,
+        url: parsedUrl.href,
+      }
+
+      const formattedResponse: FetchBookmarkPreviewResponse = ctx.serialize(
+        { openGraphData },
+        'URL data fetched successfully!'
+      )
+
+      return response.ok(formattedResponse)
     } catch (error) {
-      return response.badRequest(apiError('Failed to fetch URL data.'))
+      throw new Exception('Failed to parse the provided URL.', { status: 400 })
     }
   }
 
   async store(ctx: HttpContext) {
     const { request, response, auth } = ctx
 
-    const {
-      folderId,
-      title,
-      description,
-      websiteName,
-      url,
-      domain,
-      faviconUrl,
-      coverImageUrl,
-      tags,
-      browser,
-    } = await request.validateUsing(createBookmarkValidator)
+    const data = await request.validateUsing(createBookmarkValidator)
 
     const user = auth.user!
 
-    const { folder, permission } = await FolderService.getFolderWithPermissions(folderId, user)
-
-    if (permission.accessLevel !== 'editor') {
-      return response.forbidden(
-        apiError('You do not have permission to add a bookmark to this folder.')
-      )
-    }
-
-    const bookmark = await folder.related('bookmarks').create({
-      userId: user.id,
-      title,
-      description,
-      websiteName,
-      url,
-      domain,
-      faviconUrl,
-      coverImageUrl,
-      tags,
-      isPinned: false,
-      browser,
-    })
-
-    events.BookmarkCreated.dispatch(user, folderId)
+    const bookmark = await BookmarkService.createBookmark(user, data)
 
     const formattedResponse: StoreBookmarkResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
@@ -147,15 +114,7 @@ export default class BookmarksController {
 
     const bookmarkId = params.bookmarkId
 
-    const bookmark = await Bookmark.query().where('id', bookmarkId).firstOrFail()
-
-    const { permission } = await FolderService.getFolderWithPermissions(bookmark.folderId, user)
-
-    if (permission.accessLevel !== 'editor') {
-      return response.forbidden(apiError('You do not have permission to delete this bookmark.'))
-    }
-
-    await bookmark.delete()
+    await BookmarkService.deleteBookmark(bookmarkId, user)
 
     const formattedResponse: ApiSuccessResponse = ctx.serialize(
       null,
@@ -168,23 +127,13 @@ export default class BookmarksController {
   async update(ctx: HttpContext) {
     const { response, auth, params, request } = ctx
 
-    const { title, description, tags } = await request.validateUsing(updateBookmarkValidator)
+    const data = await request.validateUsing(updateBookmarkValidator)
 
     const user = auth.user!
 
     const bookmarkId = params.bookmarkId
 
-    const bookmark = await Bookmark.query().where('id', bookmarkId).firstOrFail()
-
-    const { permission } = await FolderService.getFolderWithPermissions(bookmark.folderId, user)
-
-    if (permission.accessLevel !== 'editor') {
-      return response.forbidden(apiError('You do not have permission to update this bookmark.'))
-    }
-
-    bookmark.merge({ title, description, tags })
-
-    await bookmark.save()
+    const bookmark = await BookmarkService.updateBookmark(bookmarkId, user, data)
 
     const formattedResponse: StoreBookmarkResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
@@ -201,17 +150,7 @@ export default class BookmarksController {
 
     const bookmarkId = params.bookmarkId
 
-    const bookmark = await Bookmark.query().where('id', bookmarkId).firstOrFail()
-
-    const { permission } = await FolderService.getFolderWithPermissions(bookmark.folderId, user)
-
-    if (permission.accessLevel !== 'editor') {
-      return response.forbidden(apiError('You do not have permission to update this bookmark.'))
-    }
-
-    bookmark.isPinned = true
-
-    await bookmark.save()
+    const bookmark = await BookmarkService.setPinStatus(bookmarkId, user, true)
 
     const formattedResponse: StoreBookmarkResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
@@ -228,17 +167,7 @@ export default class BookmarksController {
 
     const bookmarkId = params.bookmarkId
 
-    const bookmark = await Bookmark.query().where('id', bookmarkId).firstOrFail()
-
-    const { permission } = await FolderService.getFolderWithPermissions(bookmark.folderId, user)
-
-    if (permission.accessLevel !== 'editor') {
-      return response.forbidden(apiError('You do not have permission to update this bookmark.'))
-    }
-
-    bookmark.isPinned = false
-
-    await bookmark.save()
+    const bookmark = await BookmarkService.setPinStatus(bookmarkId, user, false)
 
     const formattedResponse: StoreBookmarkResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },

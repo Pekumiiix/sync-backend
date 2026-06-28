@@ -1,8 +1,9 @@
 import app from '@adonisjs/core/services/app'
 import { type HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import { errors as vineErrors } from '@vinejs/vine'
-import { errors as lucidErrors } from '@adonisjs/lucid' // Import Lucid errors
-import { errors as authErrors } from '@adonisjs/auth' // Import Auth errors
+import { errors as lucidErrors } from '@adonisjs/lucid'
+import { errors as authErrors } from '@adonisjs/auth'
+import { apiError } from '#utils/response'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -28,31 +29,27 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 
     // 2. Handle Database Row Not Found (404)
     if (error instanceof lucidErrors.E_ROW_NOT_FOUND) {
-      return ctx.response.status(404).send({
-        success: false,
-        message: 'Row not found',
-        data: null,
-      })
+      return ctx.response.status(404).send(apiError('Resource not found.'))
     }
 
     // 3. Handle Unauthorized Access (401)
     if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
-      return ctx.response.status(401).send({
-        success: false,
-        message: 'Unauthorized access. Please log in.',
-        data: null,
-      })
+      return ctx.response
+        .status(401)
+        .send(apiError('Unauthorized access. Please log in to continue.'))
     }
 
-    // 4. The Fallback for System Crashes (500)
+    // 4. Handle Custom Service Exceptions (4xx Client Errors)
     const status = error.status || 500
-    const message = this.debug ? error.message : 'An unexpected server error occurred'
 
-    return ctx.response.status(status).send({
-      success: false,
-      message: message,
-      data: null,
-    })
+    if (status >= 400 && status < 500) {
+      return ctx.response.status(status).send(apiError(error.message))
+    }
+
+    // 5. The Fallback for System Crashes (500 Server Errors)
+    const message = this.debug ? error.message : 'An unexpected server error occurred.'
+
+    return ctx.response.status(status).send(apiError(message))
   }
 
   /**

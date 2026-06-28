@@ -38,3 +38,5 @@ export const getBookmarksQueryValidator = vine.create({
 })
 
 export type GetBookmarksQueryParams = Infer<typeof getBookmarksQueryValidator>
+export type CreateBookmarkType = Infer<typeof createBookmarkValidator>
+export type UpdateBookmarkType = Infer<typeof updateBookmarkValidator>

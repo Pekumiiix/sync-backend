@@ -1,9 +1,97 @@
-import { AccessLevelType, RoleType } from '#enums/member'
 import Folder from '#models/folder'
 import User from '#models/user'
 import { Exception } from '@adonisjs/core/exceptions'
+import { MemberService } from './member_service.ts'
+import { events } from '#generated/events'
+import Member from '#models/member'
+import db from '@adonisjs/lucid/services/db'
+import hash from '@adonisjs/core/services/hash'
 
 export class FolderService {
+  static async createFolder(user: User, name: string) {
+    const folder = await user.related('ownedFolders').create({
+      name,
+      isSystem: false,
+      bookmarkCount: 0,
+      recentBookmarksImages: [],
+    })
+
+    events.FolderCreated.dispatch(folder, user)
+
+    return folder
+  }
+
+  static async deleteFolder(folderId: string, user: User) {
+    const folder = await user.related('ownedFolders').query().where('id', folderId).first()
+
+    if (!folder) {
+      throw new Exception('Folder not found or you do not have permission to delete it.', {
+        status: 404,
+      })
+    }
+
+    if (folder.isSystem) {
+      throw new Exception('System folders cannot be deleted.', { status: 400 })
+    }
+
+    await folder.delete()
+  }
+
+  static async updateFolder(folderId: string, user: User, name: string) {
+    const { folder, permission } = await this.getFolderWithPermissions(folderId, user)
+
+    if (permission.accessLevel !== 'editor') {
+      throw new Exception('You do not have permission to update this folder.', { status: 403 })
+    }
+
+    folder.name = name
+
+    await folder.save()
+
+    return folder
+  }
+
+  static async joinFolder(folderId: string, user: User, password?: string) {
+    const folder = await Folder.findOrFail(folderId)
+
+    if (folder.userId === user.id) {
+      throw new Exception('You are the owner of this folder and already have full access.', {
+        status: 400,
+      })
+    }
+
+    const membership = await user
+      .related('memberships')
+      .query()
+      .where('folder_id', folder.id)
+      .first()
+
+    if (membership) {
+      throw new Exception('You are already a member of this folder.', { status: 400 })
+    }
+
+    if (folder.password !== null) {
+      const isPasswordValid = await hash.verify(folder.password, password || '')
+      if (!isPasswordValid) {
+        throw new Exception('Invalid password provided for this folder.', { status: 401 })
+      }
+    }
+
+    await db.transaction(async (trx) => {
+      await Member.create(
+        {
+          userId: user.id,
+          folderId: folder.id,
+          role: 'member',
+          accessLevel: 'viewer',
+        },
+        { client: trx }
+      )
+    })
+
+    events.MemberJoined.dispatch(folder.id, user)
+  }
+
   static async getFolders(user: User) {
     const [systemFolders, ownedFolders, sharedFolders] = await Promise.all([
       user.related('ownedFolders').query().where('is_system', true).orderBy('created_at', 'asc'),
@@ -15,21 +103,12 @@ export class FolderService {
   }
 
   static async getFolderWithPermissions(folderId: string, user: User) {
-    const folder = await Folder.query()
-      .where('id', folderId)
-      .preload('users', (query) => {
-        query.select('id', 'first_name', 'last_name', 'avatar_url').limit(3)
-      })
-      .firstOrFail()
+    const folder = await Folder.query().where('id', folderId).firstOrFail()
 
-    const membership = await user
-      .related('memberships')
-      .query()
-      .where('folder_id', folder.id)
-      .first()
-
-    const isOwner = folder.userId === user.id
-    const isMember = !!membership
+    const { isOwner, isMember, role, accessLevel } = await MemberService.checkPermissions(
+      user.id,
+      folder.id
+    )
 
     if (!isOwner && !isMember) {
       if (folder.password !== null) {
@@ -45,25 +124,7 @@ export class FolderService {
       }
     }
 
-    let role: RoleType = 'member'
-    let accessLevel: AccessLevelType = 'viewer'
-
-    if (isOwner) {
-      role = 'owner'
-      accessLevel = 'editor'
-    } else if (membership) {
-      role = membership.role
-      accessLevel = membership.accessLevel
-    }
-
-    const previewMembers = folder.users
-      ? folder.users.map((u) => ({
-          id: u.id,
-          firstName: u.firstName,
-          lastName: u.lastName,
-          avatarUrl: u.avatarUrl,
-        }))
-      : []
+    const previewMembers = await MemberService.getFolderPreviews(folderId, 3)
 
     return {
       folder,

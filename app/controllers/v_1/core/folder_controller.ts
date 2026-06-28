@@ -5,17 +5,10 @@ import {
   updateFolderValidator,
 } from '#validators/folder'
 import type { HttpContext } from '@adonisjs/core/http'
-import { apiError } from '#utils/response'
 import FolderTransformer from '#transformers/folder_transformer'
-import { events } from '#generated/events'
 import { FolderService } from '#services/folder_service'
-import Folder from '#models/folder'
-import hash from '@adonisjs/core/services/hash'
-import Member from '#models/member'
-import db from '@adonisjs/lucid/services/db'
 import { FolderIndexResponse, FolderStoreResponse, ShowFolderResponse } from '#interfaces/folders'
 import { ApiSuccessResponse } from '#interfaces/api'
-import { MemberService } from '#services/member_service'
 import { BookmarkService } from '#services/bookmark_service'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
 
@@ -46,11 +39,7 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const folder = await user
-      .related('ownedFolders')
-      .create({ name, isSystem: false, bookmarkCount: 0, recentBookmarksImages: [] })
-
-    await events.FolderCreated.dispatch(folder, user)
+    const folder = await FolderService.createFolder(user, name)
 
     const formattedResponse: FolderStoreResponse = ctx.serialize(
       { folder: FolderTransformer.transform(folder) },
@@ -67,19 +56,7 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const folder = await user.related('ownedFolders').query().where('id', folderId).first()
-
-    if (!folder) {
-      return response.notFound(
-        apiError('Folder not found or you do not have permission to delete it.')
-      )
-    }
-
-    if (folder.isSystem) {
-      return response.badRequest(apiError('System folders cannot be deleted.'))
-    }
-
-    await folder.delete()
+    await FolderService.deleteFolder(folderId, user)
 
     const formattedResponse: ApiSuccessResponse = ctx.serialize(
       null,
@@ -98,15 +75,7 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const { folder, permission } = await FolderService.getFolderWithPermissions(folderId, user)
-
-    if (permission.accessLevel !== 'editor') {
-      return response.forbidden(apiError('You do not have permission to update this folder.'))
-    }
-
-    folder.name = name
-
-    await folder.save()
+    const folder = await FolderService.updateFolder(folderId, user, name)
 
     const formattedResponse: FolderStoreResponse = ctx.serialize(
       { folder: FolderTransformer.transform(folder) },
@@ -125,9 +94,10 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const { folder, permission } = await FolderService.getFolderWithPermissions(folderId, user)
-
-    const previewMembers = await MemberService.getFolderPreviews(folder.id, 3)
+    const { folder, permission, previewMembers } = await FolderService.getFolderWithPermissions(
+      folderId,
+      user
+    )
 
     const [pinnedBookmarks, paginatedBookmarks] = await Promise.all([
       BookmarkService.pinnedBookmarks(folder),
@@ -170,55 +140,7 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const folder = await Folder.query().where('id', folderId).firstOrFail()
-
-    if (folder.userId === user.id) {
-      return response.badRequest(
-        apiError('You are the owner of this folder and already have full access.')
-      )
-    }
-
-    const membership = await user
-      .related('memberships')
-      .query()
-      .where('folder_id', folder.id)
-      .first()
-
-    if (membership) {
-      return response.badRequest(apiError('You are already a member of this folder.'))
-    }
-
-    if (folder.password !== null) {
-      const isPasswordValid = await hash.verify(folder.password, password || '')
-
-      if (!isPasswordValid) {
-        return response.unauthorized(apiError('Invalid password provided for this folder.'))
-      }
-    }
-
-    const trx = await db.transaction()
-
-    try {
-      await Member.create(
-        {
-          userId: user.id,
-          folderId: folder.id,
-          role: 'member',
-          accessLevel: 'viewer',
-        },
-        { client: trx }
-      )
-
-      await trx.commit()
-    } catch (error) {
-      await trx.rollback()
-
-      return response.internalServerError(
-        apiError('An error occurred while trying to join the folder.')
-      )
-    }
-
-    events.MemberJoined.dispatch(folder.id, user)
+    await FolderService.joinFolder(folderId, user, password)
 
     const formattedResponse: ApiSuccessResponse = ctx.serialize(
       null,

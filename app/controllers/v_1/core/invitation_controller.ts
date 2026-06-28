@@ -16,19 +16,14 @@ export default class InvitationsController {
 
     const user = auth.user!
 
+    const baseQuery = Invitation.query()
+      .where('email', user.email)
+      .preload('inviter')
+      .preload('folder')
+
     const [pendingInvitations, resolvedInvitations] = await Promise.all([
-      Invitation.query()
-        .where('email', user.email)
-        .where('status', 'pending')
-        .preload('inviter')
-        .preload('folder')
-        .orderBy('created_at', 'desc'),
-      Invitation.query()
-        .where('email', user.email)
-        .whereNot('status', 'pending')
-        .preload('inviter')
-        .preload('folder')
-        .orderBy('updated_at', 'desc'),
+      baseQuery.clone().where('status', 'pending').orderBy('created_at', 'desc'),
+      baseQuery.clone().whereNot('status', 'pending').orderBy('updated_at', 'desc'),
     ])
 
     const formattedResponse: ListInvitationsResponse = ctx.serialize(
@@ -48,6 +43,10 @@ export default class InvitationsController {
     const { folderId, email, accessLevel } = await request.validateUsing(storeInvitationValidator)
 
     const user = auth.user!
+
+    if (user.email === email) {
+      return response.badRequest(apiError('You cannot invite yourself to a folder.'))
+    }
 
     const invitedUser = await User.findBy('email', email)
 
@@ -118,28 +117,17 @@ export default class InvitationsController {
 
   async accept(ctx: HttpContext) {
     const { params, response, auth } = ctx
-
     const user = auth.user!
 
-    try {
-      const { invitation } = await InvitationService.acceptInvitation(params.invitationId, user)
+    const { invitation } = await InvitationService.acceptInvitation(params.invitationId, user)
 
-      events.MemberJoined.dispatch(invitation.folderId, user)
+    events.MemberJoined.dispatch(invitation.folderId, user)
 
-      return response.ok({
-        message: 'Invitation accepted successfully.',
-        invitation: InvitationTransformer.transform(invitation),
-      })
-    } catch (error: unknown) {
-      if (typeof error === 'object' && error !== null && 'status' in error && 'message' in error) {
-        const err = error as { status: number; message: string }
+    const formattedResponse: InvitationSuccessResponse = ctx.serialize(
+      { invitation: InvitationTransformer.transform(invitation) },
+      'Invitation accepted successfully.'
+    )
 
-        if (err.status === 400 || err.status === 404) {
-          return response.status(err.status).send(apiError(err.message))
-        }
-      }
-
-      return response.internalServerError(apiError('Failed to accept invitation.'))
-    }
+    return response.ok(formattedResponse)
   }
 }

@@ -1,10 +1,66 @@
+import { AccessLevelType, RoleType } from '#enums/member'
 import { events } from '#generated/events'
+import Folder from '#models/folder'
 import Member from '#models/member'
 import User from '#models/user'
 import { Exception } from '@adonisjs/core/exceptions'
 import db from '@adonisjs/lucid/services/db'
 
 export class MemberService {
+  static async checkPermissions(userId: string, folderId: string) {
+    const folder = await Folder.findOrFail(folderId)
+
+    if (folder.userId === userId) {
+      return {
+        isMember: true,
+        isOwner: true,
+        role: 'admin' as RoleType,
+        accessLevel: 'editor' as AccessLevelType,
+      }
+    }
+
+    const membership = await Member.query()
+      .where('user_id', userId)
+      .where('folder_id', folderId)
+      .first()
+
+    if (membership) {
+      return {
+        isMember: true,
+        isOwner: false,
+        role: membership.role as RoleType,
+        accessLevel: membership.accessLevel as AccessLevelType,
+      }
+    }
+
+    return {
+      isMember: false,
+      isOwner: false,
+      role: null,
+      accessLevel: null,
+    }
+  }
+
+  static async requireRoles(userId: string, folderId: string, allowedRole: RoleType) {
+    const permissions = await this.checkPermissions(userId, folderId)
+
+    if (!permissions.isMember || !permissions.role) {
+      throw new Exception('You are not a member of this folder.', {
+        code: 'E_UNAUTHORIZED_ACCESS',
+        status: 403,
+      })
+    }
+
+    if (permissions.role !== allowedRole) {
+      throw new Exception('You do not have the required permissions to perform this action.', {
+        code: 'E_INSUFFICIENT_PERMISSIONS',
+        status: 403,
+      })
+    }
+
+    return permissions
+  }
+
   static async getFolderPreviews(folderId: string, limit: number) {
     const members = await Member.query().where('folder_id', folderId).preload('user').limit(limit)
 
@@ -39,22 +95,25 @@ export class MemberService {
   }
 
   static async leaveFolder(folderId: string, user: User) {
-    return await db.transaction(async (trx) => {
-      const member = await user
-        .related('memberships')
-        .query()
+    const member = await db.transaction(async (trx) => {
+      const membership = await Member.query({ client: trx })
+        .where('user_id', user.id)
         .where('folder_id', folderId)
         .firstOrFail()
 
-      if (member.role === 'owner') {
+      if (membership.role === 'owner') {
         throw new Exception('Folder owners cannot leave their own folder.', { status: 403 })
       }
 
-      await member.delete()
+      membership.useTransaction(trx)
 
-      events.MemberLeft.dispatch(folderId, user)
+      await membership.delete()
 
-      return member
+      return membership
     })
+
+    events.MemberLeft.dispatch(folderId, user)
+
+    return member
   }
 }

@@ -1,7 +1,4 @@
-import Bookmark from '#models/bookmark'
 import type { HttpContext } from '@adonisjs/core/http'
-import { FolderService } from '#services/folder_service'
-import { apiError } from '#utils/response'
 import {
   createBookmarkValidator,
   fetchUrlDataValidator,
@@ -186,31 +183,7 @@ export default class BookmarksController {
 
     const { folderId: newFolderId } = await request.validateUsing(moveBookmarkValidator)
 
-    const bookmark = await Bookmark.query().where('id', bookmarkId).firstOrFail()
-
-    const { permission: currentFolderPermission } = await FolderService.getFolderWithPermissions(
-      bookmark.folderId,
-      user
-    )
-
-    if (currentFolderPermission.accessLevel !== 'editor') {
-      return response.forbidden(apiError('You do not have permission to move this bookmark.'))
-    }
-
-    const { permission: newFolderPermission } = await FolderService.getFolderWithPermissions(
-      newFolderId,
-      user
-    )
-
-    if (newFolderPermission.accessLevel !== 'editor') {
-      return response.forbidden(
-        apiError('You do not have permission to move the bookmark to the new folder.')
-      )
-    }
-
-    bookmark.folderId = newFolderId
-
-    await bookmark.save()
+    const bookmark = await BookmarkService.moveBookmark(bookmarkId, newFolderId, user)
 
     const formattedResponse: StoreBookmarkResponse = ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },

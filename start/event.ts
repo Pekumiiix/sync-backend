@@ -20,6 +20,10 @@ emitter.on(events.PasswordResetRequested, listeners.SendPasswordResetEmail)
 emitter.on(events.MemberLeft, listeners.SendMemberLeftNotification)
 emitter.on(events.MemberJoined, listeners.SendMemberJoinedNotification)
 emitter.on(events.MemberRemoved, listeners.SendMemberRemovedNotification)
+emitter.on(events.BookmarkUpdated, listeners.SendBookmarkUpdatedNotification)
+emitter.on(events.BookmarkDeleted, listeners.SendBookmarkDeletedNotification)
+emitter.on(events.FolderUpdated, listeners.SendFolderUpdatedNotification)
+emitter.on(events.FolderDeleted, listeners.SendFolderDeletedNotification)
 
 emitter.onError((event, error, data) => {
   logger.error({ err: error, event, eventData: data }, 'An event listener failed in the background')

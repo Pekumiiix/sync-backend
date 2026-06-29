@@ -1,12 +1,7 @@
 import { storeInvitationValidator } from '#validators/invitation'
 import { HttpContext } from '@adonisjs/core/http'
-import { FolderService } from '#services/folder_service'
-import { apiError } from '#utils/response'
-import Invitation from '#models/invitation'
-import User from '#models/user'
 import InvitationTransformer from '#transformers/invitation_transformer'
 import { events } from '#generated/events'
-import { ApiSuccessResponse } from '#interfaces/api'
 import { InvitationSuccessResponse, ListInvitationsResponse } from '#interfaces/invitations'
 import { InvitationService } from '#services/invitation_service'
 
@@ -16,15 +11,8 @@ export default class InvitationsController {
 
     const user = auth.user!
 
-    const baseQuery = Invitation.query()
-      .where('email', user.email)
-      .preload('inviter')
-      .preload('folder')
-
-    const [pendingInvitations, resolvedInvitations] = await Promise.all([
-      baseQuery.clone().where('status', 'pending').orderBy('created_at', 'desc'),
-      baseQuery.clone().whereNot('status', 'pending').orderBy('updated_at', 'desc'),
-    ])
+    const { pendingInvitations, resolvedInvitations } =
+      await InvitationService.getUserInvitations(user)
 
     const formattedResponse: ListInvitationsResponse = ctx.serialize(
       {
@@ -44,37 +32,14 @@ export default class InvitationsController {
 
     const user = auth.user!
 
-    if (user.email === email) {
-      return response.badRequest(apiError('You cannot invite yourself to a folder.'))
-    }
-
-    const invitedUser = await User.findBy('email', email)
-
-    const { folder, permission } = await FolderService.getFolderWithPermissions(folderId, user)
-
-    if (!invitedUser) {
-      return response.notFound(apiError('The user you are trying to invite does not exist.'))
-    }
-
-    if (permission.role !== 'owner') {
-      return response.forbidden(
-        apiError('You do not have permission to invite users to this folder.')
-      )
-    }
-
-    if (folder.isSystem) {
-      return response.forbidden(apiError('You cannot invite users to a system folder.'))
-    }
-
-    await InvitationService.createInvitation({
+    const invitation = await InvitationService.sendInvitation(user, {
       folderId,
       email,
       accessLevel,
-      inviterId: user.id,
     })
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(
-      null,
+    const formattedResponse: InvitationSuccessResponse = ctx.serialize(
+      { invitation: InvitationTransformer.transform(invitation) },
       'Invitation sent successfully.'
     )
 
@@ -88,22 +53,7 @@ export default class InvitationsController {
 
     const user = auth.user!
 
-    const invitation = await Invitation.query()
-      .where('id', invitationId)
-      .where('email', user.email)
-      .first()
-
-    if (!invitation) {
-      return response.notFound(apiError('Invitation not found.'))
-    }
-
-    if (invitation.status !== 'pending') {
-      return response.badRequest(apiError('You can only decline pending invitations.'))
-    }
-
-    invitation.status = 'declined'
-
-    await invitation.save()
+    const invitation = await InvitationService.declineInvitation(invitationId, user)
 
     const transformedInvitation = InvitationTransformer.transform(invitation)
 
@@ -117,6 +67,7 @@ export default class InvitationsController {
 
   async accept(ctx: HttpContext) {
     const { params, response, auth } = ctx
+
     const user = auth.user!
 
     const { invitation } = await InvitationService.acceptInvitation(params.invitationId, user)

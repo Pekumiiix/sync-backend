@@ -1,19 +1,28 @@
-// app/services/invitation_service.ts
 import db from '@adonisjs/lucid/services/db'
 import Invitation from '#models/invitation'
 import Member from '#models/member'
 import { DateTime } from 'luxon'
 import { Exception } from '@adonisjs/core/exceptions'
 import User from '#models/user'
-import { AccessLevelType } from '#enums/member'
+import { FolderService } from './folder_service.ts'
+import { StoreInvitationValidator } from '#validators/invitation'
 
 export class InvitationService {
-  static async createInvitation(data: {
-    folderId: string
-    email: string
-    accessLevel: AccessLevelType
-    inviterId: string
-  }) {
+  static async getUserInvitations(user: User) {
+    const baseQuery = Invitation.query()
+      .where('email', user.email)
+      .preload('inviter')
+      .preload('folder')
+
+    const [pendingInvitations, resolvedInvitations] = await Promise.all([
+      baseQuery.clone().where('status', 'pending').orderBy('created_at', 'desc'),
+      baseQuery.clone().whereNot('status', 'pending').orderBy('updated_at', 'desc'),
+    ])
+
+    return { pendingInvitations, resolvedInvitations }
+  }
+
+  static async createInvitation(inviterId: string, data: StoreInvitationValidator) {
     const existing = await Invitation.query()
       .where('email', data.email)
       .where('folder_id', data.folderId)
@@ -26,9 +35,51 @@ export class InvitationService {
 
     return await Invitation.create({
       ...data,
+      inviterId: inviterId,
       token: crypto.randomUUID(),
       expiresAt: DateTime.now().plus({ days: 7 }),
     })
+  }
+
+  static async sendInvitation(inviter: User, data: StoreInvitationValidator) {
+    if (inviter.email === data.email) {
+      throw new Exception('You cannot invite yourself to a folder.', { status: 400 })
+    }
+
+    const invitedUser = await User.findBy('email', data.email)
+
+    if (!invitedUser) {
+      throw new Exception('The user you are trying to invite does not exist.', { status: 404 })
+    }
+
+    const { folder, permission } = await FolderService.getFolderWithPermissions(
+      data.folderId,
+      inviter
+    )
+
+    if (permission.role !== 'owner') {
+      throw new Exception('You do not have permission to invite users to this folder.', {
+        status: 403,
+      })
+    }
+
+    if (folder.isSystem) {
+      throw new Exception('You cannot invite users to a system folder.', { status: 400 })
+    }
+
+    const existingMember = await invitedUser
+      .related('memberships')
+      .query()
+      .where('folderId', folder.id)
+      .first()
+
+    if (existingMember) {
+      throw new Exception('This user is already a member of this folder.', { status: 400 })
+    }
+
+    const invitation = await this.createInvitation(inviter.id, data)
+
+    return invitation
   }
 
   static async acceptInvitation(invitationId: number, user: User) {
@@ -36,6 +87,8 @@ export class InvitationService {
       const invitation = await Invitation.query({ client: trx })
         .where('id', invitationId)
         .where('email', user.email)
+        .preload('inviter')
+        .preload('folder')
         .forUpdate()
         .firstOrFail()
 
@@ -75,5 +128,28 @@ export class InvitationService {
 
       return { invitation, member }
     })
+  }
+
+  static async declineInvitation(invitationId: string, user: User) {
+    const invitation = await Invitation.query()
+      .where('id', invitationId)
+      .where('email', user.email)
+      .preload('inviter')
+      .preload('folder')
+      .first()
+
+    if (!invitation) {
+      throw new Exception('Invitation not found.', { status: 404 })
+    }
+
+    if (invitation.status !== 'pending') {
+      throw new Exception('You can only decline pending invitations.', { status: 400 })
+    }
+
+    invitation.status = 'declined'
+
+    await invitation.save()
+
+    return invitation
   }
 }

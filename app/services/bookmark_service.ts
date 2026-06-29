@@ -7,11 +7,11 @@ import {
   GetBookmarksQueryParams,
   UpdateBookmarkType,
 } from '#validators/bookmark'
-import type { GetFolderParams } from '#validators/folder'
 import { Exception } from '@adonisjs/core/exceptions'
 import db from '@adonisjs/lucid/services/db'
 import { FolderService } from './folder_service.ts'
 import User from '#models/user'
+import { MemberService } from './member_service.ts'
 
 export class BookmarkService {
   static async getBookmarkById(bookmarkId: string) {
@@ -46,6 +46,9 @@ export class BookmarkService {
       return newBookmark
     })
 
+    bookmark.$setRelated('user', user)
+    bookmark.$setRelated('folder', folder)
+
     events.BookmarkCreated.dispatch(user, folder.id)
 
     return bookmark
@@ -54,31 +57,27 @@ export class BookmarkService {
   static async deleteBookmark(bookmarkId: string, user: User) {
     const bookmark = await Bookmark.findOrFail(bookmarkId)
 
-    const { permission } = await FolderService.getFolderWithPermissions(bookmark.folderId, user)
-
-    if (permission.accessLevel !== 'editor') {
-      throw new Exception('You do not have permission to delete this bookmark.', { status: 403 })
-    }
+    await MemberService.requireAccessLevel(user.id, bookmark.folderId, 'editor')
 
     await db.transaction(async (trx) => {
       bookmark.useTransaction(trx)
 
       await bookmark.delete()
     })
+
+    events.BookmarkDeleted.dispatch(user, bookmark.folderId, bookmark.title)
   }
 
   static async updateBookmark(bookmarkId: string, user: User, data: UpdateBookmarkType) {
     const bookmark = await this.getBookmarkById(bookmarkId)
 
-    const { permission } = await FolderService.getFolderWithPermissions(bookmark.folderId, user)
-
-    if (permission.accessLevel !== 'editor') {
-      throw new Exception('You do not have permission to update this bookmark.', { status: 403 })
-    }
+    await MemberService.requireAccessLevel(user.id, bookmark.folderId, 'editor')
 
     bookmark.merge(data)
 
     await bookmark.save()
+
+    events.BookmarkUpdated.dispatch(user, bookmark.folderId)
 
     return bookmark
   }
@@ -86,11 +85,7 @@ export class BookmarkService {
   static async setPinStatus(bookmarkId: string, user: User, isPinned: boolean) {
     const bookmark = await this.getBookmarkById(bookmarkId)
 
-    const { permission } = await FolderService.getFolderWithPermissions(bookmark.folderId, user)
-
-    if (permission.accessLevel !== 'editor') {
-      throw new Exception('You do not have permission to update this bookmark.', { status: 403 })
-    }
+    await MemberService.requireAccessLevel(user.id, bookmark.folderId, 'editor')
 
     bookmark.isPinned = isPinned
 
@@ -104,26 +99,9 @@ export class BookmarkService {
 
     const oldFolderId = bookmark.folderId
 
-    const { permission: currentPermission } = await FolderService.getFolderWithPermissions(
-      oldFolderId,
-      user
-    )
+    await MemberService.requireAccessLevel(user.id, oldFolderId, 'editor')
 
-    if (currentPermission.accessLevel !== 'editor') {
-      throw new Exception('You do not have permission to move this bookmark.', { status: 403 })
-    }
-
-    const { permission: newPermission } = await FolderService.getFolderWithPermissions(
-      newFolderId,
-      user
-    )
-
-    if (newPermission.accessLevel !== 'editor') {
-      throw new Exception(
-        'You do not have permission to move a bookmark to the destination folder.',
-        { status: 403 }
-      )
-    }
+    await MemberService.requireAccessLevel(user.id, newFolderId, 'editor')
 
     await db.transaction(async (trx) => {
       bookmark.useTransaction(trx)
@@ -151,7 +129,7 @@ export class BookmarkService {
     return BookmarkTransformer.transform(pinnedBookmarks)
   }
 
-  static async getPaginatedBookmarks(folder: Folder, queryParams: GetFolderParams) {
+  static async getPaginatedBookmarks(folder: Folder, queryParams: GetBookmarksQueryParams) {
     const {
       page = 1,
       limit = 20,

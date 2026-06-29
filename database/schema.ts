@@ -6,6 +6,7 @@
 
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
+import type { BrowserType } from '#enums/browser'
 import type { JSON } from '#interfaces/db'
 import type { AccessLevelType, RoleType } from '#enums/member'
 import type { InvitationStatusType } from '#enums/invitation'
@@ -43,7 +44,7 @@ export class BookmarkSchema extends BaseModel {
   static $columns = ['browser', 'coverImageUrl', 'createdAt', 'description', 'domain', 'faviconUrl', 'folderId', 'id', 'isPinned', 'tags', 'title', 'updatedAt', 'url', 'userId', 'websiteName'] as const
   $columns = BookmarkSchema.$columns
   @column()
-  declare browser: string
+  declare browser: BrowserType
   @column()
   declare coverImageUrl: string | null
   @column.dateTime({ autoCreate: true })
@@ -72,6 +73,21 @@ export class BookmarkSchema extends BaseModel {
   declare userId: string
   @column()
   declare websiteName: string | null
+}
+
+export class BrowserIntegrationSchema extends BaseModel {
+  static $columns = ['browser', 'createdAt', 'id', 'lastSyncedAt', 'userId'] as const
+  $columns = BrowserIntegrationSchema.$columns
+  @column()
+  declare browser: BrowserType
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: string
+  @column.dateTime()
+  declare lastSyncedAt: DateTime | null
+  @column()
+  declare userId: string
 }
 
 export class FolderSchema extends BaseModel {

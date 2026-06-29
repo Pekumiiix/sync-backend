@@ -31,6 +31,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_tokens_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'auth.access_tokens.destroy': {
+    methods: ["POST"]
+    pattern: '/api/v1/auth/sign-out'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_tokens_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_tokens_controller').default['destroy']>>>
+    }
+  }
   'auth.forgot_passwords.store': {
     methods: ["POST"]
     pattern: '/api/v1/auth/forgot-password'
@@ -127,18 +139,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['show']>>>
     }
   }
-  'profile.access_tokens.destroy': {
-    methods: ["POST"]
-    pattern: '/api/v1/account/sign-out'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_tokens_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_tokens_controller').default['destroy']>>>
-    }
-  }
   'profile.profile.update': {
     methods: ["PATCH"]
     pattern: '/api/v1/account/profile'
@@ -218,7 +218,7 @@ export interface Registry {
       body: {}
       paramsTuple: [ParamValue]
       params: { folderId: ParamValue }
-      query: ExtractQueryForGet<InferInput<(typeof import('#validators/folder').getFolderParamValidator)>>
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/bookmark').getBookmarksQueryValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['show']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
@@ -321,7 +321,7 @@ export interface Registry {
   }
   'members.member.index': {
     methods: ["GET","HEAD"]
-    pattern: '/api/v1/folder/:folderId/member'
+    pattern: '/api/v1/folders/:folderId/member'
     types: {
       body: {}
       paramsTuple: [ParamValue]
@@ -333,7 +333,7 @@ export interface Registry {
   }
   'members.member.leave': {
     methods: ["DELETE"]
-    pattern: '/api/v1/folder/:folderId/member/leave'
+    pattern: '/api/v1/folders/:folderId/member/leave'
     types: {
       body: {}
       paramsTuple: [ParamValue]
@@ -345,7 +345,7 @@ export interface Registry {
   }
   'members.member.update': {
     methods: ["PATCH"]
-    pattern: '/api/v1/folder/:folderId/member/:memberId'
+    pattern: '/api/v1/folders/:folderId/member/:memberId'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/member').updateMemberValidator)>>
       paramsTuple: [ParamValue, ParamValue]
@@ -357,7 +357,7 @@ export interface Registry {
   }
   'members.member.destroy': {
     methods: ["DELETE"]
-    pattern: '/api/v1/folder/:folderId/member/:memberId'
+    pattern: '/api/v1/folders/:folderId/member/:memberId'
     types: {
       body: {}
       paramsTuple: [ParamValue, ParamValue]
@@ -392,7 +392,7 @@ export interface Registry {
     }
   }
   'invitations.invitation.destroy': {
-    methods: ["POST"]
+    methods: ["PATCH"]
     pattern: '/api/v1/invitations/:invitationId/decline'
     types: {
       body: {}
@@ -404,7 +404,7 @@ export interface Registry {
     }
   }
   'invitations.invitation.accept': {
-    methods: ["POST"]
+    methods: ["PATCH"]
     pattern: '/api/v1/invitations/:invitationId/accept'
     types: {
       body: {}

@@ -21,14 +21,6 @@ export interface NotificationItemResponse {
   message: string
 }
 
-export interface PaginationMeta {
-  total: number
-  perPage: number
-  currentPage: number
-  lastPage: number
-  firstPage: number
-}
-
 export interface INotificationMeta {
   unreadCount: number
   totalCount: number

@@ -10,6 +10,7 @@ import Member from './member.ts'
 import Bookmark from './bookmark.ts'
 import OauthIdentity from './o_auth_identity.ts'
 import Notification from './notification.ts'
+import BrowserIntegration from './browser_integration.ts'
 
 export default class User extends compose(UserSchema, withAuthFinder(hash)) {
   static accessTokens = DbAccessTokensProvider.forModel(User)
@@ -26,6 +27,9 @@ export default class User extends compose(UserSchema, withAuthFinder(hash)) {
 
   @hasMany(() => OauthIdentity)
   declare oauthIdentities: HasMany<typeof OauthIdentity>
+
+  @hasMany(() => BrowserIntegration)
+  declare browserIntegrations: HasMany<typeof BrowserIntegration>
 
   @hasMany(() => Notification)
   declare notifications: HasMany<typeof Notification>

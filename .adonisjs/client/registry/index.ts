@@ -18,6 +18,12 @@ const routes = {
     tokens: [{"old":"/api/v1/auth/sign-in","type":0,"val":"api","end":""},{"old":"/api/v1/auth/sign-in","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/sign-in","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/sign-in","type":0,"val":"sign-in","end":""}],
     types: placeholder as Registry['auth.access_tokens.store']['types'],
   },
+  'auth.access_tokens.destroy': {
+    methods: ["POST"],
+    pattern: '/api/v1/auth/sign-out',
+    tokens: [{"old":"/api/v1/auth/sign-out","type":0,"val":"api","end":""},{"old":"/api/v1/auth/sign-out","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/sign-out","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/sign-out","type":0,"val":"sign-out","end":""}],
+    types: placeholder as Registry['auth.access_tokens.destroy']['types'],
+  },
   'auth.forgot_passwords.store': {
     methods: ["POST"],
     pattern: '/api/v1/auth/forgot-password',
@@ -65,12 +71,6 @@ const routes = {
     pattern: '/api/v1/account/profile',
     tokens: [{"old":"/api/v1/account/profile","type":0,"val":"api","end":""},{"old":"/api/v1/account/profile","type":0,"val":"v1","end":""},{"old":"/api/v1/account/profile","type":0,"val":"account","end":""},{"old":"/api/v1/account/profile","type":0,"val":"profile","end":""}],
     types: placeholder as Registry['profile.profile.show']['types'],
-  },
-  'profile.access_tokens.destroy': {
-    methods: ["POST"],
-    pattern: '/api/v1/account/sign-out',
-    tokens: [{"old":"/api/v1/account/sign-out","type":0,"val":"api","end":""},{"old":"/api/v1/account/sign-out","type":0,"val":"v1","end":""},{"old":"/api/v1/account/sign-out","type":0,"val":"account","end":""},{"old":"/api/v1/account/sign-out","type":0,"val":"sign-out","end":""}],
-    types: placeholder as Registry['profile.access_tokens.destroy']['types'],
   },
   'profile.profile.update': {
     methods: ["PATCH"],
@@ -164,26 +164,26 @@ const routes = {
   },
   'members.member.index': {
     methods: ["GET","HEAD"],
-    pattern: '/api/v1/folder/:folderId/member',
-    tokens: [{"old":"/api/v1/folder/:folderId/member","type":0,"val":"api","end":""},{"old":"/api/v1/folder/:folderId/member","type":0,"val":"v1","end":""},{"old":"/api/v1/folder/:folderId/member","type":0,"val":"folder","end":""},{"old":"/api/v1/folder/:folderId/member","type":1,"val":"folderId","end":""},{"old":"/api/v1/folder/:folderId/member","type":0,"val":"member","end":""}],
+    pattern: '/api/v1/folders/:folderId/member',
+    tokens: [{"old":"/api/v1/folders/:folderId/member","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/member","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/member","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/member","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/member","type":0,"val":"member","end":""}],
     types: placeholder as Registry['members.member.index']['types'],
   },
   'members.member.leave': {
     methods: ["DELETE"],
-    pattern: '/api/v1/folder/:folderId/member/leave',
-    tokens: [{"old":"/api/v1/folder/:folderId/member/leave","type":0,"val":"api","end":""},{"old":"/api/v1/folder/:folderId/member/leave","type":0,"val":"v1","end":""},{"old":"/api/v1/folder/:folderId/member/leave","type":0,"val":"folder","end":""},{"old":"/api/v1/folder/:folderId/member/leave","type":1,"val":"folderId","end":""},{"old":"/api/v1/folder/:folderId/member/leave","type":0,"val":"member","end":""},{"old":"/api/v1/folder/:folderId/member/leave","type":0,"val":"leave","end":""}],
+    pattern: '/api/v1/folders/:folderId/member/leave',
+    tokens: [{"old":"/api/v1/folders/:folderId/member/leave","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/member/leave","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/member/leave","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/member/leave","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/member/leave","type":0,"val":"member","end":""},{"old":"/api/v1/folders/:folderId/member/leave","type":0,"val":"leave","end":""}],
     types: placeholder as Registry['members.member.leave']['types'],
   },
   'members.member.update': {
     methods: ["PATCH"],
-    pattern: '/api/v1/folder/:folderId/member/:memberId',
-    tokens: [{"old":"/api/v1/folder/:folderId/member/:memberId","type":0,"val":"api","end":""},{"old":"/api/v1/folder/:folderId/member/:memberId","type":0,"val":"v1","end":""},{"old":"/api/v1/folder/:folderId/member/:memberId","type":0,"val":"folder","end":""},{"old":"/api/v1/folder/:folderId/member/:memberId","type":1,"val":"folderId","end":""},{"old":"/api/v1/folder/:folderId/member/:memberId","type":0,"val":"member","end":""},{"old":"/api/v1/folder/:folderId/member/:memberId","type":1,"val":"memberId","end":""}],
+    pattern: '/api/v1/folders/:folderId/member/:memberId',
+    tokens: [{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"member","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":1,"val":"memberId","end":""}],
     types: placeholder as Registry['members.member.update']['types'],
   },
   'members.member.destroy': {
     methods: ["DELETE"],
-    pattern: '/api/v1/folder/:folderId/member/:memberId',
-    tokens: [{"old":"/api/v1/folder/:folderId/member/:memberId","type":0,"val":"api","end":""},{"old":"/api/v1/folder/:folderId/member/:memberId","type":0,"val":"v1","end":""},{"old":"/api/v1/folder/:folderId/member/:memberId","type":0,"val":"folder","end":""},{"old":"/api/v1/folder/:folderId/member/:memberId","type":1,"val":"folderId","end":""},{"old":"/api/v1/folder/:folderId/member/:memberId","type":0,"val":"member","end":""},{"old":"/api/v1/folder/:folderId/member/:memberId","type":1,"val":"memberId","end":""}],
+    pattern: '/api/v1/folders/:folderId/member/:memberId',
+    tokens: [{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"member","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":1,"val":"memberId","end":""}],
     types: placeholder as Registry['members.member.destroy']['types'],
   },
   'invitations.invitation.index': {
@@ -199,13 +199,13 @@ const routes = {
     types: placeholder as Registry['invitations.invitation.store']['types'],
   },
   'invitations.invitation.destroy': {
-    methods: ["POST"],
+    methods: ["PATCH"],
     pattern: '/api/v1/invitations/:invitationId/decline',
     tokens: [{"old":"/api/v1/invitations/:invitationId/decline","type":0,"val":"api","end":""},{"old":"/api/v1/invitations/:invitationId/decline","type":0,"val":"v1","end":""},{"old":"/api/v1/invitations/:invitationId/decline","type":0,"val":"invitations","end":""},{"old":"/api/v1/invitations/:invitationId/decline","type":1,"val":"invitationId","end":""},{"old":"/api/v1/invitations/:invitationId/decline","type":0,"val":"decline","end":""}],
     types: placeholder as Registry['invitations.invitation.destroy']['types'],
   },
   'invitations.invitation.accept': {
-    methods: ["POST"],
+    methods: ["PATCH"],
     pattern: '/api/v1/invitations/:invitationId/accept',
     tokens: [{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"api","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"v1","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"invitations","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":1,"val":"invitationId","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"accept","end":""}],
     types: placeholder as Registry['invitations.invitation.accept']['types'],

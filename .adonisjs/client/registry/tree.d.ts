@@ -8,6 +8,7 @@ export interface ApiDefinition {
     }
     accessTokens: {
       store: typeof routes['auth.access_tokens.store']
+      destroy: typeof routes['auth.access_tokens.destroy']
     }
     forgotPasswords: {
       store: typeof routes['auth.forgot_passwords.store']
@@ -31,9 +32,6 @@ export interface ApiDefinition {
     profile: {
       show: typeof routes['profile.profile.show']
       update: typeof routes['profile.profile.update']
-    }
-    accessTokens: {
-      destroy: typeof routes['profile.access_tokens.destroy']
     }
   }
   folder: {

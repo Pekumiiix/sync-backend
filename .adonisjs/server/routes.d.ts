@@ -6,6 +6,7 @@ export type ScannedRoutes = {
   ALL: {
     'auth.new_account.store': { paramsTuple?: []; params?: {} }
     'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
+    'auth.access_tokens.destroy': { paramsTuple?: []; params?: {} }
     'auth.forgot_passwords.store': { paramsTuple?: []; params?: {} }
     'auth.reset_passwords.store': { paramsTuple?: []; params?: {} }
     'auth.verify_emails.store': { paramsTuple?: []; params?: {} }
@@ -14,7 +15,6 @@ export type ScannedRoutes = {
     'oauths.googles.store': { paramsTuple?: []; params?: {} }
     'oauths.googles.destroy': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
-    'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
     'profile.profile.update': { paramsTuple?: []; params?: {} }
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.store': { paramsTuple?: []; params?: {} }
@@ -70,18 +70,16 @@ export type ScannedRoutes = {
   POST: {
     'auth.new_account.store': { paramsTuple?: []; params?: {} }
     'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
+    'auth.access_tokens.destroy': { paramsTuple?: []; params?: {} }
     'auth.forgot_passwords.store': { paramsTuple?: []; params?: {} }
     'auth.reset_passwords.store': { paramsTuple?: []; params?: {} }
     'auth.verify_emails.store': { paramsTuple?: []; params?: {} }
     'auth.verify_emails.resend': { paramsTuple?: []; params?: {} }
-    'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
     'folder.folder.store': { paramsTuple?: []; params?: {} }
     'folder.folder.join': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.fetch': { paramsTuple?: []; params?: {} }
     'invitations.invitation.store': { paramsTuple?: []; params?: {} }
-    'invitations.invitation.destroy': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
-    'invitations.invitation.accept': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
   }
   DELETE: {
     'oauths.googles.destroy': { paramsTuple?: []; params?: {} }
@@ -100,6 +98,8 @@ export type ScannedRoutes = {
     'bookmarks.bookmark.unpin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.move': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'members.member.update': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
+    'invitations.invitation.destroy': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
+    'invitations.invitation.accept': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
     'notifications.notifications.mark_all_as_read': { paramsTuple?: []; params?: {} }
     'notifications.notifications.mark_as_read': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
     'notifications.notifications.mark_as_unread': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }

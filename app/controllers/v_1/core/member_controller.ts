@@ -41,11 +41,12 @@ export default class MembersController {
 
     const user = auth.user!
 
-    await MemberService.requireRoles(user.id, folderId, 'owner')
+    await MemberService.requireRole(user.id, folderId, 'owner')
 
     const member = await Member.query()
       .where('id', memberId)
       .where('folder_id', folderId)
+      .preload('user')
       .firstOrFail()
 
     member.accessLevel = accessLevel
@@ -67,7 +68,7 @@ export default class MembersController {
 
     const initiator = auth.user!
 
-    await MemberService.requireRoles(initiator.id, folderId, 'owner')
+    await MemberService.requireRole(initiator.id, folderId, 'owner')
 
     await MemberService.destroyMember(folderId, params.memberId, initiator)
 

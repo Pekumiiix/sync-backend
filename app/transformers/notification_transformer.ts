@@ -1,5 +1,7 @@
 import { BaseTransformer } from '@adonisjs/core/transformers'
 import Notification from '#models/notification'
+import { NotificationType } from '#enums/notification'
+import type { NotificationData } from '#interfaces/notifications'
 
 export default class NotificationTransformer extends BaseTransformer<Notification> {
   toObject() {
@@ -26,9 +28,10 @@ export default class NotificationTransformer extends BaseTransformer<Notificatio
   }
 }
 
-function formatNotificationContent(type: string, data: Record<string, any>) {
+function formatNotificationContent(type: NotificationType, data: NotificationData) {
   const actor = data.actorName || 'Someone'
   const folder = data.folderName || 'a folder'
+  const target = data.targetName || 'someone'
 
   const messages: Record<string, { title: string; message: string }> = {
     member_joined: {
@@ -41,7 +44,7 @@ function formatNotificationContent(type: string, data: Record<string, any>) {
     },
     member_removed: {
       title: 'Member removed',
-      message: `${actor} has been removed from ${folder}. They no longer have access to these resources.`,
+      message: `${actor} removed ${target} from ${folder}. They no longer have access to these resources.`,
     },
     new_bookmark: {
       title: 'New bookmark added',
@@ -53,7 +56,15 @@ function formatNotificationContent(type: string, data: Record<string, any>) {
     },
     bookmark_deleted: {
       title: 'Bookmark deleted',
-      message: `${actor} deleted a bookmark from ${folder}. This resource is no longer available to the team.`,
+      message: `${actor} deleted the bookmark "${data.targetName}" from ${folder}. This resource is no longer available to the team.`,
+    },
+    folder_updated: {
+      title: 'Folder updated',
+      message: `${actor} updated the folder name from "${folder}" to "${data.targetName}". Check out the latest changes to stay informed.`,
+    },
+    folder_deleted: {
+      title: 'Folder deleted',
+      message: `${actor} deleted the folder "${folder}". This resource is no longer available to the team.`,
     },
   }
 

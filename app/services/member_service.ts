@@ -41,7 +41,7 @@ export class MemberService {
     }
   }
 
-  static async requireRoles(userId: string, folderId: string, allowedRole: RoleType) {
+  static async requireRole(userId: string, folderId: string, allowedRole: RoleType) {
     const permissions = await this.checkPermissions(userId, folderId)
 
     if (!permissions.isMember || !permissions.role) {
@@ -53,6 +53,30 @@ export class MemberService {
 
     if (permissions.role !== allowedRole) {
       throw new Exception('You do not have the required permissions to perform this action.', {
+        code: 'E_INSUFFICIENT_PERMISSIONS',
+        status: 403,
+      })
+    }
+
+    return permissions
+  }
+
+  static async requireAccessLevel(
+    userId: string,
+    folderId: string,
+    allowedAccessLevel: AccessLevelType
+  ) {
+    const permissions = await this.checkPermissions(userId, folderId)
+
+    if (!permissions.isMember || !permissions.accessLevel) {
+      throw new Exception('You are not a member of this folder.', {
+        code: 'E_UNAUTHORIZED_ACCESS',
+        status: 403,
+      })
+    }
+
+    if (permissions.accessLevel !== allowedAccessLevel) {
+      throw new Exception('You do not have the required access level to perform this action.', {
         code: 'E_INSUFFICIENT_PERMISSIONS',
         status: 403,
       })
@@ -115,5 +139,16 @@ export class MemberService {
     events.MemberLeft.dispatch(folderId, user)
 
     return member
+  }
+
+  static async getMembers(folderId: string, excludeUserId?: string) {
+    return await Member.query()
+      .where('folder_id', folderId)
+      .if(excludeUserId, (query) => {
+        query.whereNot('user_id', excludeUserId!)
+      })
+      .preload('user')
+      .preload('folder')
+      .orderBy('created_at', 'asc')
   }
 }

@@ -1,6 +1,5 @@
 import {
   createFolderValidator,
-  getFolderParamValidator,
   joinFolderValidator,
   updateFolderValidator,
 } from '#validators/folder'
@@ -11,6 +10,7 @@ import { FolderIndexResponse, FolderStoreResponse, ShowFolderResponse } from '#i
 import { ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
+import { getBookmarksQueryValidator } from '#validators/bookmark'
 
 export default class FoldersController {
   async index(ctx: HttpContext) {
@@ -88,7 +88,7 @@ export default class FoldersController {
   async show(ctx: HttpContext) {
     const { params, response, auth, request } = ctx
 
-    const query = await request.validateUsing(getFolderParamValidator, { data: request.qs() })
+    const query = await request.validateUsing(getBookmarksQueryValidator, { data: request.qs() })
 
     const folderId = params.folderId
 

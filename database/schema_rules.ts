@@ -40,6 +40,11 @@ export default {
           tsType: 'JSON<string[]>',
           imports: [{ source: '#interfaces/db', typeImports: ['JSON'] }],
         },
+        browser: {
+          decorators: [{ name: '@column' }],
+          tsType: 'BrowserType',
+          imports: [{ source: '#enums/browser', typeImports: ['BrowserType'] }],
+        },
       },
     },
     members: {
@@ -81,6 +86,15 @@ export default {
           decorators: [{ name: '@column' }],
           tsType: 'NotificationType',
           imports: [{ source: '#enums/notification', typeImports: ['NotificationType'] }],
+        },
+      },
+    },
+    browser_integrations: {
+      columns: {
+        browser: {
+          decorators: [{ name: '@column' }],
+          tsType: 'BrowserType',
+          imports: [{ source: '#enums/browser', typeImports: ['BrowserType'] }],
         },
       },
     },

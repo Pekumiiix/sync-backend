@@ -1,4 +1,4 @@
-export type UrlData = {
+export interface UrlData {
   title: string | null
   description: string | null
   coverImageUrl: string | null
@@ -8,14 +8,14 @@ export type UrlData = {
   url: string
 }
 
-export type BookmarkAddedBy = {
+export interface BookmarkAddedBy {
   id: string
   avatarUrl: string | null
   firstName: string
   lastName: string
 }
 
-export type BookmarkData = {
+export interface BookmarkData {
   id: string
   folderId: string
   title: string | null

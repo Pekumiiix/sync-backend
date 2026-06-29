@@ -10,7 +10,7 @@
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 import { controllers } from '#generated/controllers'
-import { authThrottle, resendThrottle } from '#start/limiter'
+import { authThrottle, resendThrottle, throttle } from '#start/limiter'
 
 router
   .group(() => {
@@ -27,6 +27,11 @@ router
           .use(authThrottle)
           .use(middleware.guest())
           .openapi({ summary: 'Sign in a user and generate an access token' })
+        router
+          .post('sign-out', [controllers.v1.auth.AccessTokens, 'destroy'])
+          .use(throttle)
+          .use(middleware.auth())
+          .openapi({ summary: 'Sign out the user' })
         router
           .post('forgot-password', [controllers.v1.auth.ForgotPasswords, 'store'])
           .use(authThrottle)
@@ -78,26 +83,26 @@ router
         description: 'OAuth related endpoints',
       })
 
+    // Acount routes
     router
       .group(() => {
         router
           .get('profile', [controllers.v1.users.Profile, 'show'])
           .openapi({ summary: 'Get user profile' })
         router
-          .post('sign-out', [controllers.v1.auth.AccessTokens, 'destroy'])
-          .openapi({ summary: 'Sign out the user' })
-        router
           .patch('profile', [controllers.v1.users.Profile, 'update'])
           .openapi({ summary: 'Update user profile' })
       })
       .prefix('account')
       .as('profile')
+      .use(throttle)
       .use(middleware.auth())
       .openapi({
         tags: ['User Account'],
         description: 'User account related endpoints',
       })
 
+    // Folder routes
     router
       .group(() => {
         router
@@ -123,12 +128,14 @@ router
       })
       .prefix('folders')
       .as('folder')
+      .use(throttle)
       .use(middleware.auth())
       .openapi({
         tags: ['Folders'],
         description: 'Folder related endpoints',
       })
 
+    // Bookmark routes
     router
       .group(() => {
         router
@@ -160,12 +167,14 @@ router
       })
       .prefix('bookmarks')
       .as('bookmarks')
+      .use(throttle)
       .use(middleware.auth())
       .openapi({
         tags: ['Bookmarks'],
         description: 'Bookmark related endpoints',
       })
 
+    // Member routes
     router
       .group(() => {
         router
@@ -183,14 +192,16 @@ router
           .delete(':memberId', [controllers.v1.core.Member, 'destroy'])
           .openapi({ summary: 'Remove a member' })
       })
-      .prefix('/folder/:folderId/member')
+      .prefix('/folders/:folderId/member')
       .as('members')
+      .use(throttle)
       .use(middleware.auth())
       .openapi({
         tags: ['Members'],
         description: 'Folder member related endpoints',
       })
 
+    // Invitation routes
     router
       .group(() => {
         router
@@ -201,20 +212,22 @@ router
           .openapi({ summary: 'Create a new invitation' })
 
         router
-          .post(':invitationId/decline', [controllers.v1.core.Invitation, 'destroy'])
+          .patch(':invitationId/decline', [controllers.v1.core.Invitation, 'destroy'])
           .openapi({ summary: 'Decline an invitation' })
         router
-          .post(':invitationId/accept', [controllers.v1.core.Invitation, 'accept'])
+          .patch(':invitationId/accept', [controllers.v1.core.Invitation, 'accept'])
           .openapi({ summary: 'Accept an invitation' })
       })
       .prefix('invitations')
       .as('invitations')
+      .use(throttle)
       .use(middleware.auth())
       .openapi({
         tags: ['Invitations'],
         description: 'Folder invitation related endpoints',
       })
 
+    // Notification routes
     router
       .group(() => {
         router
@@ -239,6 +252,7 @@ router
       })
       .prefix('notifications')
       .as('notifications')
+      .use(throttle)
       .use(middleware.auth())
       .openapi({
         tags: ['Notifications'],

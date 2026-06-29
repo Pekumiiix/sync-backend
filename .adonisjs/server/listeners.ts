@@ -12,4 +12,8 @@ export const listeners = {
   SendMemberRemovedNotification: () => import('#listeners/send_member_removed_notification'),
   SendPasswordResetEmail: () => import('#listeners/send_password_reset_email'),
   SendVerificationEmail: () => import('#listeners/send_verification_email'),
+  SendBookmarkUpdatedNotification: () => import('#listeners/send_bookmark_updated_notification'),
+  SendBookmarkDeletedNotification: () => import('#listeners/send_bookmark_deleted_notification'),
+  SendFolderUpdatedNotification: () => import('#listeners/send_folder_updated_notification'),
+  SendFolderDeletedNotification: () => import('#listeners/send_folder_deleted_notification'),
 }

@@ -1,3 +1,6 @@
+import { NotificationType } from '#enums/notification'
+import Member from '#models/member'
+import Notification from '#models/notification'
 import User from '#models/user'
 
 export class NotificationService {
@@ -26,5 +29,31 @@ export class NotificationService {
       currentPage: meta.currentPage,
       totalPages: meta.lastPage,
     }
+  }
+
+  static async notifyMembers(
+    members: Member[],
+    actor: User,
+    targetName: string | null,
+    type: NotificationType
+  ) {
+    if (members.length === 0) return
+
+    const notificationsToInsert = members.map((member) => ({
+      userId: member.userId,
+      type,
+      data: {
+        folderId: member.folder.id,
+        folderName: member.folder.name,
+
+        actorId: actor.id,
+        actorName: actor.firstName,
+        actorAvatar: actor.avatarUrl,
+
+        targetName,
+      },
+    }))
+
+    await Notification.createMany(notificationsToInsert)
   }
 }

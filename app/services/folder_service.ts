@@ -34,11 +34,17 @@ export class FolderService {
       throw new Exception('System folders cannot be deleted.', { status: 400 })
     }
 
+    const members = await MemberService.getMembers(folder.id)
+
     await folder.delete()
+
+    events.FolderDeleted.dispatch(folder.name, user, members)
   }
 
   static async updateFolder(folderId: string, user: User, name: string) {
     const { folder, permission } = await this.getFolderWithPermissions(folderId, user)
+
+    const oldFoldwerName = folder.name
 
     if (permission.accessLevel !== 'editor') {
       throw new Exception('You do not have permission to update this folder.', { status: 403 })
@@ -47,6 +53,8 @@ export class FolderService {
     folder.name = name
 
     await folder.save()
+
+    events.FolderUpdated.dispatch(folder.id, oldFoldwerName, user)
 
     return folder
   }

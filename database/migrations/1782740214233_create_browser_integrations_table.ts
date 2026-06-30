@@ -18,6 +18,9 @@ export default class extends BaseSchema {
 
       table.enum('browser', [...SUPPORTED_BROWSERS]).notNullable()
 
+      table.string('device_name').nullable()
+      table.string('extension_version').nullable()
+
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('last_synced_at', { useTz: true }).nullable()
     })

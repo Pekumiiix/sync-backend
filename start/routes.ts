@@ -23,31 +23,31 @@ router
           .use(middleware.guest())
           .openapi({ summary: 'Create a new user account' })
         router
-          .post('sign-in', [controllers.v1.auth.AccessTokens, 'store'])
+          .post('sign-in', [controllers.v1.auth.AccessToken, 'store'])
           .use(authThrottle)
           .use(middleware.guest())
           .openapi({ summary: 'Sign in a user and generate an access token' })
         router
-          .post('sign-out', [controllers.v1.auth.AccessTokens, 'destroy'])
+          .post('sign-out', [controllers.v1.auth.AccessToken, 'destroy'])
           .use(throttle)
           .use(middleware.auth())
           .openapi({ summary: 'Sign out the user' })
         router
-          .post('forgot-password', [controllers.v1.auth.ForgotPasswords, 'store'])
+          .post('forgot-password', [controllers.v1.auth.ForgotPassword, 'store'])
           .use(authThrottle)
           .use(middleware.guest())
           .openapi({ summary: 'Request a password reset' })
         router
-          .post('reset-password', [controllers.v1.auth.ResetPasswords, 'store'])
+          .post('reset-password', [controllers.v1.auth.ResetPassword, 'store'])
           .use(authThrottle)
           .use(middleware.guest())
           .openapi({ summary: 'Reset user password' })
         router
-          .post('verify-email', [controllers.v1.auth.VerifyEmails, 'store'])
+          .post('verify-email', [controllers.v1.auth.VerifyEmail, 'store'])
           .use(authThrottle)
           .openapi({ summary: 'Verify user email' })
         router
-          .post('verify-email/resend', [controllers.v1.auth.VerifyEmails, 'resend'])
+          .post('verify-email/resend', [controllers.v1.auth.VerifyEmail, 'resend'])
           .use(resendThrottle)
           .openapi({ summary: 'Resend email verification link' })
       })
@@ -58,21 +58,37 @@ router
         description: 'Authentication related endpoints',
       })
 
+    // Extension routes
+    router
+      .group(() => {
+        router
+          .post('sign-in', [controllers.v1.extension.Auth, 'store'])
+          .openapi({ summary: 'Login via browser extension' })
+      })
+      .prefix('extension')
+      .as('extension')
+      .use(authThrottle)
+      .use(middleware.guest())
+      .openapi({
+        tags: ['Extension'],
+        description: 'Browser extension related endpoints',
+      })
+
     // OAuth routes
     router
       .group(() => {
         router
-          .get('google', [controllers.v1.oauth.Googles, 'redirect'])
+          .get('google', [controllers.v1.oauth.Google, 'redirect'])
           .use(middleware.guest())
           .use(authThrottle)
           .openapi({ summary: 'Redirect to Google OAuth' })
         router
-          .get('google/callback', [controllers.v1.oauth.Googles, 'store'])
+          .get('google/callback', [controllers.v1.oauth.Google, 'store'])
           .use(middleware.guest())
           .use(authThrottle)
           .openapi({ summary: 'Handle Google OAuth callback' })
         router
-          .delete('google/disconnect', [controllers.v1.oauth.Googles, 'destroy'])
+          .delete('google/disconnect', [controllers.v1.oauth.Google, 'destroy'])
           .openapi({ summary: 'Disconnect Google OAuth' })
           .use(middleware.auth())
       })
@@ -83,7 +99,7 @@ router
         description: 'OAuth related endpoints',
       })
 
-    // Acount routes
+    // Account routes
     router
       .group(() => {
         router
@@ -231,23 +247,23 @@ router
     router
       .group(() => {
         router
-          .get('/', [controllers.v1.users.Notifications, 'index'])
+          .get('/', [controllers.v1.users.Notification, 'index'])
           .openapi({ summary: 'List all notifications' })
         router
-          .delete('/', [controllers.v1.users.Notifications, 'destroyAll'])
+          .delete('/', [controllers.v1.users.Notification, 'destroyAll'])
           .openapi({ summary: 'Delete all notifications' })
         router
-          .patch('mark-all-as-read', [controllers.v1.users.Notifications, 'markAllAsRead'])
+          .patch('mark-all-as-read', [controllers.v1.users.Notification, 'markAllAsRead'])
           .openapi({ summary: 'Mark all notifications as read' })
 
         router
-          .delete(':notificationId', [controllers.v1.users.Notifications, 'destroy'])
+          .delete(':notificationId', [controllers.v1.users.Notification, 'destroy'])
           .openapi({ summary: 'Delete a notification' })
         router
-          .patch(':notificationId/read', [controllers.v1.users.Notifications, 'markAsRead'])
+          .patch(':notificationId/read', [controllers.v1.users.Notification, 'markAsRead'])
           .openapi({ summary: 'Mark a notification as read' })
         router
-          .patch(':notificationId/unread', [controllers.v1.users.Notifications, 'markAsUnread'])
+          .patch(':notificationId/unread', [controllers.v1.users.Notification, 'markAsUnread'])
           .openapi({ summary: 'Mark a notification as unread' })
       })
       .prefix('notifications')
@@ -257,6 +273,27 @@ router
       .openapi({
         tags: ['Notifications'],
         description: 'Notification related endpoints',
+      })
+
+    // Browser Integration routes
+    router
+      .group(() => {
+        router
+          .get('/', [controllers.v1.core.Integration, 'index'])
+          .openapi({ summary: 'List all browser integrations' })
+        router
+
+        router
+          .delete('/:integrationId', [controllers.v1.core.Integration, 'destroy'])
+          .openapi({ summary: 'Remove a browser integration' })
+      })
+      .prefix('browser-integrations')
+      .as('browserIntegrations')
+      .use(throttle)
+      .use(middleware.auth())
+      .openapi({
+        tags: ['Browser Integrations'],
+        description: 'Browser integration related endpoints',
       })
   })
   .prefix('/api/v1')

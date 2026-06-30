@@ -99,9 +99,10 @@ export default class FoldersController {
       user
     )
 
-    const [pinnedBookmarks, paginatedBookmarks] = await Promise.all([
+    const [pinnedBookmarks, paginatedBookmarks, browserTypes] = await Promise.all([
       BookmarkService.pinnedBookmarks(folder),
       BookmarkService.getPaginatedBookmarks(folder, query),
+      BookmarkService.getAllBrowserTypesForFolder(folder.id),
     ])
 
     const unpinnedBookmarks = paginatedBookmarks.all()
@@ -120,6 +121,7 @@ export default class FoldersController {
         previewMembers,
         pinnedBookmarks,
         bookmarks: BookmarkTransformer.transform(unpinnedBookmarks),
+        browserTypes,
         meta: {
           currentPage: meta.currentPage,
           totalPages: meta.lastPage,

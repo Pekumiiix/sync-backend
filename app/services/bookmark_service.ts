@@ -169,30 +169,24 @@ export class BookmarkService {
       sortByTitle,
     } = query
 
-    const pinnedQuery = Bookmark.query()
-      .whereIn('folder_id', (builder) => {
-        builder.select('folder_id').from('members').where('user_id', userId)
+    const baseQuery = Bookmark.query()
+      .where((builder) => {
+        builder.whereIn(
+          'folder_id',
+          db.from('members').select('folder_id').where('user_id', userId)
+        )
+        builder.orWhereIn('folder_id', db.from('folders').select('id').where('user_id', userId))
       })
-      .where('is_pinned', true)
       .preload('user')
-      .preload('folder', (query) => {
-        query.select('id', 'name', 'is_system')
-      })
-      .orderBy('updated_at', 'desc')
-
-    const unpinnedQuery = Bookmark.query()
-      .whereIn('folder_id', (builder) => {
-        builder.select('folder_id').from('members').where('user_id', userId)
-      })
-      .where('is_pinned', false)
-      .preload('user')
-      .preload('folder', (query) => {
-        query.select('id', 'name', 'is_system')
-      })
+      .preload('folder', (q) => q.select('id', 'name', 'is_system'))
 
     if (sortByBrowser !== 'all') {
-      unpinnedQuery.where('browser', sortByBrowser)
+      baseQuery.where('browser', sortByBrowser)
     }
+
+    const pinnedQuery = baseQuery.clone().where('is_pinned', true).orderBy('updated_at', 'desc')
+
+    const unpinnedQuery = baseQuery.clone().where('is_pinned', false)
 
     if (sortByTitle) {
       unpinnedQuery.orderBy('title', sortByTitle)
@@ -209,5 +203,28 @@ export class BookmarkService {
       pinnedBookmarks,
       paginatedBookmarks,
     }
+  }
+
+  static async getAllBrowserTypesForUser(userId: string) {
+    const browserTypes = await Bookmark.query()
+      .select('browser')
+      .where((query) => {
+        query.whereIn('folderId', db.from('members').select('folder_id').where('user_id', userId))
+        query.orWhereIn('folderId', db.from('folders').select('id').where('user_id', userId))
+      })
+      .whereNotNull('browser')
+      .distinct('browser')
+
+    return browserTypes
+  }
+
+  static async getAllBrowserTypesForFolder(folderId: string) {
+    const browserTypes = await Bookmark.query()
+      .select('browser')
+      .where('folderId', folderId)
+      .whereNotNull('browser')
+      .distinct('browser')
+
+    return browserTypes
   }
 }

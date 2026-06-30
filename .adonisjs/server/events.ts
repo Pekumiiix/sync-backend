@@ -4,27 +4,27 @@
  */
 
 import BookmarkCreated from '#events/bookmark_created'
+import BookmarkDeleted from '#events/bookmark_deleted'
+import BookmarkUpdated from '#events/bookmark_updated'
 import FolderCreated from '#events/folder_created'
+import FolderDeleted from '#events/folder_deleted'
+import FolderUpdated from '#events/folder_updated'
 import MemberJoined from '#events/member_joined'
 import MemberLeft from '#events/member_left'
 import MemberRemoved from '#events/member_removed'
 import PasswordResetRequested from '#events/password_reset_requested'
 import UserRegistered from '#events/user_registered'
-import BookmarkUpdated from '#events/bookmark_updated'
-import BookmarkDeleted from '#events/bookmark_deleted'
-import FolderUpdated from '#events/folder_updated'
-import FolderDeleted from '#events/folder_deleted'
 
 export const events = {
   BookmarkCreated: BookmarkCreated,
+  BookmarkDeleted: BookmarkDeleted,
+  BookmarkUpdated: BookmarkUpdated,
   FolderCreated: FolderCreated,
+  FolderDeleted: FolderDeleted,
+  FolderUpdated: FolderUpdated,
   MemberJoined: MemberJoined,
   MemberLeft: MemberLeft,
   MemberRemoved: MemberRemoved,
   PasswordResetRequested: PasswordResetRequested,
   UserRegistered: UserRegistered,
-  BookmarkUpdated: BookmarkUpdated,
-  BookmarkDeleted: BookmarkDeleted,
-  FolderUpdated: FolderUpdated,
-  FolderDeleted: FolderDeleted,
 }

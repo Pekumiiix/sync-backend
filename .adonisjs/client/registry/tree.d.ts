@@ -6,26 +6,31 @@ export interface ApiDefinition {
     newAccount: {
       store: typeof routes['auth.new_account.store']
     }
-    accessTokens: {
-      store: typeof routes['auth.access_tokens.store']
-      destroy: typeof routes['auth.access_tokens.destroy']
+    accessToken: {
+      store: typeof routes['auth.access_token.store']
+      destroy: typeof routes['auth.access_token.destroy']
     }
-    forgotPasswords: {
-      store: typeof routes['auth.forgot_passwords.store']
+    forgotPassword: {
+      store: typeof routes['auth.forgot_password.store']
     }
-    resetPasswords: {
-      store: typeof routes['auth.reset_passwords.store']
+    resetPassword: {
+      store: typeof routes['auth.reset_password.store']
     }
-    verifyEmails: {
-      store: typeof routes['auth.verify_emails.store']
-      resend: typeof routes['auth.verify_emails.resend']
+    verifyEmail: {
+      store: typeof routes['auth.verify_email.store']
+      resend: typeof routes['auth.verify_email.resend']
+    }
+  }
+  extension: {
+    auth: {
+      store: typeof routes['extension.auth.store']
     }
   }
   oauths: {
-    googles: {
-      redirect: typeof routes['oauths.googles.redirect']
-      store: typeof routes['oauths.googles.store']
-      destroy: typeof routes['oauths.googles.destroy']
+    google: {
+      redirect: typeof routes['oauths.google.redirect']
+      store: typeof routes['oauths.google.store']
+      destroy: typeof routes['oauths.google.destroy']
     }
   }
   profile: {
@@ -73,13 +78,19 @@ export interface ApiDefinition {
     }
   }
   notifications: {
-    notifications: {
-      index: typeof routes['notifications.notifications.index']
-      destroyAll: typeof routes['notifications.notifications.destroy_all']
-      markAllAsRead: typeof routes['notifications.notifications.mark_all_as_read']
-      destroy: typeof routes['notifications.notifications.destroy']
-      markAsRead: typeof routes['notifications.notifications.mark_as_read']
-      markAsUnread: typeof routes['notifications.notifications.mark_as_unread']
+    notification: {
+      index: typeof routes['notifications.notification.index']
+      destroyAll: typeof routes['notifications.notification.destroy_all']
+      markAllAsRead: typeof routes['notifications.notification.mark_all_as_read']
+      destroy: typeof routes['notifications.notification.destroy']
+      markAsRead: typeof routes['notifications.notification.mark_as_read']
+      markAsUnread: typeof routes['notifications.notification.mark_as_unread']
+    }
+  }
+  browserIntegrations: {
+    integration: {
+      index: typeof routes['browserIntegrations.integration.index']
+      destroy: typeof routes['browserIntegrations.integration.destroy']
     }
   }
 }

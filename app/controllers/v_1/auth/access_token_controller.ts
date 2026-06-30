@@ -4,6 +4,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import UserTransformer from '#transformers/user_transformer'
 import { AuthDataResponse } from '#interfaces/user'
 import { ApiSuccessResponse } from '#interfaces/api'
+import { BookmarkService } from '#services/bookmark_service'
 
 export default class AccessTokensController {
   async store(ctx: HttpContext) {
@@ -14,9 +15,12 @@ export default class AccessTokensController {
     const user = await User.verifyCredentials(email, password)
     const token = await User.accessTokens.create(user)
 
+    const browserTypes = await BookmarkService.getAllBrowserTypesForUser(user.id)
+
     const formatedResponse: AuthDataResponse = ctx.serialize(
       {
         user: UserTransformer.transform(user),
+        browserTypes,
         token: token.value!.release(),
       },
       'Successfully signed in'

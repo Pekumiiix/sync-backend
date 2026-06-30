@@ -1,0 +1,15 @@
+import { BaseTransformer } from '@adonisjs/core/transformers'
+import BrowserIntegration from '#models/browser_integration'
+
+export default class BrowserIntegrationTransformer extends BaseTransformer<BrowserIntegration> {
+  toObject() {
+    return this.pick(this.resource, [
+      'id',
+      'browser',
+      'lastSyncedAt',
+      'createdAt',
+      'deviceName',
+      'extensionVersion',
+    ])
+  }
+}

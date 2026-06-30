@@ -19,7 +19,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/new_account_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'auth.access_tokens.store': {
+  'auth.access_token.store': {
     methods: ["POST"]
     pattern: '/api/v1/auth/sign-in'
     types: {
@@ -27,11 +27,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: ExtractQuery<InferInput<(typeof import('#validators/user').loginValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_tokens_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_tokens_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_token_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_token_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'auth.access_tokens.destroy': {
+  'auth.access_token.destroy': {
     methods: ["POST"]
     pattern: '/api/v1/auth/sign-out'
     types: {
@@ -39,11 +39,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_tokens_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_tokens_controller').default['destroy']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_token_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/access_token_controller').default['destroy']>>>
     }
   }
-  'auth.forgot_passwords.store': {
+  'auth.forgot_password.store': {
     methods: ["POST"]
     pattern: '/api/v1/auth/forgot-password'
     types: {
@@ -51,11 +51,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: ExtractQuery<InferInput<(typeof import('#validators/user').forgotPasswordValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/forgot_passwords_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/forgot_passwords_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/forgot_password_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/forgot_password_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'auth.reset_passwords.store': {
+  'auth.reset_password.store': {
     methods: ["POST"]
     pattern: '/api/v1/auth/reset-password'
     types: {
@@ -63,11 +63,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: ExtractQuery<InferInput<(typeof import('#validators/user').resetPasswordValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/reset_passwords_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/reset_passwords_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/reset_password_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/reset_password_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'auth.verify_emails.store': {
+  'auth.verify_email.store': {
     methods: ["POST"]
     pattern: '/api/v1/auth/verify-email'
     types: {
@@ -75,11 +75,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: ExtractQuery<InferInput<(typeof import('#validators/user').verifyEmailValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_emails_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_emails_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_email_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_email_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'auth.verify_emails.resend': {
+  'auth.verify_email.resend': {
     methods: ["POST"]
     pattern: '/api/v1/auth/verify-email/resend'
     types: {
@@ -87,11 +87,23 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: ExtractQuery<InferInput<(typeof import('#validators/user').resendVerificationEmailValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_emails_controller').default['resend']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_emails_controller').default['resend']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_email_controller').default['resend']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_email_controller').default['resend']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'oauths.googles.redirect': {
+  'extension.auth.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/extension/sign-in'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/extension_user').extensionLoginValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/extension_user').extensionLoginValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/extension/auth_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/extension/auth_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'oauths.google.redirect': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/oauth/google'
     types: {
@@ -99,11 +111,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/googles_controller').default['redirect']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/googles_controller').default['redirect']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['redirect']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['redirect']>>>
     }
   }
-  'oauths.googles.store': {
+  'oauths.google.store': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/oauth/google/callback'
     types: {
@@ -111,11 +123,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/googles_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/googles_controller').default['store']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['store']>>>
     }
   }
-  'oauths.googles.destroy': {
+  'oauths.google.destroy': {
     methods: ["DELETE"]
     pattern: '/api/v1/oauth/google/disconnect'
     types: {
@@ -123,8 +135,8 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/googles_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/googles_controller').default['destroy']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['destroy']>>>
     }
   }
   'profile.profile.show': {
@@ -415,7 +427,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['accept']>>>
     }
   }
-  'notifications.notifications.index': {
+  'notifications.notification.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/notifications'
     types: {
@@ -423,11 +435,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: ExtractQueryForGet<InferInput<(typeof import('#validators/notification').notificationQueryParam)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'notifications.notifications.destroy_all': {
+  'notifications.notification.destroy_all': {
     methods: ["DELETE"]
     pattern: '/api/v1/notifications'
     types: {
@@ -435,11 +447,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['destroyAll']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['destroyAll']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['destroyAll']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['destroyAll']>>>
     }
   }
-  'notifications.notifications.mark_all_as_read': {
+  'notifications.notification.mark_all_as_read': {
     methods: ["PATCH"]
     pattern: '/api/v1/notifications/mark-all-as-read'
     types: {
@@ -447,11 +459,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAllAsRead']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAllAsRead']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['markAllAsRead']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['markAllAsRead']>>>
     }
   }
-  'notifications.notifications.destroy': {
+  'notifications.notification.destroy': {
     methods: ["DELETE"]
     pattern: '/api/v1/notifications/:notificationId'
     types: {
@@ -459,11 +471,11 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { notificationId: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['destroy']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['destroy']>>>
     }
   }
-  'notifications.notifications.mark_as_read': {
+  'notifications.notification.mark_as_read': {
     methods: ["PATCH"]
     pattern: '/api/v1/notifications/:notificationId/read'
     types: {
@@ -471,11 +483,11 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { notificationId: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAsRead']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAsRead']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['markAsRead']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['markAsRead']>>>
     }
   }
-  'notifications.notifications.mark_as_unread': {
+  'notifications.notification.mark_as_unread': {
     methods: ["PATCH"]
     pattern: '/api/v1/notifications/:notificationId/unread'
     types: {
@@ -483,8 +495,32 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { notificationId: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAsUnread']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notifications_controller').default['markAsUnread']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['markAsUnread']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/notification_controller').default['markAsUnread']>>>
+    }
+  }
+  'browserIntegrations.integration.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/browser-integrations'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/integration_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/integration_controller').default['index']>>>
+    }
+  }
+  'browserIntegrations.integration.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/browser-integrations/:integrationId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { integrationId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/integration_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/integration_controller').default['destroy']>>>
     }
   }
 }

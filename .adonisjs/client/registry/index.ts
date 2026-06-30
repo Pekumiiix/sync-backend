@@ -12,59 +12,65 @@ const routes = {
     tokens: [{"old":"/api/v1/auth/sign-up","type":0,"val":"api","end":""},{"old":"/api/v1/auth/sign-up","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/sign-up","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/sign-up","type":0,"val":"sign-up","end":""}],
     types: placeholder as Registry['auth.new_account.store']['types'],
   },
-  'auth.access_tokens.store': {
+  'auth.access_token.store': {
     methods: ["POST"],
     pattern: '/api/v1/auth/sign-in',
     tokens: [{"old":"/api/v1/auth/sign-in","type":0,"val":"api","end":""},{"old":"/api/v1/auth/sign-in","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/sign-in","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/sign-in","type":0,"val":"sign-in","end":""}],
-    types: placeholder as Registry['auth.access_tokens.store']['types'],
+    types: placeholder as Registry['auth.access_token.store']['types'],
   },
-  'auth.access_tokens.destroy': {
+  'auth.access_token.destroy': {
     methods: ["POST"],
     pattern: '/api/v1/auth/sign-out',
     tokens: [{"old":"/api/v1/auth/sign-out","type":0,"val":"api","end":""},{"old":"/api/v1/auth/sign-out","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/sign-out","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/sign-out","type":0,"val":"sign-out","end":""}],
-    types: placeholder as Registry['auth.access_tokens.destroy']['types'],
+    types: placeholder as Registry['auth.access_token.destroy']['types'],
   },
-  'auth.forgot_passwords.store': {
+  'auth.forgot_password.store': {
     methods: ["POST"],
     pattern: '/api/v1/auth/forgot-password',
     tokens: [{"old":"/api/v1/auth/forgot-password","type":0,"val":"api","end":""},{"old":"/api/v1/auth/forgot-password","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/forgot-password","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/forgot-password","type":0,"val":"forgot-password","end":""}],
-    types: placeholder as Registry['auth.forgot_passwords.store']['types'],
+    types: placeholder as Registry['auth.forgot_password.store']['types'],
   },
-  'auth.reset_passwords.store': {
+  'auth.reset_password.store': {
     methods: ["POST"],
     pattern: '/api/v1/auth/reset-password',
     tokens: [{"old":"/api/v1/auth/reset-password","type":0,"val":"api","end":""},{"old":"/api/v1/auth/reset-password","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/reset-password","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/reset-password","type":0,"val":"reset-password","end":""}],
-    types: placeholder as Registry['auth.reset_passwords.store']['types'],
+    types: placeholder as Registry['auth.reset_password.store']['types'],
   },
-  'auth.verify_emails.store': {
+  'auth.verify_email.store': {
     methods: ["POST"],
     pattern: '/api/v1/auth/verify-email',
     tokens: [{"old":"/api/v1/auth/verify-email","type":0,"val":"api","end":""},{"old":"/api/v1/auth/verify-email","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/verify-email","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/verify-email","type":0,"val":"verify-email","end":""}],
-    types: placeholder as Registry['auth.verify_emails.store']['types'],
+    types: placeholder as Registry['auth.verify_email.store']['types'],
   },
-  'auth.verify_emails.resend': {
+  'auth.verify_email.resend': {
     methods: ["POST"],
     pattern: '/api/v1/auth/verify-email/resend',
     tokens: [{"old":"/api/v1/auth/verify-email/resend","type":0,"val":"api","end":""},{"old":"/api/v1/auth/verify-email/resend","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/verify-email/resend","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/verify-email/resend","type":0,"val":"verify-email","end":""},{"old":"/api/v1/auth/verify-email/resend","type":0,"val":"resend","end":""}],
-    types: placeholder as Registry['auth.verify_emails.resend']['types'],
+    types: placeholder as Registry['auth.verify_email.resend']['types'],
   },
-  'oauths.googles.redirect': {
+  'extension.auth.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/extension/sign-in',
+    tokens: [{"old":"/api/v1/extension/sign-in","type":0,"val":"api","end":""},{"old":"/api/v1/extension/sign-in","type":0,"val":"v1","end":""},{"old":"/api/v1/extension/sign-in","type":0,"val":"extension","end":""},{"old":"/api/v1/extension/sign-in","type":0,"val":"sign-in","end":""}],
+    types: placeholder as Registry['extension.auth.store']['types'],
+  },
+  'oauths.google.redirect': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/oauth/google',
     tokens: [{"old":"/api/v1/oauth/google","type":0,"val":"api","end":""},{"old":"/api/v1/oauth/google","type":0,"val":"v1","end":""},{"old":"/api/v1/oauth/google","type":0,"val":"oauth","end":""},{"old":"/api/v1/oauth/google","type":0,"val":"google","end":""}],
-    types: placeholder as Registry['oauths.googles.redirect']['types'],
+    types: placeholder as Registry['oauths.google.redirect']['types'],
   },
-  'oauths.googles.store': {
+  'oauths.google.store': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/oauth/google/callback',
     tokens: [{"old":"/api/v1/oauth/google/callback","type":0,"val":"api","end":""},{"old":"/api/v1/oauth/google/callback","type":0,"val":"v1","end":""},{"old":"/api/v1/oauth/google/callback","type":0,"val":"oauth","end":""},{"old":"/api/v1/oauth/google/callback","type":0,"val":"google","end":""},{"old":"/api/v1/oauth/google/callback","type":0,"val":"callback","end":""}],
-    types: placeholder as Registry['oauths.googles.store']['types'],
+    types: placeholder as Registry['oauths.google.store']['types'],
   },
-  'oauths.googles.destroy': {
+  'oauths.google.destroy': {
     methods: ["DELETE"],
     pattern: '/api/v1/oauth/google/disconnect',
     tokens: [{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"api","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"v1","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"oauth","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"google","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"disconnect","end":""}],
-    types: placeholder as Registry['oauths.googles.destroy']['types'],
+    types: placeholder as Registry['oauths.google.destroy']['types'],
   },
   'profile.profile.show': {
     methods: ["GET","HEAD"],
@@ -210,41 +216,53 @@ const routes = {
     tokens: [{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"api","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"v1","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"invitations","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":1,"val":"invitationId","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"accept","end":""}],
     types: placeholder as Registry['invitations.invitation.accept']['types'],
   },
-  'notifications.notifications.index': {
+  'notifications.notification.index': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/notifications',
     tokens: [{"old":"/api/v1/notifications","type":0,"val":"api","end":""},{"old":"/api/v1/notifications","type":0,"val":"v1","end":""},{"old":"/api/v1/notifications","type":0,"val":"notifications","end":""}],
-    types: placeholder as Registry['notifications.notifications.index']['types'],
+    types: placeholder as Registry['notifications.notification.index']['types'],
   },
-  'notifications.notifications.destroy_all': {
+  'notifications.notification.destroy_all': {
     methods: ["DELETE"],
     pattern: '/api/v1/notifications',
     tokens: [{"old":"/api/v1/notifications","type":0,"val":"api","end":""},{"old":"/api/v1/notifications","type":0,"val":"v1","end":""},{"old":"/api/v1/notifications","type":0,"val":"notifications","end":""}],
-    types: placeholder as Registry['notifications.notifications.destroy_all']['types'],
+    types: placeholder as Registry['notifications.notification.destroy_all']['types'],
   },
-  'notifications.notifications.mark_all_as_read': {
+  'notifications.notification.mark_all_as_read': {
     methods: ["PATCH"],
     pattern: '/api/v1/notifications/mark-all-as-read',
     tokens: [{"old":"/api/v1/notifications/mark-all-as-read","type":0,"val":"api","end":""},{"old":"/api/v1/notifications/mark-all-as-read","type":0,"val":"v1","end":""},{"old":"/api/v1/notifications/mark-all-as-read","type":0,"val":"notifications","end":""},{"old":"/api/v1/notifications/mark-all-as-read","type":0,"val":"mark-all-as-read","end":""}],
-    types: placeholder as Registry['notifications.notifications.mark_all_as_read']['types'],
+    types: placeholder as Registry['notifications.notification.mark_all_as_read']['types'],
   },
-  'notifications.notifications.destroy': {
+  'notifications.notification.destroy': {
     methods: ["DELETE"],
     pattern: '/api/v1/notifications/:notificationId',
     tokens: [{"old":"/api/v1/notifications/:notificationId","type":0,"val":"api","end":""},{"old":"/api/v1/notifications/:notificationId","type":0,"val":"v1","end":""},{"old":"/api/v1/notifications/:notificationId","type":0,"val":"notifications","end":""},{"old":"/api/v1/notifications/:notificationId","type":1,"val":"notificationId","end":""}],
-    types: placeholder as Registry['notifications.notifications.destroy']['types'],
+    types: placeholder as Registry['notifications.notification.destroy']['types'],
   },
-  'notifications.notifications.mark_as_read': {
+  'notifications.notification.mark_as_read': {
     methods: ["PATCH"],
     pattern: '/api/v1/notifications/:notificationId/read',
     tokens: [{"old":"/api/v1/notifications/:notificationId/read","type":0,"val":"api","end":""},{"old":"/api/v1/notifications/:notificationId/read","type":0,"val":"v1","end":""},{"old":"/api/v1/notifications/:notificationId/read","type":0,"val":"notifications","end":""},{"old":"/api/v1/notifications/:notificationId/read","type":1,"val":"notificationId","end":""},{"old":"/api/v1/notifications/:notificationId/read","type":0,"val":"read","end":""}],
-    types: placeholder as Registry['notifications.notifications.mark_as_read']['types'],
+    types: placeholder as Registry['notifications.notification.mark_as_read']['types'],
   },
-  'notifications.notifications.mark_as_unread': {
+  'notifications.notification.mark_as_unread': {
     methods: ["PATCH"],
     pattern: '/api/v1/notifications/:notificationId/unread',
     tokens: [{"old":"/api/v1/notifications/:notificationId/unread","type":0,"val":"api","end":""},{"old":"/api/v1/notifications/:notificationId/unread","type":0,"val":"v1","end":""},{"old":"/api/v1/notifications/:notificationId/unread","type":0,"val":"notifications","end":""},{"old":"/api/v1/notifications/:notificationId/unread","type":1,"val":"notificationId","end":""},{"old":"/api/v1/notifications/:notificationId/unread","type":0,"val":"unread","end":""}],
-    types: placeholder as Registry['notifications.notifications.mark_as_unread']['types'],
+    types: placeholder as Registry['notifications.notification.mark_as_unread']['types'],
+  },
+  'browserIntegrations.integration.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/browser-integrations',
+    tokens: [{"old":"/api/v1/browser-integrations","type":0,"val":"api","end":""},{"old":"/api/v1/browser-integrations","type":0,"val":"v1","end":""},{"old":"/api/v1/browser-integrations","type":0,"val":"browser-integrations","end":""}],
+    types: placeholder as Registry['browserIntegrations.integration.index']['types'],
+  },
+  'browserIntegrations.integration.destroy': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/browser-integrations/:integrationId',
+    tokens: [{"old":"/api/v1/browser-integrations/:integrationId","type":0,"val":"api","end":""},{"old":"/api/v1/browser-integrations/:integrationId","type":0,"val":"v1","end":""},{"old":"/api/v1/browser-integrations/:integrationId","type":0,"val":"browser-integrations","end":""},{"old":"/api/v1/browser-integrations/:integrationId","type":1,"val":"integrationId","end":""}],
+    types: placeholder as Registry['browserIntegrations.integration.destroy']['types'],
   },
 } as const satisfies Record<string, AdonisEndpoint>
 

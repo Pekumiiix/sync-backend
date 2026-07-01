@@ -1,5 +1,4 @@
-import { BrowserType } from '#enums/browser'
-import { AccessLevelType, RoleType } from '#enums/member'
+import { type AccessLevelType, type RoleType } from '#enums/member'
 import type { BookmarkData } from '#interfaces/bookmarks'
 
 export interface FolderResponse {
@@ -58,7 +57,6 @@ export interface ShowFolderResponse {
     previewMembers: PreviewMember[]
     pinnedBookmarks: BookmarkData[]
     bookmarks: BookmarkData[]
-    browserTypes: { browser: BrowserType }[]
     meta: {
       currentPage: number
       totalPages: number

@@ -1,8 +1,8 @@
 import { storeInvitationValidator } from '#validators/invitation'
-import { HttpContext } from '@adonisjs/core/http'
+import type { HttpContext } from '@adonisjs/core/http'
 import InvitationTransformer from '#transformers/invitation_transformer'
 import { events } from '#generated/events'
-import { InvitationSuccessResponse, ListInvitationsResponse } from '#interfaces/invitations'
+import type { InvitationSuccessResponse, ListInvitationsResponse } from '#interfaces/invitations'
 import { InvitationService } from '#services/invitation_service'
 
 export default class InvitationsController {
@@ -14,7 +14,7 @@ export default class InvitationsController {
     const { pendingInvitations, resolvedInvitations } =
       await InvitationService.getUserInvitations(user)
 
-    const formattedResponse: ListInvitationsResponse = ctx.serialize(
+    const formattedResponse: ListInvitationsResponse = await ctx.serialize(
       {
         pendingInvitations: InvitationTransformer.transform(pendingInvitations),
         resolvedInvitations: InvitationTransformer.transform(resolvedInvitations),
@@ -38,7 +38,7 @@ export default class InvitationsController {
       accessLevel,
     })
 
-    const formattedResponse: InvitationSuccessResponse = ctx.serialize(
+    const formattedResponse: InvitationSuccessResponse = await ctx.serialize(
       { invitation: InvitationTransformer.transform(invitation) },
       'Invitation sent successfully.'
     )
@@ -57,7 +57,7 @@ export default class InvitationsController {
 
     const transformedInvitation = InvitationTransformer.transform(invitation)
 
-    const formattedResponse: InvitationSuccessResponse = ctx.serialize(
+    const formattedResponse: InvitationSuccessResponse = await ctx.serialize(
       { invitation: transformedInvitation },
       'Invitation declined successfully.'
     )
@@ -74,7 +74,7 @@ export default class InvitationsController {
 
     events.MemberJoined.dispatch(invitation.folderId, user)
 
-    const formattedResponse: InvitationSuccessResponse = ctx.serialize(
+    const formattedResponse: InvitationSuccessResponse = await ctx.serialize(
       { invitation: InvitationTransformer.transform(invitation) },
       'Invitation accepted successfully.'
     )

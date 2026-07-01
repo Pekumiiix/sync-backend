@@ -1,4 +1,4 @@
-import { ApiSuccessResponse } from '#interfaces/api'
+import { type ApiSuccessResponse } from '#interfaces/api'
 import type { GetBrowserIntegrationsResponse } from '#interfaces/browser_integrations'
 import { BrowserIntegrationService } from '#services/browser_integration_service'
 import BrowserIntegrationTransformer from '#transformers/browser_integration_transformer'
@@ -12,7 +12,7 @@ export default class IntegrationsController {
 
     const integrations = await user.related('browserIntegrations').query()
 
-    const formattedResponse: GetBrowserIntegrationsResponse = ctx.serialize(
+    const formattedResponse: GetBrowserIntegrationsResponse = await ctx.serialize(
       { integrations: BrowserIntegrationTransformer.transform(integrations) },
       'Integrations retrieved successfully!'
     )
@@ -29,7 +29,7 @@ export default class IntegrationsController {
 
     await BrowserIntegrationService.deleteIntegration(user, integrationId)
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'Integration deleted successfully!'
     )

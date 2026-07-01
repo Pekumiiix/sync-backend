@@ -1,4 +1,4 @@
-import FolderCreated from '#events/folder_created'
+import type FolderCreated from '#events/folder_created'
 import Member from '#models/member'
 
 export default class AssignFolderOwner {

@@ -39,8 +39,15 @@ class ApiSerializer extends BaseSerializer<{
 const serializer = new ApiSerializer()
 
 const serialize = Object.assign(
-  function <T>(this: HttpContext, data: any, message: string = 'Operation successful') {
-    const serializedData = serializer.serialize(data, this.containerResolver)
+  async function <T>(this: HttpContext, data: any, message: string = 'Operation successful') {
+    let serializedData: any = await serializer.serialize(data, this.containerResolver)
+
+    const hasDataKey =
+      serializedData && typeof serializedData === 'object' && 'data' in serializedData
+
+    if (!hasDataKey) {
+      serializedData = { data: data }
+    }
 
     return {
       success: true,
@@ -49,11 +56,11 @@ const serialize = Object.assign(
     }
   },
   {
-    withoutWrapping(
+    async withoutWrapping(
       this: HttpContext,
       ...[data, resolver]: Parameters<ApiSerializer['serializeWithoutWrapping']>
     ) {
-      return serializer.serializeWithoutWrapping(data, resolver ?? this.containerResolver)
+      return await serializer.serializeWithoutWrapping(data, resolver ?? this.containerResolver)
     },
   }
 )

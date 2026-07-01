@@ -1,16 +1,16 @@
 import { events } from '#generated/events'
 import Bookmark from '#models/bookmark'
-import Folder from '#models/folder'
+import type Folder from '#models/folder'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
 import {
-  CreateBookmarkType,
-  GetBookmarksQueryParams,
-  UpdateBookmarkType,
+  type CreateBookmarkType,
+  type GetBookmarksQueryParams,
+  type UpdateBookmarkType,
 } from '#validators/bookmark'
 import { Exception } from '@adonisjs/core/exceptions'
 import db from '@adonisjs/lucid/services/db'
 import { FolderService } from './folder_service.ts'
-import User from '#models/user'
+import type User from '#models/user'
 import { MemberService } from './member_service.ts'
 
 export class BookmarkService {

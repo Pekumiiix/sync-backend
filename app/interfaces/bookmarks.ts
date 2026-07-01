@@ -1,3 +1,5 @@
+import { type BrowserType } from '#enums/browser'
+
 export interface UrlData {
   title: string | null
   description: string | null
@@ -60,5 +62,13 @@ export interface FetchBookmarkPreviewResponse {
   message: string
   data: {
     openGraphData: UrlData
+  }
+}
+
+export interface GetBrowsersResponse {
+  success: true
+  message: string
+  data: {
+    browsers: { browser: BrowserType }[]
   }
 }

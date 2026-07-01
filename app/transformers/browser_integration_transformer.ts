@@ -1,5 +1,5 @@
 import { BaseTransformer } from '@adonisjs/core/transformers'
-import BrowserIntegration from '#models/browser_integration'
+import type BrowserIntegration from '#models/browser_integration'
 
 export default class BrowserIntegrationTransformer extends BaseTransformer<BrowserIntegration> {
   toObject() {

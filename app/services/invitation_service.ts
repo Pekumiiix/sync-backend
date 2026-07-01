@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import { Exception } from '@adonisjs/core/exceptions'
 import User from '#models/user'
 import { FolderService } from './folder_service.ts'
-import { StoreInvitationValidator } from '#validators/invitation'
+import { type StoreInvitationValidator } from '#validators/invitation'
 
 export class InvitationService {
   static async getUserInvitations(user: User) {

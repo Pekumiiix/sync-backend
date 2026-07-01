@@ -2,8 +2,8 @@ import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import { apiError } from '#utils/response'
 import UserTransformer from '#transformers/user_transformer'
-import { AuthDataResponse } from '#interfaces/user'
-import { ApiSuccessResponse } from '#interfaces/api'
+import { type AuthDataResponse } from '#interfaces/user'
+import { type ApiSuccessResponse } from '#interfaces/api'
 
 export default class OauthsController {
   async redirect({ ally }: HttpContext) {
@@ -51,7 +51,7 @@ export default class OauthsController {
 
     const token = await User.accessTokens.create(user)
 
-    const formatedResponse: AuthDataResponse = ctx.serialize(
+    const formatedResponse: AuthDataResponse = await ctx.serialize(
       {
         user: UserTransformer.transform(user),
         token: token.value!.release(),
@@ -89,7 +89,7 @@ export default class OauthsController {
 
     await identity.delete()
 
-    const formatedResponse: ApiSuccessResponse = ctx.serialize(
+    const formatedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'Google account disconnected successfully.'
     )

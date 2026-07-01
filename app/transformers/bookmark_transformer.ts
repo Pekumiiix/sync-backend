@@ -1,5 +1,5 @@
 import { BaseTransformer } from '@adonisjs/core/transformers'
-import Bookmark from '#models/bookmark'
+import type Bookmark from '#models/bookmark'
 
 export default class BookmarkTransformer extends BaseTransformer<Bookmark> {
   toObject() {

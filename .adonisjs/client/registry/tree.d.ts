@@ -54,6 +54,7 @@ export interface ApiDefinition {
       store: typeof routes['bookmarks.bookmark.store']
       index: typeof routes['bookmarks.bookmark.index']
       fetch: typeof routes['bookmarks.bookmark.fetch']
+      browsers: typeof routes['bookmarks.bookmark.browsers']
       update: typeof routes['bookmarks.bookmark.update']
       destroy: typeof routes['bookmarks.bookmark.destroy']
       pin: typeof routes['bookmarks.bookmark.pin']

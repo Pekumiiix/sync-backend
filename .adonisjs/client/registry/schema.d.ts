@@ -271,6 +271,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['fetch']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'bookmarks.bookmark.browsers': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/bookmarks/browsers'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['browsers']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['browsers']>>>
+    }
+  }
   'bookmarks.bookmark.update': {
     methods: ["PATCH"]
     pattern: '/api/v1/bookmarks/:bookmarkId'

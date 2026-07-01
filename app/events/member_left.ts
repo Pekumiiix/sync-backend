@@ -1,4 +1,4 @@
-import User from '#models/user'
+import type User from '#models/user'
 import { BaseEvent } from '@adonisjs/core/events'
 
 export default class MemberLeft extends BaseEvent {

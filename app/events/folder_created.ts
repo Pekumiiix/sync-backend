@@ -1,5 +1,5 @@
-import Folder from '#models/folder'
-import User from '#models/user'
+import type Folder from '#models/folder'
+import type User from '#models/user'
 import { BaseEvent } from '@adonisjs/core/events'
 
 export default class FolderCreated extends BaseEvent {

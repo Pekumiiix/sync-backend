@@ -1,8 +1,8 @@
-import { AccessLevelType, RoleType } from '#enums/member'
+import { type AccessLevelType, type RoleType } from '#enums/member'
 import { events } from '#generated/events'
 import Folder from '#models/folder'
 import Member from '#models/member'
-import User from '#models/user'
+import type User from '#models/user'
 import { Exception } from '@adonisjs/core/exceptions'
 import db from '@adonisjs/lucid/services/db'
 

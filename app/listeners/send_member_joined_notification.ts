@@ -1,4 +1,4 @@
-import MemberJoined from '#events/member_joined'
+import type MemberJoined from '#events/member_joined'
 import { MemberService } from '#services/member_service'
 import { NotificationService } from '#services/notification_service'
 

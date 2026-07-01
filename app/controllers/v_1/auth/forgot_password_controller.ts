@@ -1,5 +1,5 @@
 import { events } from '#generated/events'
-import { ApiSuccessResponse } from '#interfaces/api'
+import type { ApiSuccessResponse } from '#interfaces/api'
 import User from '#models/user'
 import { forgotPasswordValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -26,7 +26,7 @@ export default class ForgotPasswordsController {
       events.PasswordResetRequested.dispatch(user, resetToken)
     }
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'If an account with that email exists, a password reset link has been sent.'
     )

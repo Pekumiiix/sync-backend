@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import { generateVerificationCode } from '#utils/string'
 import UserTransformer from '#transformers/user_transformer'
 import { events } from '#generated/events'
-import { AuthDataResponse } from '#interfaces/user'
+import { type AuthDataResponse } from '#interfaces/user'
 
 export default class NewAccountController {
   async store(ctx: HttpContext) {
@@ -28,7 +28,7 @@ export default class NewAccountController {
 
     const token = await User.accessTokens.create(user)
 
-    const formattedResponse: AuthDataResponse = ctx.serialize(
+    const formattedResponse: AuthDataResponse = await ctx.serialize(
       {
         user: UserTransformer.transform(user),
         token: token.value!.release(),

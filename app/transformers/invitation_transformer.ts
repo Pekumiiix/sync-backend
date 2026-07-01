@@ -1,5 +1,5 @@
 import { BaseTransformer } from '@adonisjs/core/transformers'
-import Invitation from '#models/invitation'
+import type Invitation from '#models/invitation'
 
 export default class InvitationTransformer extends BaseTransformer<Invitation> {
   toObject() {
@@ -19,6 +19,8 @@ export default class InvitationTransformer extends BaseTransformer<Invitation> {
         ? {
             id: this.resource.folder.id,
             name: this.resource.folder.name,
+            isProtected: this.resource.folder.password !== null,
+            recentBookmarksImages: this.resource.folder.recentBookmarksImages,
           }
         : null,
     }

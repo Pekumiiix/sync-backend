@@ -1,6 +1,6 @@
 import mail from '@adonisjs/mail/services/main'
 import env from '#start/env'
-import UserRegistered from '#events/user_registered'
+import type UserRegistered from '#events/user_registered'
 
 export default class SendVerificationEmail {
   async handle(event: UserRegistered) {

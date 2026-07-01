@@ -1,4 +1,4 @@
-import FolderUpdated from '#events/folder_updated'
+import type FolderUpdated from '#events/folder_updated'
 import { MemberService } from '#services/member_service'
 import { NotificationService } from '#services/notification_service'
 

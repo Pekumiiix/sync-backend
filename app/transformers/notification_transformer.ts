@@ -1,6 +1,6 @@
 import { BaseTransformer } from '@adonisjs/core/transformers'
-import Notification from '#models/notification'
-import { NotificationType } from '#enums/notification'
+import type Notification from '#models/notification'
+import { type NotificationType } from '#enums/notification'
 import type { NotificationData } from '#interfaces/notifications'
 
 export default class NotificationTransformer extends BaseTransformer<Notification> {

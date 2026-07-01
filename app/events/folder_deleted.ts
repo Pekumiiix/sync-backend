@@ -1,5 +1,5 @@
-import Member from '#models/member'
-import User from '#models/user'
+import type Member from '#models/member'
+import type User from '#models/user'
 import { BaseEvent } from '@adonisjs/core/events'
 
 export default class FolderDeleted extends BaseEvent {

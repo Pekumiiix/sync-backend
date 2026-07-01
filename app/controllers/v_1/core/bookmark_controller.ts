@@ -9,11 +9,12 @@ import {
 import mql from '@microlink/mql'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
 import {
-  FetchBookmarkPreviewResponse,
-  IndexBookmarksResponse,
-  StoreBookmarkResponse,
+  type FetchBookmarkPreviewResponse,
+  type GetBrowsersResponse,
+  type IndexBookmarksResponse,
+  type StoreBookmarkResponse,
 } from '#interfaces/bookmarks'
-import { ApiSuccessResponse } from '#interfaces/api'
+import { type ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
 import { Exception } from '@adonisjs/core/exceptions'
 
@@ -32,7 +33,7 @@ export default class BookmarksController {
 
     const meta = paginatedBookmarks.getMeta()
 
-    const formattedResponse: IndexBookmarksResponse = ctx.serialize(
+    const formattedResponse: IndexBookmarksResponse = await ctx.serialize(
       {
         bookmarks: BookmarkTransformer.transform(paginatedBookmarks.all()),
         pinnedBookmarks: BookmarkTransformer.transform(pinnedBookmarks),
@@ -76,7 +77,7 @@ export default class BookmarksController {
         url: parsedUrl.href,
       }
 
-      const formattedResponse: FetchBookmarkPreviewResponse = ctx.serialize(
+      const formattedResponse: FetchBookmarkPreviewResponse = await ctx.serialize(
         { openGraphData },
         'URL data fetched successfully!'
       )
@@ -96,7 +97,7 @@ export default class BookmarksController {
 
     const bookmark = await BookmarkService.createBookmark(user, data)
 
-    const formattedResponse: StoreBookmarkResponse = ctx.serialize(
+    const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark created successfully!'
     )
@@ -113,7 +114,7 @@ export default class BookmarksController {
 
     await BookmarkService.deleteBookmark(bookmarkId, user)
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'Bookmark deleted successfully!'
     )
@@ -132,7 +133,7 @@ export default class BookmarksController {
 
     const bookmark = await BookmarkService.updateBookmark(bookmarkId, user, data)
 
-    const formattedResponse: StoreBookmarkResponse = ctx.serialize(
+    const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark updated successfully!'
     )
@@ -149,7 +150,7 @@ export default class BookmarksController {
 
     const bookmark = await BookmarkService.setPinStatus(bookmarkId, user, true)
 
-    const formattedResponse: StoreBookmarkResponse = ctx.serialize(
+    const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark pinned successfully!'
     )
@@ -166,7 +167,7 @@ export default class BookmarksController {
 
     const bookmark = await BookmarkService.setPinStatus(bookmarkId, user, false)
 
-    const formattedResponse: StoreBookmarkResponse = ctx.serialize(
+    const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark unpinned successfully!'
     )
@@ -185,9 +186,32 @@ export default class BookmarksController {
 
     const bookmark = await BookmarkService.moveBookmark(bookmarkId, newFolderId, user)
 
-    const formattedResponse: StoreBookmarkResponse = ctx.serialize(
+    const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark moved successfully!'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
+  async browsers(ctx: HttpContext) {
+    const { response, auth, request } = ctx
+
+    const user = auth.user!
+
+    const folderId = request.input('folderId')
+
+    let browsers = []
+
+    if (!folderId) {
+      browsers = await BookmarkService.getAllBrowserTypesForUser(user.id)
+    } else {
+      browsers = await BookmarkService.getAllBrowserTypesForFolder(folderId)
+    }
+
+    const formattedResponse: GetBrowsersResponse = await ctx.serialize(
+      { browsers },
+      'Bookmark browser types retrieved successfully!'
     )
 
     return response.ok(formattedResponse)

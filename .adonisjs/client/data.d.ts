@@ -6,17 +6,21 @@
 /// <reference path="./manifest.d.ts" />
 import type { InferData, InferVariants } from '@adonisjs/core/types/transformers'
 import type BookmarkTransformer from '#transformers/bookmark_transformer'
+import type BrowserIntegrationTransformer from '#transformers/browser_integration_transformer'
 import type FolderTransformer from '#transformers/folder_transformer'
 import type InvitationTransformer from '#transformers/invitation_transformer'
 import type MemberTransformer from '#transformers/member_transformer'
 import type NotificationTransformer from '#transformers/notification_transformer'
 import type UserTransformer from '#transformers/user_transformer'
-import type BrowserIntegrationTransformer from '#transformers/browser_integration_transformer'
 
 export namespace Data {
   export type Bookmark = InferData<BookmarkTransformer>
   export namespace Bookmark {
     export type Variants = InferVariants<BookmarkTransformer>
+  }
+  export type BrowserIntegration = InferData<BrowserIntegrationTransformer>
+  export namespace BrowserIntegration {
+    export type Variants = InferVariants<BrowserIntegrationTransformer>
   }
   export type Folder = InferData<FolderTransformer>
   export namespace Folder {
@@ -37,9 +41,5 @@ export namespace Data {
   export type User = InferData<UserTransformer>
   export namespace User {
     export type Variants = InferVariants<UserTransformer>
-  }
-  export type BrowserIntegration = InferData<BrowserIntegrationTransformer>
-  export namespace BrowserIntegration {
-    export type Variants = InferVariants<BrowserIntegrationTransformer>
   }
 }

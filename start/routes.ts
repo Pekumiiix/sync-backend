@@ -164,6 +164,9 @@ router
         router
           .post('preview', [controllers.v1.core.Bookmark, 'fetch'])
           .openapi({ summary: 'Fetch bookmark preview data' })
+        router
+          .get('browsers', [controllers.v1.core.Bookmark, 'browsers'])
+          .openapi({ summary: "List unique browsers used in a user or folder's bookmarks" })
 
         router
           .patch(':bookmarkId', [controllers.v1.core.Bookmark, 'update'])

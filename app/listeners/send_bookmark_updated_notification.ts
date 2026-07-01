@@ -1,4 +1,4 @@
-import BookmarkUpdated from '#events/bookmark_updated'
+import type BookmarkUpdated from '#events/bookmark_updated'
 import { MemberService } from '#services/member_service'
 import { NotificationService } from '#services/notification_service'
 

@@ -1,5 +1,4 @@
-import { AuthDataResponse } from '#interfaces/user'
-import { BookmarkService } from '#services/bookmark_service'
+import { type ProfileResponse } from '#interfaces/profile'
 import UserTransformer from '#transformers/user_transformer'
 import { updateProfileValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -10,10 +9,8 @@ export default class ProfileController {
 
     const user = auth.user!
 
-    const browserTypes = await BookmarkService.getAllBrowserTypesForUser(user.id)
-
-    const formattedUser: AuthDataResponse = ctx.serialize(
-      { user: UserTransformer.transform(user), browserTypes },
+    const formattedUser: ProfileResponse = await ctx.serialize(
+      { user: UserTransformer.transform(user) },
       'Profile retrieved successfully'
     )
 
@@ -32,10 +29,8 @@ export default class ProfileController {
 
     await user.save()
 
-    const browserTypes = await BookmarkService.getAllBrowserTypesForUser(user.id)
-
-    const formattedResponse: AuthDataResponse = ctx.serialize(
-      { user: UserTransformer.transform(user), browserTypes },
+    const formattedResponse: ProfileResponse = await ctx.serialize(
+      { user: UserTransformer.transform(user) },
       'Profile updated successfully'
     )
 

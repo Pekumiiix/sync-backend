@@ -26,6 +26,7 @@ export type ScannedRoutes = {
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.fetch': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.browsers': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.update': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.pin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
@@ -55,6 +56,7 @@ export type ScannedRoutes = {
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.browsers': { paramsTuple?: []; params?: {} }
     'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'invitations.invitation.index': { paramsTuple?: []; params?: {} }
     'notifications.notification.index': { paramsTuple?: []; params?: {} }
@@ -67,6 +69,7 @@ export type ScannedRoutes = {
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.browsers': { paramsTuple?: []; params?: {} }
     'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'invitations.invitation.index': { paramsTuple?: []; params?: {} }
     'notifications.notification.index': { paramsTuple?: []; params?: {} }

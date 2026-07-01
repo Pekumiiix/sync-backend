@@ -1,5 +1,8 @@
-import { ApiSuccessResponse } from '#interfaces/api'
-import { ListNotificationsResponse, NotificationSuccessResponse } from '#interfaces/notifications'
+import { type ApiSuccessResponse } from '#interfaces/api'
+import type {
+  ListNotificationsResponse,
+  NotificationSuccessResponse,
+} from '#interfaces/notifications'
 import { NotificationService } from '#services/notification_service'
 import NotificationTransformer from '#transformers/notification_transformer'
 import { notificationQueryParam } from '#validators/notification'
@@ -19,7 +22,7 @@ export default class NotificationsController {
     const { notifications, unreadCount, totalCount, currentPage } =
       await NotificationService.getUserNotifications(user, page, limit)
 
-    const formattedResponse: ListNotificationsResponse = ctx.serialize(
+    const formattedResponse: ListNotificationsResponse = await ctx.serialize(
       {
         notifications: NotificationTransformer.transform(notifications.all()),
         meta: { unreadCount, totalCount, currentPage },
@@ -41,7 +44,7 @@ export default class NotificationsController {
 
     await notification.delete()
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(null, 'Notification deleted.')
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(null, 'Notification deleted.')
 
     return response.ok(formattedResponse)
   }
@@ -53,7 +56,10 @@ export default class NotificationsController {
 
     await user.related('notifications').query().delete()
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(null, 'All notifications deleted.')
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'All notifications deleted.'
+    )
 
     return response.ok(formattedResponse)
   }
@@ -71,7 +77,7 @@ export default class NotificationsController {
 
     await notification.save()
 
-    const formattedResponse: NotificationSuccessResponse = ctx.serialize(
+    const formattedResponse: NotificationSuccessResponse = await ctx.serialize(
       { notification },
       'Notification read.'
     )
@@ -92,7 +98,7 @@ export default class NotificationsController {
 
     await notification.save()
 
-    const formattedResponse: NotificationSuccessResponse = ctx.serialize(
+    const formattedResponse: NotificationSuccessResponse = await ctx.serialize(
       { notification },
       'Notification marked as unread.'
     )
@@ -107,7 +113,7 @@ export default class NotificationsController {
 
     await user.related('notifications').query().update({ readAt: DateTime.now() })
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'All notifications marked as read.'
     )

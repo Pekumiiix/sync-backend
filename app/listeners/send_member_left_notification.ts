@@ -1,4 +1,4 @@
-import MemberLeft from '#events/member_left'
+import type MemberLeft from '#events/member_left'
 import { MemberService } from '#services/member_service'
 import { NotificationService } from '#services/notification_service'
 

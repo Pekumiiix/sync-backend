@@ -1,5 +1,5 @@
-import { AccessLevelType, RoleType } from '#enums/member'
-import { FolderPermission } from './folders.ts'
+import { type AccessLevelType, type RoleType } from '#enums/member'
+import { type FolderPermission } from './folders.ts'
 
 export interface PreviewUser {
   firstName: string

@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import { generateVerificationCode } from '#utils/string'
 import { apiError } from '#utils/response'
 import { events } from '#generated/events'
-import { ApiSuccessResponse } from '#interfaces/api'
+import { type ApiSuccessResponse } from '#interfaces/api'
 
 export default class VerifyEmailController {
   async store(ctx: HttpContext) {
@@ -30,7 +30,10 @@ export default class VerifyEmailController {
 
     await user.save()
 
-    const formattedData: ApiSuccessResponse = ctx.serialize(null, 'Email verified successfully!')
+    const formattedData: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'Email verified successfully!'
+    )
 
     return response.ok(formattedData)
   }
@@ -55,7 +58,7 @@ export default class VerifyEmailController {
 
     events.UserRegistered.dispatch(user, verificationCode)
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'A new verification code has been sent!'
     )

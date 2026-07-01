@@ -1,5 +1,5 @@
 import { BaseTransformer } from '@adonisjs/core/transformers'
-import Folder from '#models/folder'
+import type Folder from '#models/folder'
 
 export default class FolderTransformer extends BaseTransformer<Folder> {
   toObject() {

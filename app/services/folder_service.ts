@@ -1,5 +1,5 @@
 import Folder from '#models/folder'
-import User from '#models/user'
+import type User from '#models/user'
 import { Exception } from '@adonisjs/core/exceptions'
 import { MemberService } from './member_service.ts'
 import { events } from '#generated/events'

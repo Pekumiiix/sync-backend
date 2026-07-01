@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { extensionLoginValidator } from '#validators/extension_user'
 import { BrowserIntegrationService } from '#services/browser_integration_service'
-import { ExtensionSignInResponse } from '#interfaces/extension'
+import type { ExtensionSignInResponse } from '#interfaces/extension'
 
 export default class AuthController {
   async store(ctx: HttpContext) {
@@ -25,7 +25,7 @@ export default class AuthController {
       extensionVersion,
     })
 
-    const formattedResponse: ExtensionSignInResponse = ctx.serialize(
+    const formattedResponse: ExtensionSignInResponse = await ctx.serialize(
       {
         token: token.value!.release(),
         user: {

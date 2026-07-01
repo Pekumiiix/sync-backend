@@ -1,4 +1,4 @@
-import FolderDeleted from '#events/folder_deleted'
+import type FolderDeleted from '#events/folder_deleted'
 import { NotificationService } from '#services/notification_service'
 
 export default class SendFolderDeletedNotification {

@@ -138,6 +138,12 @@ const routes = {
     tokens: [{"old":"/api/v1/bookmarks/preview","type":0,"val":"api","end":""},{"old":"/api/v1/bookmarks/preview","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmarks/preview","type":0,"val":"bookmarks","end":""},{"old":"/api/v1/bookmarks/preview","type":0,"val":"preview","end":""}],
     types: placeholder as Registry['bookmarks.bookmark.fetch']['types'],
   },
+  'bookmarks.bookmark.browsers': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/bookmarks/browsers',
+    tokens: [{"old":"/api/v1/bookmarks/browsers","type":0,"val":"api","end":""},{"old":"/api/v1/bookmarks/browsers","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmarks/browsers","type":0,"val":"bookmarks","end":""},{"old":"/api/v1/bookmarks/browsers","type":0,"val":"browsers","end":""}],
+    types: placeholder as Registry['bookmarks.bookmark.browsers']['types'],
+  },
   'bookmarks.bookmark.update': {
     methods: ["PATCH"],
     pattern: '/api/v1/bookmarks/:bookmarkId',

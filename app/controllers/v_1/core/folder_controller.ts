@@ -6,8 +6,12 @@ import {
 import type { HttpContext } from '@adonisjs/core/http'
 import FolderTransformer from '#transformers/folder_transformer'
 import { FolderService } from '#services/folder_service'
-import { FolderIndexResponse, FolderStoreResponse, ShowFolderResponse } from '#interfaces/folders'
-import { ApiSuccessResponse } from '#interfaces/api'
+import {
+  type FolderIndexResponse,
+  type FolderStoreResponse,
+  type ShowFolderResponse,
+} from '#interfaces/folders'
+import { type ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
 import { getBookmarksQueryValidator } from '#validators/bookmark'
@@ -20,7 +24,7 @@ export default class FoldersController {
 
     const { systemFolders, ownedFolders, sharedFolders } = await FolderService.getFolders(user)
 
-    const formattedResponse: FolderIndexResponse = ctx.serialize(
+    const formattedResponse: FolderIndexResponse = await ctx.serialize(
       {
         systemFolders: FolderTransformer.transform(systemFolders),
         ownedFolders: FolderTransformer.transform(ownedFolders),
@@ -41,7 +45,7 @@ export default class FoldersController {
 
     const folder = await FolderService.createFolder(user, name)
 
-    const formattedResponse: FolderStoreResponse = ctx.serialize(
+    const formattedResponse: FolderStoreResponse = await ctx.serialize(
       { folder: FolderTransformer.transform(folder) },
       'Folder created successfully!'
     )
@@ -58,7 +62,7 @@ export default class FoldersController {
 
     await FolderService.deleteFolder(folderId, user)
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'Folder and its bookmarks deleted successfully!'
     )
@@ -77,7 +81,7 @@ export default class FoldersController {
 
     const folder = await FolderService.updateFolder(folderId, user, name)
 
-    const formattedResponse: FolderStoreResponse = ctx.serialize(
+    const formattedResponse: FolderStoreResponse = await ctx.serialize(
       { folder: FolderTransformer.transform(folder) },
       'Folder updated successfully!'
     )
@@ -99,16 +103,15 @@ export default class FoldersController {
       user
     )
 
-    const [pinnedBookmarks, paginatedBookmarks, browserTypes] = await Promise.all([
+    const [pinnedBookmarks, paginatedBookmarks] = await Promise.all([
       BookmarkService.pinnedBookmarks(folder),
       BookmarkService.getPaginatedBookmarks(folder, query),
-      BookmarkService.getAllBrowserTypesForFolder(folder.id),
     ])
 
     const unpinnedBookmarks = paginatedBookmarks.all()
     const meta = paginatedBookmarks.getMeta()
 
-    const formattedResponse: ShowFolderResponse = ctx.serialize(
+    const formattedResponse: ShowFolderResponse = await ctx.serialize(
       {
         folder: {
           id: folder.id,
@@ -121,7 +124,6 @@ export default class FoldersController {
         previewMembers,
         pinnedBookmarks,
         bookmarks: BookmarkTransformer.transform(unpinnedBookmarks),
-        browserTypes,
         meta: {
           currentPage: meta.currentPage,
           totalPages: meta.lastPage,
@@ -144,7 +146,7 @@ export default class FoldersController {
 
     await FolderService.joinFolder(folderId, user, password)
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'Successfully joined the folder.'
     )

@@ -1,7 +1,7 @@
-import { NotificationType } from '#enums/notification'
-import Member from '#models/member'
+import { type NotificationType } from '#enums/notification'
+import type Member from '#models/member'
 import Notification from '#models/notification'
-import User from '#models/user'
+import type User from '#models/user'
 
 export class NotificationService {
   static async getNotification(notificationId: string, user: User) {

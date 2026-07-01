@@ -1,4 +1,4 @@
-import { InvitationStatusType } from '#enums/invitation'
+import type { InvitationStatusType } from '#enums/invitation'
 
 export interface InviterPreview {
   id: string
@@ -10,6 +10,8 @@ export interface InviterPreview {
 export interface FolderPreview {
   id: string
   name: string
+  recentBookmarksImages: string[]
+  isProtected: boolean
 }
 
 export interface InvitationResponse {

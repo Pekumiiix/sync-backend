@@ -6,28 +6,28 @@
 export const controllers = {
   v1: {
     auth: {
-      NewAccount: () => import('#controllers/v_1/auth/new_account_controller'),
       AccessToken: () => import('#controllers/v_1/auth/access_token_controller'),
       ForgotPassword: () => import('#controllers/v_1/auth/forgot_password_controller'),
+      NewAccount: () => import('#controllers/v_1/auth/new_account_controller'),
       ResetPassword: () => import('#controllers/v_1/auth/reset_password_controller'),
       VerifyEmail: () => import('#controllers/v_1/auth/verify_email_controller'),
     },
     core: {
       Bookmark: () => import('#controllers/v_1/core/bookmark_controller'),
       Folder: () => import('#controllers/v_1/core/folder_controller'),
+      Integration: () => import('#controllers/v_1/core/integration_controller'),
       Invitation: () => import('#controllers/v_1/core/invitation_controller'),
       Member: () => import('#controllers/v_1/core/member_controller'),
-      Integration: () => import('#controllers/v_1/core/integration_controller'),
-    },
-    users: {
-      Profile: () => import('#controllers/v_1/users/profile_controller'),
-      Notification: () => import('#controllers/v_1/users/notification_controller'),
     },
     extension: {
       Auth: () => import('#controllers/v_1/extension/auth_controller'),
     },
     oauth: {
       Google: () => import('#controllers/v_1/oauth/google_controller'),
+    },
+    users: {
+      Notification: () => import('#controllers/v_1/users/notification_controller'),
+      Profile: () => import('#controllers/v_1/users/profile_controller'),
     },
   },
 }

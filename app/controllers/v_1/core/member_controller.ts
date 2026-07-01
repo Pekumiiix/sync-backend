@@ -3,8 +3,8 @@ import { FolderService } from '#services/folder_service'
 import Member from '#models/member'
 import MemberTransformer from '#transformers/member_transformer'
 import { updateMemberValidator } from '#validators/member'
-import { ApiSuccessResponse } from '#interfaces/api'
-import { MemberListResponse, UpdateMemberResponse } from '#interfaces/members'
+import { type ApiSuccessResponse } from '#interfaces/api'
+import { type MemberListResponse, type UpdateMemberResponse } from '#interfaces/members'
 import { MemberService } from '#services/member_service'
 
 export default class MembersController {
@@ -19,7 +19,7 @@ export default class MembersController {
 
     const members = await Member.query().where('folder_id', folder.id).preload('user')
 
-    const formattedResponse: MemberListResponse = ctx.serialize(
+    const formattedResponse: MemberListResponse = await ctx.serialize(
       {
         members: MemberTransformer.transform(members),
         permission,
@@ -53,7 +53,7 @@ export default class MembersController {
 
     await member.save()
 
-    const formattedResponse: UpdateMemberResponse = ctx.serialize(
+    const formattedResponse: UpdateMemberResponse = await ctx.serialize(
       { member: MemberTransformer.transform(member) },
       'Member permissions updated successfully!'
     )
@@ -72,7 +72,7 @@ export default class MembersController {
 
     await MemberService.destroyMember(folderId, params.memberId, initiator)
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'Member successfully removed from the folder.'
     )
@@ -89,7 +89,7 @@ export default class MembersController {
 
     await MemberService.leaveFolder(folderId, user)
 
-    const formattedResponse: ApiSuccessResponse = ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'You have successfully left the folder.'
     )

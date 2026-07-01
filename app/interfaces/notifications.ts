@@ -1,4 +1,4 @@
-import { NotificationType } from '#enums/notification'
+import { type NotificationType } from '#enums/notification'
 
 export interface NotificationActor {
   actorName: string
@@ -21,7 +21,7 @@ export interface NotificationItemResponse {
   message: string
 }
 
-export interface INotificationMeta {
+export interface NotificationMeta {
   unreadCount: number
   totalCount: number
   currentPage: number
@@ -40,7 +40,7 @@ export interface NotificationData {
 export interface ListNotificationsResponse {
   data: {
     notifications: NotificationItemResponse[]
-    meta: INotificationMeta
+    meta: NotificationMeta
   }
   success: boolean
   message: string

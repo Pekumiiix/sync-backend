@@ -1,5 +1,5 @@
-import User from '#models/user'
-import { StoreIntegrationValidator } from '#validators/browser_integration'
+import type User from '#models/user'
+import { type StoreIntegrationValidator } from '#validators/browser_integration'
 
 export class BrowserIntegrationService {
   static async upsertIntegration(user: User, data: StoreIntegrationValidator) {

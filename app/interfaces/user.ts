@@ -1,5 +1,3 @@
-import { BrowserType } from '#enums/browser'
-
 export interface UserSettings {
   autoMergeDuplicate: boolean
   notifyOnNewMember: boolean
@@ -35,7 +33,6 @@ export interface UserResponse {
 export interface AuthData {
   user: UserResponse
   token: string
-  browserTypes: { browser: BrowserType }[]
 }
 
 export interface AuthDataResponse {

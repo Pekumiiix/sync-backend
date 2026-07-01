@@ -1,4 +1,4 @@
-import { BrowserType } from '#enums/browser'
+import type { BrowserType } from '#enums/browser'
 
 interface Integration {
   id: string
@@ -12,5 +12,7 @@ interface Integration {
 export interface GetBrowserIntegrationsResponse {
   success: boolean
   message: string
-  integrations: Integration[]
+  data: {
+    integrations: Integration[]
+  }
 }

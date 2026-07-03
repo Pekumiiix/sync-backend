@@ -24,7 +24,7 @@ export class NotificationService {
 
     return {
       notifications,
-      unreadCount: unreadCount[0].$extras.count,
+      unreadCount: Number(unreadCount[0].$extras.count),
       totalCount: meta.total,
       currentPage: meta.currentPage,
       totalPages: meta.lastPage,

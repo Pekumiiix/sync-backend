@@ -49,7 +49,7 @@ export default class BookmarksController {
     return response.ok(formattedResponse)
   }
 
-  async fetch(ctx: HttpContext) {
+  async preview(ctx: HttpContext) {
     const { request, response } = ctx
 
     const { url } = await request.validateUsing(fetchUrlDataValidator)
@@ -64,6 +64,8 @@ export default class BookmarksController {
       const { status, data } = (await mql(url)) as any
 
       if (status !== 'success') {
+        console.log('Microlink API error:', data)
+
         throw new Exception('Failed to fetch URL data from Microlink.', { status: 400 })
       }
 
@@ -84,6 +86,7 @@ export default class BookmarksController {
 
       return response.ok(formattedResponse)
     } catch (error) {
+      console.error('Error fetching URL data:', error)
       throw new Exception('Failed to parse the provided URL.', { status: 400 })
     }
   }

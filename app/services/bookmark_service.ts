@@ -129,14 +129,11 @@ export class BookmarkService {
     return BookmarkTransformer.transform(pinnedBookmarks)
   }
 
-  static async getPaginatedBookmarks(folder: Folder, queryParams: GetBookmarksQueryParams) {
-    const {
-      page = 1,
-      limit = 20,
-      sortByBrowser = 'all',
-      sortByDate = 'newest',
-      sortByTitle,
-    } = queryParams
+  static async getPaginatedBookmarksForFolder(
+    folder: Folder,
+    queryParams: GetBookmarksQueryParams
+  ) {
+    const { page = 1, limit = 20, sort = 'title_desc', filter = 'all' } = queryParams
 
     const bookmarksQuery = folder
       .related('bookmarks')
@@ -145,14 +142,16 @@ export class BookmarkService {
       .preload('folder')
       .where('is_pinned', false)
 
-    if (sortByBrowser !== 'all') {
-      bookmarksQuery.where('browser', sortByBrowser)
+    if (filter !== 'all') {
+      bookmarksQuery.where('browser', filter)
     }
 
-    if (sortByTitle) {
-      bookmarksQuery.orderBy('title', sortByTitle)
-    } else {
-      bookmarksQuery.orderBy('created_at', sortByDate === 'oldest' ? 'asc' : 'desc')
+    if (sort === 'title_asc') {
+      bookmarksQuery.orderBy('title', 'asc')
+    } else if (sort === 'title_desc') {
+      bookmarksQuery.orderBy('title', 'desc')
+    } else if (sort === 'oldest' || sort === 'newest') {
+      bookmarksQuery.orderBy('created_at', sort === 'oldest' ? 'asc' : 'desc')
     }
 
     const paginatedBookmarks = await bookmarksQuery.paginate(page, limit)
@@ -161,13 +160,7 @@ export class BookmarkService {
   }
 
   static async getAllForUser(userId: string, query: GetBookmarksQueryParams) {
-    const {
-      page = 1,
-      limit = 20,
-      sortByBrowser = 'all',
-      sortByDate = 'newest',
-      sortByTitle,
-    } = query
+    const { page = 1, limit = 20, sort = 'title_desc', filter = 'all' } = query
 
     const baseQuery = Bookmark.query()
       .where((builder) => {
@@ -180,18 +173,20 @@ export class BookmarkService {
       .preload('user')
       .preload('folder', (q) => q.select('id', 'name', 'is_system'))
 
-    if (sortByBrowser !== 'all') {
-      baseQuery.where('browser', sortByBrowser)
+    if (filter !== 'all') {
+      baseQuery.where('browser', filter)
     }
 
     const pinnedQuery = baseQuery.clone().where('is_pinned', true).orderBy('updated_at', 'desc')
 
     const unpinnedQuery = baseQuery.clone().where('is_pinned', false)
 
-    if (sortByTitle) {
-      unpinnedQuery.orderBy('title', sortByTitle)
-    } else {
-      unpinnedQuery.orderBy('created_at', sortByDate === 'oldest' ? 'asc' : 'desc')
+    if (sort === 'title_asc') {
+      unpinnedQuery.orderBy('title', 'asc')
+    } else if (sort === 'title_desc') {
+      unpinnedQuery.orderBy('title', 'desc')
+    } else if (sort === 'oldest' || sort === 'newest') {
+      unpinnedQuery.orderBy('created_at', sort === 'oldest' ? 'asc' : 'desc')
     }
 
     const [pinnedBookmarks, paginatedBookmarks] = await Promise.all([

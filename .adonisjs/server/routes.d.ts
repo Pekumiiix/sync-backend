@@ -17,6 +17,7 @@ export type ScannedRoutes = {
     'oauths.google.destroy': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
     'profile.profile.update': { paramsTuple?: []; params?: {} }
+    'profile.profile.update_settings': { paramsTuple?: []; params?: {} }
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.store': { paramsTuple?: []; params?: {} }
     'folder.folder.join': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
@@ -25,7 +26,7 @@ export type ScannedRoutes = {
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmark.fetch': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.preview': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.browsers': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.update': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
@@ -87,7 +88,7 @@ export type ScannedRoutes = {
     'folder.folder.store': { paramsTuple?: []; params?: {} }
     'folder.folder.join': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmark.fetch': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.preview': { paramsTuple?: []; params?: {} }
     'invitations.invitation.store': { paramsTuple?: []; params?: {} }
   }
   DELETE: {
@@ -102,6 +103,7 @@ export type ScannedRoutes = {
   }
   PATCH: {
     'profile.profile.update': { paramsTuple?: []; params?: {} }
+    'profile.profile.update_settings': { paramsTuple?: []; params?: {} }
     'folder.folder.update': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.update': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.pin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }

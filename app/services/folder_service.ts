@@ -6,6 +6,7 @@ import { events } from '#generated/events'
 import Member from '#models/member'
 import db from '@adonisjs/lucid/services/db'
 import hash from '@adonisjs/core/services/hash'
+import Bookmark from '#models/bookmark'
 
 export class FolderService {
   static async createFolder(user: User, name: string) {
@@ -139,5 +140,21 @@ export class FolderService {
       permission: { role, accessLevel },
       previewMembers,
     }
+  }
+
+  static async syncFolderRecentImages(folderId: string) {
+    const recentBookmarks = await Bookmark.query()
+      .where('folder_id', folderId)
+      .whereNotNull('cover_image_url')
+      .whereNot('cover_image_url', '') // Ignore empty strings
+      .orderBy('created_at', 'desc')
+      .limit(3)
+      .select('cover_image_url')
+
+    const imageUrls = recentBookmarks.map((b) => b.coverImageUrl)
+
+    await Folder.query()
+      .where('id', folderId)
+      .update({ recent_bookmarks_images: JSON.stringify(imageUrls) })
   }
 }

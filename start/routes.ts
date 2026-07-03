@@ -108,6 +108,9 @@ router
         router
           .patch('profile', [controllers.v1.users.Profile, 'update'])
           .openapi({ summary: 'Update user profile' })
+        router
+          .patch('settings', [controllers.v1.users.Profile, 'updateSettings'])
+          .openapi({ summary: 'Update user settings' })
       })
       .prefix('account')
       .as('profile')
@@ -162,7 +165,7 @@ router
           .openapi({ summary: 'List all bookmarks' })
 
         router
-          .post('preview', [controllers.v1.core.Bookmark, 'fetch'])
+          .post('preview', [controllers.v1.core.Bookmark, 'preview'])
           .openapi({ summary: 'Fetch bookmark preview data' })
         router
           .get('browsers', [controllers.v1.core.Bookmark, 'browsers'])
@@ -186,7 +189,7 @@ router
       })
       .prefix('bookmarks')
       .as('bookmarks')
-      .use(throttle)
+      // .use(throttle)
       .use(middleware.auth())
       .openapi({
         tags: ['Bookmarks'],

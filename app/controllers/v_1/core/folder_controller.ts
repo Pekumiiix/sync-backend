@@ -105,7 +105,7 @@ export default class FoldersController {
 
     const [pinnedBookmarks, paginatedBookmarks] = await Promise.all([
       BookmarkService.pinnedBookmarks(folder),
-      BookmarkService.getPaginatedBookmarks(folder, query),
+      BookmarkService.getPaginatedBookmarksForFolder(folder, query),
     ])
 
     const unpinnedBookmarks = paginatedBookmarks.all()

@@ -163,6 +163,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'profile.profile.update_settings': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/account/settings'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/user').updateSettingsValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/user').updateSettingsValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['updateSettings']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['updateSettings']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'folder.folder.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/folders'
@@ -259,7 +271,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'bookmarks.bookmark.fetch': {
+  'bookmarks.bookmark.preview': {
     methods: ["POST"]
     pattern: '/api/v1/bookmarks/preview'
     types: {
@@ -267,8 +279,8 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: ExtractQuery<InferInput<(typeof import('#validators/bookmark').fetchUrlDataValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['fetch']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['fetch']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['preview']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['preview']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'bookmarks.bookmark.browsers': {

@@ -1,5 +1,5 @@
 import { FolderSchema } from '#database/schema'
-import { beforeSave, belongsTo, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import { beforeSave, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import User from './user.ts'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Bookmark from './bookmark.ts'
@@ -7,6 +7,18 @@ import Member from './member.ts'
 import hash from '@adonisjs/core/services/hash'
 
 export default class Folder extends FolderSchema {
+  @column({
+    prepare: (value) => JSON.stringify(value || []),
+    consume: (value) => {
+      if (!value) return []
+      if (typeof value === 'string') return JSON.parse(value)
+      if (typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === 0)
+        return []
+      return value
+    },
+  })
+  declare recentBookmarksImages: string[]
+
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
 

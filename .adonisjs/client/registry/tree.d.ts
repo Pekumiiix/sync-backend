@@ -37,6 +37,7 @@ export interface ApiDefinition {
     profile: {
       show: typeof routes['profile.profile.show']
       update: typeof routes['profile.profile.update']
+      updateSettings: typeof routes['profile.profile.update_settings']
     }
   }
   folder: {
@@ -53,7 +54,7 @@ export interface ApiDefinition {
     bookmark: {
       store: typeof routes['bookmarks.bookmark.store']
       index: typeof routes['bookmarks.bookmark.index']
-      fetch: typeof routes['bookmarks.bookmark.fetch']
+      preview: typeof routes['bookmarks.bookmark.preview']
       browsers: typeof routes['bookmarks.bookmark.browsers']
       update: typeof routes['bookmarks.bookmark.update']
       destroy: typeof routes['bookmarks.bookmark.destroy']

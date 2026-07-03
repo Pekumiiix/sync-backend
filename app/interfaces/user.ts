@@ -1,8 +1,10 @@
-export interface UserSettings {
+export type FrequencyHours = 0 | 3 | 6 | 12
+
+export interface UserSettingsSchema {
   autoMergeDuplicate: boolean
   notifyOnNewMember: boolean
   notifyOnNewBookmark: boolean
-  frequency: string
+  syncFrequencyInHours: FrequencyHours
 }
 
 export interface UserSettingsResponse {

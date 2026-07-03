@@ -1,10 +1,17 @@
 import { BookmarkSchema } from '#database/schema'
-import { afterCreate, afterDelete, belongsTo } from '@adonisjs/lucid/orm'
+import { afterCreate, afterDelete, afterUpdate, belongsTo, column } from '@adonisjs/lucid/orm'
 import User from './user.ts'
 import Folder from './folder.ts'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { FolderService } from '#services/folder_service'
 
 export default class Bookmark extends BookmarkSchema {
+  @column({
+    prepare: (value) => JSON.stringify(value),
+    consume: (value) => (typeof value === 'string' ? JSON.parse(value) : value),
+  })
+  declare tags: string[]
+
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
 
@@ -12,12 +19,19 @@ export default class Bookmark extends BookmarkSchema {
   declare folder: BelongsTo<typeof Folder>
 
   @afterCreate()
-  static async incrementBookmarkCount(bookmark: Bookmark) {
+  static async onBookmarkCreated(bookmark: Bookmark) {
     await Folder.query().where('id', bookmark.folderId).increment('bookmark_count', 1)
+    await FolderService.syncFolderRecentImages(bookmark.folderId)
   }
 
   @afterDelete()
-  static async decrementBookmarkCount(bookmark: Bookmark) {
+  static async onBookmarkDeleted(bookmark: Bookmark) {
     await Folder.query().where('id', bookmark.folderId).decrement('bookmark_count', 1)
+    await FolderService.syncFolderRecentImages(bookmark.folderId)
+  }
+
+  @afterUpdate()
+  static async onBookmarkUpdated(bookmark: Bookmark) {
+    await FolderService.syncFolderRecentImages(bookmark.folderId)
   }
 }

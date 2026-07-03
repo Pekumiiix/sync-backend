@@ -1,4 +1,5 @@
-import type { UserSettings } from '#interfaces/user'
+import { SYNC_FREQUENCY_IN_HOURS_TO_STRING } from '#enums/sync_frequency'
+import type { UserSettingsSchema } from '#interfaces/user'
 import type User from '#models/user'
 import { BaseTransformer } from '@adonisjs/core/transformers'
 
@@ -17,7 +18,7 @@ export default class UserTransformer extends BaseTransformer<User> {
       'isEmailVerified',
     ])
 
-    const rawSettings: UserSettings = this.resource.settings || {}
+    const rawSettings: UserSettingsSchema = this.resource.settings || {}
 
     const formattedSettings = {
       management: {
@@ -28,7 +29,7 @@ export default class UserTransformer extends BaseTransformer<User> {
         notifyOnNewBookmark: rawSettings.notifyOnNewBookmark ?? true,
       },
       sync: {
-        frequency: rawSettings.frequency?.toString() ?? '3',
+        frequency: SYNC_FREQUENCY_IN_HOURS_TO_STRING[rawSettings.syncFrequencyInHours],
       },
     }
 

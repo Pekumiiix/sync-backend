@@ -1,3 +1,4 @@
+import { SYNC_FREQUENCY } from '#enums/sync_frequency'
 import vine from '@vinejs/vine'
 
 /**
@@ -63,4 +64,14 @@ export const updateProfileValidator = vine.create({
   lastName: vine.string().maxLength(50).optional(),
   location: vine.string().maxLength(100).optional(),
   avatarUrl: vine.string().url().maxLength(2048).optional(),
+})
+
+/**
+ * Validate to update the user's settings
+ */
+export const updateSettingsValidator = vine.create({
+  notifyOnNewMember: vine.boolean().optional(),
+  notifyOnNewBookmark: vine.boolean().optional(),
+  autoMergeDuplicate: vine.boolean().optional(),
+  frequency: vine.enum([...SYNC_FREQUENCY]).optional(),
 })

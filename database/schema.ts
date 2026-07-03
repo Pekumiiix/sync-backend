@@ -13,10 +13,21 @@ import type { InvitationStatusType } from '#enums/invitation'
 import type { NotificationData } from '#interfaces/notifications'
 import type { NotificationType } from '#enums/notification'
 import type { PlanType } from '#enums/user'
-import type { UserSettings } from '#interfaces/user'
+import type { UserSettingsSchema } from '#interfaces/user'
 
 export class AuthAccessTokenSchema extends BaseModel {
-  static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
+  static $columns = [
+    'abilities',
+    'createdAt',
+    'expiresAt',
+    'hash',
+    'id',
+    'lastUsedAt',
+    'name',
+    'tokenableId',
+    'type',
+    'updatedAt',
+  ] as const
   $columns = AuthAccessTokenSchema.$columns
   @column()
   declare abilities: string
@@ -41,7 +52,23 @@ export class AuthAccessTokenSchema extends BaseModel {
 }
 
 export class BookmarkSchema extends BaseModel {
-  static $columns = ['browser', 'coverImageUrl', 'createdAt', 'description', 'domain', 'faviconUrl', 'folderId', 'id', 'isPinned', 'tags', 'title', 'updatedAt', 'url', 'userId', 'websiteName'] as const
+  static $columns = [
+    'browser',
+    'coverImageUrl',
+    'createdAt',
+    'description',
+    'domain',
+    'faviconUrl',
+    'folderId',
+    'id',
+    'isPinned',
+    'tags',
+    'title',
+    'updatedAt',
+    'url',
+    'userId',
+    'websiteName',
+  ] as const
   $columns = BookmarkSchema.$columns
   @column()
   declare browser: BrowserType
@@ -76,7 +103,15 @@ export class BookmarkSchema extends BaseModel {
 }
 
 export class BrowserIntegrationSchema extends BaseModel {
-  static $columns = ['browser', 'createdAt', 'deviceName', 'extensionVersion', 'id', 'lastSyncedAt', 'userId'] as const
+  static $columns = [
+    'browser',
+    'createdAt',
+    'deviceName',
+    'extensionVersion',
+    'id',
+    'lastSyncedAt',
+    'userId',
+  ] as const
   $columns = BrowserIntegrationSchema.$columns
   @column()
   declare browser: BrowserType
@@ -95,7 +130,18 @@ export class BrowserIntegrationSchema extends BaseModel {
 }
 
 export class FolderSchema extends BaseModel {
-  static $columns = ['bookmarkCount', 'createdAt', 'id', 'isSystem', 'memberCount', 'name', 'password', 'recentBookmarksImages', 'updatedAt', 'userId'] as const
+  static $columns = [
+    'bookmarkCount',
+    'createdAt',
+    'id',
+    'isSystem',
+    'memberCount',
+    'name',
+    'password',
+    'recentBookmarksImages',
+    'updatedAt',
+    'userId',
+  ] as const
   $columns = FolderSchema.$columns
   @column()
   declare bookmarkCount: number
@@ -120,7 +166,19 @@ export class FolderSchema extends BaseModel {
 }
 
 export class InvitationSchema extends BaseModel {
-  static $columns = ['acceptedAt', 'accessLevel', 'createdAt', 'email', 'expiresAt', 'folderId', 'id', 'inviterId', 'status', 'token', 'updatedAt'] as const
+  static $columns = [
+    'acceptedAt',
+    'accessLevel',
+    'createdAt',
+    'email',
+    'expiresAt',
+    'folderId',
+    'id',
+    'inviterId',
+    'status',
+    'token',
+    'updatedAt',
+  ] as const
   $columns = InvitationSchema.$columns
   @column.dateTime()
   declare acceptedAt: DateTime | null
@@ -147,7 +205,15 @@ export class InvitationSchema extends BaseModel {
 }
 
 export class MemberSchema extends BaseModel {
-  static $columns = ['accessLevel', 'createdAt', 'folderId', 'id', 'role', 'updatedAt', 'userId'] as const
+  static $columns = [
+    'accessLevel',
+    'createdAt',
+    'folderId',
+    'id',
+    'role',
+    'updatedAt',
+    'userId',
+  ] as const
   $columns = MemberSchema.$columns
   @column()
   declare accessLevel: AccessLevelType
@@ -185,7 +251,16 @@ export class NotificationSchema extends BaseModel {
 }
 
 export class OauthIdentitySchema extends BaseModel {
-  static $columns = ['accessToken', 'createdAt', 'id', 'provider', 'providerId', 'refreshToken', 'updatedAt', 'userId'] as const
+  static $columns = [
+    'accessToken',
+    'createdAt',
+    'id',
+    'provider',
+    'providerId',
+    'refreshToken',
+    'updatedAt',
+    'userId',
+  ] as const
   $columns = OauthIdentitySchema.$columns
   @column()
   declare accessToken: string | null
@@ -217,7 +292,24 @@ export class RateLimitSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['avatarUrl', 'createdAt', 'email', 'emailVerificationToken', 'emailVerificationTokenExpiresAt', 'firstName', 'id', 'isEmailVerified', 'lastName', 'location', 'password', 'plan', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'settings', 'updatedAt'] as const
+  static $columns = [
+    'avatarUrl',
+    'createdAt',
+    'email',
+    'emailVerificationToken',
+    'emailVerificationTokenExpiresAt',
+    'firstName',
+    'id',
+    'isEmailVerified',
+    'lastName',
+    'location',
+    'password',
+    'plan',
+    'resetPasswordToken',
+    'resetPasswordTokenExpiresAt',
+    'settings',
+    'updatedAt',
+  ] as const
   $columns = UserSchema.$columns
   @column()
   declare avatarUrl: string | null
@@ -248,7 +340,7 @@ export class UserSchema extends BaseModel {
   @column.dateTime()
   declare resetPasswordTokenExpiresAt: DateTime | null
   @column()
-  declare settings: JSON<UserSettings>
+  declare settings: JSON<UserSettingsSchema>
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 }

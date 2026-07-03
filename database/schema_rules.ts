@@ -14,8 +14,8 @@ export default {
       columns: {
         settings: {
           decorators: [{ name: '@column' }],
-          tsType: 'JSON<UserSettings>',
-          imports: [{ source: '#interfaces/user', typeImports: ['UserSettings'] }],
+          tsType: 'JSON<UserSettingsSchema>',
+          imports: [{ source: '#interfaces/user', typeImports: ['UserSettingsSchema'] }],
         },
         plan: {
           decorators: [{ name: '@column' }],

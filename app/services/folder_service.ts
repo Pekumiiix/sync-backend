@@ -17,8 +17,6 @@ export class FolderService {
       recentBookmarksImages: [],
     })
 
-    events.FolderCreated.dispatch(folder, user)
-
     return folder
   }
 

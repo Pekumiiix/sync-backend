@@ -35,13 +35,6 @@ export const verifyEmailValidator = vine.create({
 })
 
 /**
- * Validator to use when resending a verification email
- */
-export const resendVerificationEmailValidator = vine.create({
-  email: email(),
-})
-
-/**
  * Validator to use when requesting a password reset
  */
 export const forgotPasswordValidator = vine.create({

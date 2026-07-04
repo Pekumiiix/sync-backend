@@ -29,7 +29,7 @@ export default defineConfig({
     () => import('@adonisjs/lucid/commands'),
     () => import('@adonisjs/session/commands'),
     () => import('@adonisjs/mail/commands'),
-    () => import('@outloud/adonis-openapi/commands')
+    () => import('@outloud/adonis-openapi/commands'),
   ],
 
   /*
@@ -51,6 +51,7 @@ export default defineConfig({
     () => import('@adonisjs/core/providers/vinejs_provider'),
     () => import('@adonisjs/session/session_provider'),
     () => import('@adonisjs/shield/shield_provider'),
+    () => import('@adonisjs/core/providers/edge_provider'),
     () => import('@adonisjs/lucid/database_provider'),
     () => import('@adonisjs/cors/cors_provider'),
     () => import('@adonisjs/auth/auth_provider'),
@@ -58,7 +59,7 @@ export default defineConfig({
     () => import('@adonisjs/mail/mail_provider'),
     () => import('@adonisjs/ally/ally_provider'),
     () => import('@outloud/adonis-openapi/provider'),
-    () => import('@adonisjs/limiter/limiter_provider')
+    () => import('@adonisjs/limiter/limiter_provider'),
   ],
 
   /*
@@ -110,10 +111,12 @@ export default defineConfig({
   | the production build.
   |
   */
-  metaFiles: [{
-    pattern: '.adonisjs/openapi.json',
-    reloadServer: false,
-  }],
+  metaFiles: [
+    {
+      pattern: '.adonisjs/openapi.json',
+      reloadServer: false,
+    },
+  ],
 
   hooks: {
     init: [

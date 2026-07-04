@@ -83,12 +83,12 @@ export interface Registry {
     methods: ["POST"]
     pattern: '/api/v1/auth/verify-email/resend'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/user').resendVerificationEmailValidator)>>
+      body: {}
       paramsTuple: []
       params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/user').resendVerificationEmailValidator)>>
+      query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_email_controller').default['resend']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_email_controller').default['resend']>>> | { status: 422; response: { errors: SimpleError[] } }
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/auth/verify_email_controller').default['resend']>>>
     }
   }
   'extension.auth.store': {

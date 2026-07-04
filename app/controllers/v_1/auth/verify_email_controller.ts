@@ -1,5 +1,5 @@
 import User from '#models/user'
-import { resendVerificationEmailValidator, verifyEmailValidator } from '#validators/user'
+import { verifyEmailValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
 import { generateVerificationCode } from '#utils/string'
@@ -24,6 +24,10 @@ export default class VerifyEmailController {
       )
     }
 
+    if (user.isEmailVerified) {
+      return response.badRequest(apiError('Your email is already verified.'))
+    }
+
     user.isEmailVerified = true
     user.emailVerificationToken = null
     user.emailVerificationTokenExpiresAt = null
@@ -39,11 +43,9 @@ export default class VerifyEmailController {
   }
 
   async resend(ctx: HttpContext) {
-    const { response, request } = ctx
+    const { response, auth } = ctx
 
-    const { email } = await request.validateUsing(resendVerificationEmailValidator)
-
-    const user = await User.findByOrFail('email', email)
+    const user = auth.user!
 
     if (user.isEmailVerified) {
       return response.badRequest(apiError('Your email is already verified.'))
@@ -52,7 +54,7 @@ export default class VerifyEmailController {
     const verificationCode = generateVerificationCode()
 
     user.emailVerificationToken = verificationCode
-    user.emailVerificationTokenExpiresAt = DateTime.now().plus({ minutes: 10 })
+    user.emailVerificationTokenExpiresAt = DateTime.now().plus({ hours: 12 })
 
     await user.save()
 

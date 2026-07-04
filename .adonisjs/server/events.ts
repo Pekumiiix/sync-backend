@@ -6,7 +6,6 @@
 import BookmarkCreated from '#events/bookmark_created'
 import BookmarkDeleted from '#events/bookmark_deleted'
 import BookmarkUpdated from '#events/bookmark_updated'
-import FolderCreated from '#events/folder_created'
 import FolderDeleted from '#events/folder_deleted'
 import FolderUpdated from '#events/folder_updated'
 import MemberJoined from '#events/member_joined'
@@ -19,7 +18,6 @@ export const events = {
   BookmarkCreated: BookmarkCreated,
   BookmarkDeleted: BookmarkDeleted,
   BookmarkUpdated: BookmarkUpdated,
-  FolderCreated: FolderCreated,
   FolderDeleted: FolderDeleted,
   FolderUpdated: FolderUpdated,
   MemberJoined: MemberJoined,

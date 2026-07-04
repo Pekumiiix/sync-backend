@@ -4,8 +4,6 @@
  */
 
 export const listeners = {
-  AssignFolderOwner: () => import('#listeners/assign_folder_owner'),
-  CreateDefaultFolders: () => import('#listeners/create_default_folders'),
   SendBookmarkCreatedNotification: () => import('#listeners/send_bookmark_created_notification'),
   SendBookmarkDeletedNotification: () => import('#listeners/send_bookmark_deleted_notification'),
   SendBookmarkUpdatedNotification: () => import('#listeners/send_bookmark_updated_notification'),

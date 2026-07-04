@@ -1,5 +1,5 @@
 import { FolderSchema } from '#database/schema'
-import { beforeSave, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import { afterSave, beforeSave, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import User from './user.ts'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Bookmark from './bookmark.ts'
@@ -30,7 +30,7 @@ export default class Folder extends FolderSchema {
 
   @manyToMany(() => User, {
     pivotTable: 'members',
-    // pivotColumns: ['role', 'access_level'],
+    pivotColumns: ['role', 'access_level'],
   })
   declare users: ManyToMany<typeof User>
 
@@ -39,5 +39,19 @@ export default class Folder extends FolderSchema {
     if (folder.$dirty.password && folder.password) {
       folder.password = await hash.make(folder.password)
     }
+  }
+
+  @afterSave()
+  public static async createDefaultMember(folder: Folder, user: User) {
+    if (folder.isSystem) return
+
+    await folder.related('members').create(
+      {
+        userId: user.id,
+        role: 'owner',
+        accessLevel: 'editor',
+      },
+      { client: folder.$trx }
+    )
   }
 }

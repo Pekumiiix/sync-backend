@@ -49,6 +49,7 @@ router
         router
           .post('verify-email/resend', [controllers.v1.auth.VerifyEmail, 'resend'])
           .use(resendThrottle)
+          .use(middleware.auth())
           .openapi({ summary: 'Resend email verification link' })
       })
       .prefix('auth')
@@ -189,7 +190,7 @@ router
       })
       .prefix('bookmarks')
       .as('bookmarks')
-      // .use(throttle)
+      .use(throttle)
       .use(middleware.auth())
       .openapi({
         tags: ['Bookmarks'],

@@ -13,7 +13,7 @@ export default class SendPasswordResetEmail {
       message.from(env.get('MAIL_FROM_ADDRESS'), env.get('MAIL_FROM_NAME'))
       message.subject('Reset your password')
 
-      message.htmlView('emails/reset-password', {
+      message.htmlView('emails/password_reset', {
         firstName: user.firstName,
         resetLink: resetLink,
       })

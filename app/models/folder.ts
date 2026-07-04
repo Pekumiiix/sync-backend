@@ -42,12 +42,12 @@ export default class Folder extends FolderSchema {
   }
 
   @afterSave()
-  public static async createDefaultMember(folder: Folder, user: User) {
+  public static async createDefaultMember(folder: Folder) {
     if (folder.isSystem) return
 
     await folder.related('members').create(
       {
-        userId: user.id,
+        userId: folder.userId,
         role: 'owner',
         accessLevel: 'editor',
       },

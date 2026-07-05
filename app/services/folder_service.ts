@@ -7,6 +7,7 @@ import Member from '#models/member'
 import db from '@adonisjs/lucid/services/db'
 import hash from '@adonisjs/core/services/hash'
 import Bookmark from '#models/bookmark'
+import { type TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export class FolderService {
   static async createFolder(user: User, name: string) {
@@ -140,18 +141,22 @@ export class FolderService {
     }
   }
 
-  static async syncFolderRecentImages(folderId: string) {
-    const recentBookmarks = await Bookmark.query()
+  static async syncFolderRecentImages(folderId: string, trx?: TransactionClientContract) {
+    const query = trx ? Bookmark.query({ client: trx }) : Bookmark.query()
+
+    const recentBookmarks = await query
       .where('folder_id', folderId)
       .whereNotNull('cover_image_url')
-      .whereNot('cover_image_url', '') // Ignore empty strings
+      .whereNot('cover_image_url', '')
       .orderBy('created_at', 'desc')
       .limit(3)
       .select('cover_image_url')
 
     const imageUrls = recentBookmarks.map((b) => b.coverImageUrl)
 
-    await Folder.query()
+    const folderQuery = trx ? Folder.query({ client: trx }) : Folder.query()
+
+    await folderQuery
       .where('id', folderId)
       .update({ recent_bookmarks_images: JSON.stringify(imageUrls) })
   }

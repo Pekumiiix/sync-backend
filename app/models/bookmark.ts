@@ -20,18 +20,24 @@ export default class Bookmark extends BookmarkSchema {
 
   @afterCreate()
   static async onBookmarkCreated(bookmark: Bookmark) {
+    const trx = bookmark.$trx
+
     await Folder.query().where('id', bookmark.folderId).increment('bookmark_count', 1)
-    await FolderService.syncFolderRecentImages(bookmark.folderId)
+    await FolderService.syncFolderRecentImages(bookmark.folderId, trx)
   }
 
   @afterDelete()
   static async onBookmarkDeleted(bookmark: Bookmark) {
+    const trx = bookmark.$trx
+
     await Folder.query().where('id', bookmark.folderId).decrement('bookmark_count', 1)
-    await FolderService.syncFolderRecentImages(bookmark.folderId)
+    await FolderService.syncFolderRecentImages(bookmark.folderId, trx)
   }
 
   @afterUpdate()
   static async onBookmarkUpdated(bookmark: Bookmark) {
-    await FolderService.syncFolderRecentImages(bookmark.folderId)
+    const trx = bookmark.$trx
+
+    await FolderService.syncFolderRecentImages(bookmark.folderId, trx)
   }
 }

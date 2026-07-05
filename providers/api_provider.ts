@@ -40,13 +40,22 @@ const serializer = new ApiSerializer()
 
 const serialize = Object.assign(
   async function <T>(this: HttpContext, data: any, message: string = 'Operation successful') {
-    let serializedData: any = await serializer.serialize(data, this.containerResolver)
+    let serializedData: any
 
+    // Guard: Bypass the AdonisJS serializer if data is null or undefined
+    if (data === null || data === undefined) {
+      serializedData = { data }
+    } else {
+      serializedData = await serializer.serialize(data, this.containerResolver)
+    }
+
+    // Check if the resulting object already has the 'data' wrapper
     const hasDataKey =
       serializedData && typeof serializedData === 'object' && 'data' in serializedData
 
+    // Fallback: wrap the data if the serializer didn't do it automatically
     if (!hasDataKey) {
-      serializedData = { data: data }
+      serializedData = { data: serializedData ?? data }
     }
 
     return {
@@ -60,6 +69,7 @@ const serialize = Object.assign(
       this: HttpContext,
       ...[data, resolver]: Parameters<ApiSerializer['serializeWithoutWrapping']>
     ) {
+      if (data === null || data === undefined) return data
       return await serializer.serializeWithoutWrapping(data, resolver ?? this.containerResolver)
     },
   }

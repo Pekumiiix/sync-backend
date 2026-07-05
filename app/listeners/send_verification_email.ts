@@ -6,7 +6,7 @@ export default class SendVerificationEmail {
   async handle(event: UserRegistered) {
     const { user, verificationCode } = event
 
-    const verificationLink = `${env.get('FRONTEND_URL')}/verify-email`
+    const verificationLink = `${env.get('FRONTEND_URL')}/auth/verify-email`
 
     await mail.send((message) => {
       message.to(user.email)

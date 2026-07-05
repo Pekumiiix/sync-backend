@@ -6,7 +6,7 @@ export default class SendPasswordResetEmail {
   async handle(event: PasswordResetRequested) {
     const { user, resetToken } = event
 
-    const resetLink = `${env.get('FRONTEND_URL')}/reset-password?token=${resetToken}`
+    const resetLink = `${env.get('FRONTEND_URL')}/auth/reset-password?token=${resetToken}`
 
     await mail.send((message) => {
       message.to(user.email)

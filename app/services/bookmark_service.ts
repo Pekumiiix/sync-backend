@@ -171,7 +171,7 @@ export class BookmarkService {
         builder.orWhereIn('folder_id', db.from('folders').select('id').where('user_id', userId))
       })
       .preload('user')
-      .preload('folder', (q) => q.select('id', 'name', 'is_system'))
+      .preload('folder', (q) => q.select('id', 'name'))
 
     if (filter !== 'all') {
       baseQuery.where('browser', filter)

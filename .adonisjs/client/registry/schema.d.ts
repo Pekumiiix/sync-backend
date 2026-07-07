@@ -199,18 +199,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'folder.folder.join': {
-    methods: ["POST"]
-    pattern: '/api/v1/folders/:folderId/join'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/folder').joinFolderValidator)>>
-      paramsTuple: [ParamValue]
-      params: { folderId: ParamValue }
-      query: ExtractQuery<InferInput<(typeof import('#validators/folder').joinFolderValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['join']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['join']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
   'folder.folder.destroy': {
     methods: ["DELETE"]
     pattern: '/api/v1/folders/:folderId'
@@ -245,6 +233,42 @@ export interface Registry {
       query: ExtractQueryForGet<InferInput<(typeof import('#validators/bookmark').getBookmarksQueryValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['show']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'folder.folder.join': {
+    methods: ["POST"]
+    pattern: '/api/v1/folders/:folderId/join'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/folder').joinFolderValidator)>>
+      paramsTuple: [ParamValue]
+      params: { folderId: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/folder').joinFolderValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['join']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['join']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'folder.folder.add_password': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/folders/:folderId/password'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/folder').addPasswordValidator)>>
+      paramsTuple: [ParamValue]
+      params: { folderId: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/folder').addPasswordValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['addPassword']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['addPassword']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'folder.folder.remove_password': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/folders/:folderId/password'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { folderId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['removePassword']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['removePassword']>>>
     }
   }
   'bookmarks.bookmark.store': {
@@ -357,7 +381,7 @@ export interface Registry {
   }
   'members.member.index': {
     methods: ["GET","HEAD"]
-    pattern: '/api/v1/folders/:folderId/member'
+    pattern: '/api/v1/folders/:folderId/members'
     types: {
       body: {}
       paramsTuple: [ParamValue]
@@ -369,7 +393,7 @@ export interface Registry {
   }
   'members.member.leave': {
     methods: ["DELETE"]
-    pattern: '/api/v1/folders/:folderId/member/leave'
+    pattern: '/api/v1/folders/:folderId/members/leave'
     types: {
       body: {}
       paramsTuple: [ParamValue]
@@ -381,7 +405,7 @@ export interface Registry {
   }
   'members.member.update': {
     methods: ["PATCH"]
-    pattern: '/api/v1/folders/:folderId/member/:memberId'
+    pattern: '/api/v1/folders/:folderId/members/:memberId'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/member').updateMemberValidator)>>
       paramsTuple: [ParamValue, ParamValue]
@@ -393,7 +417,7 @@ export interface Registry {
   }
   'members.member.destroy': {
     methods: ["DELETE"]
-    pattern: '/api/v1/folders/:folderId/member/:memberId'
+    pattern: '/api/v1/folders/:folderId/members/:memberId'
     types: {
       body: {}
       paramsTuple: [ParamValue, ParamValue]
@@ -545,6 +569,30 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/integration_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/integration_controller').default['destroy']>>>
+    }
+  }
+  'search.search.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/search/bookmarks'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/search').searchQueryValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/search_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/search_controller').default['index']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'search.search.folder_search': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/search/:folderId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { folderId: ParamValue }
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/search').searchQueryValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/search_controller').default['folderSearch']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/search_controller').default['folderSearch']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
 }

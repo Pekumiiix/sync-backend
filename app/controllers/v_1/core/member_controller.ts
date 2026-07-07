@@ -17,10 +17,14 @@ export default class MembersController {
 
     const { folder, permission } = await FolderService.getFolderWithPermissions(folderId, user)
 
-    const members = await Member.query().where('folder_id', folder.id).preload('user')
+    const members = await folder.related('members').query().preload('user')
 
     const formattedResponse: MemberListResponse = await ctx.serialize(
       {
+        folder: {
+          id: folder.id,
+          name: folder.name,
+        },
         members: MemberTransformer.transform(members),
         permission,
         meta: { totalMemberCount: folder.memberCount },

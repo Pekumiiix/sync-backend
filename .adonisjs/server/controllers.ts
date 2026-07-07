@@ -18,6 +18,7 @@ export const controllers = {
       Integration: () => import('#controllers/v_1/core/integration_controller'),
       Invitation: () => import('#controllers/v_1/core/invitation_controller'),
       Member: () => import('#controllers/v_1/core/member_controller'),
+      Search: () => import('#controllers/v_1/core/search_controller'),
     },
     extension: {
       Auth: () => import('#controllers/v_1/extension/auth_controller'),

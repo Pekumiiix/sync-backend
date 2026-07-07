@@ -12,6 +12,7 @@ export default class MemberTransformer extends BaseTransformer<Member> {
             firstName: this.resource.user.firstName,
             lastName: this.resource.user.lastName,
             avatarUrl: this.resource.user.avatarUrl,
+            email: this.resource.user.email,
           }
         : null,
     }

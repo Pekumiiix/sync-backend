@@ -5,6 +5,7 @@ export interface PreviewUser {
   firstName: string
   lastName: string
   avatarUrl: string | null
+  email: string
 }
 
 export interface MemberResponse {
@@ -17,6 +18,7 @@ export interface MemberResponse {
 
 export interface MemberListResponse {
   data: {
+    folder: { id: string; name: string }
     members: MemberResponse[]
     permission: FolderPermission
     meta: { totalMemberCount: number }

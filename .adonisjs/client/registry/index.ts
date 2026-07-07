@@ -102,12 +102,6 @@ const routes = {
     tokens: [{"old":"/api/v1/folders","type":0,"val":"api","end":""},{"old":"/api/v1/folders","type":0,"val":"v1","end":""},{"old":"/api/v1/folders","type":0,"val":"folders","end":""}],
     types: placeholder as Registry['folder.folder.store']['types'],
   },
-  'folder.folder.join': {
-    methods: ["POST"],
-    pattern: '/api/v1/folders/:folderId/join',
-    tokens: [{"old":"/api/v1/folders/:folderId/join","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/join","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"join","end":""}],
-    types: placeholder as Registry['folder.folder.join']['types'],
-  },
   'folder.folder.destroy': {
     methods: ["DELETE"],
     pattern: '/api/v1/folders/:folderId',
@@ -125,6 +119,24 @@ const routes = {
     pattern: '/api/v1/folders/:folderId',
     tokens: [{"old":"/api/v1/folders/:folderId","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId","type":1,"val":"folderId","end":""}],
     types: placeholder as Registry['folder.folder.show']['types'],
+  },
+  'folder.folder.join': {
+    methods: ["POST"],
+    pattern: '/api/v1/folders/:folderId/join',
+    tokens: [{"old":"/api/v1/folders/:folderId/join","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/join","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"join","end":""}],
+    types: placeholder as Registry['folder.folder.join']['types'],
+  },
+  'folder.folder.add_password': {
+    methods: ["PATCH"],
+    pattern: '/api/v1/folders/:folderId/password',
+    tokens: [{"old":"/api/v1/folders/:folderId/password","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/password","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/password","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/password","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/password","type":0,"val":"password","end":""}],
+    types: placeholder as Registry['folder.folder.add_password']['types'],
+  },
+  'folder.folder.remove_password': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/folders/:folderId/password',
+    tokens: [{"old":"/api/v1/folders/:folderId/password","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/password","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/password","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/password","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/password","type":0,"val":"password","end":""}],
+    types: placeholder as Registry['folder.folder.remove_password']['types'],
   },
   'bookmarks.bookmark.store': {
     methods: ["POST"],
@@ -182,26 +194,26 @@ const routes = {
   },
   'members.member.index': {
     methods: ["GET","HEAD"],
-    pattern: '/api/v1/folders/:folderId/member',
-    tokens: [{"old":"/api/v1/folders/:folderId/member","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/member","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/member","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/member","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/member","type":0,"val":"member","end":""}],
+    pattern: '/api/v1/folders/:folderId/members',
+    tokens: [{"old":"/api/v1/folders/:folderId/members","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/members","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/members","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/members","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/members","type":0,"val":"members","end":""}],
     types: placeholder as Registry['members.member.index']['types'],
   },
   'members.member.leave': {
     methods: ["DELETE"],
-    pattern: '/api/v1/folders/:folderId/member/leave',
-    tokens: [{"old":"/api/v1/folders/:folderId/member/leave","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/member/leave","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/member/leave","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/member/leave","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/member/leave","type":0,"val":"member","end":""},{"old":"/api/v1/folders/:folderId/member/leave","type":0,"val":"leave","end":""}],
+    pattern: '/api/v1/folders/:folderId/members/leave',
+    tokens: [{"old":"/api/v1/folders/:folderId/members/leave","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/members/leave","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/members/leave","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/members/leave","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/members/leave","type":0,"val":"members","end":""},{"old":"/api/v1/folders/:folderId/members/leave","type":0,"val":"leave","end":""}],
     types: placeholder as Registry['members.member.leave']['types'],
   },
   'members.member.update': {
     methods: ["PATCH"],
-    pattern: '/api/v1/folders/:folderId/member/:memberId',
-    tokens: [{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"member","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":1,"val":"memberId","end":""}],
+    pattern: '/api/v1/folders/:folderId/members/:memberId',
+    tokens: [{"old":"/api/v1/folders/:folderId/members/:memberId","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/members/:memberId","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/members/:memberId","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/members/:memberId","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/members/:memberId","type":0,"val":"members","end":""},{"old":"/api/v1/folders/:folderId/members/:memberId","type":1,"val":"memberId","end":""}],
     types: placeholder as Registry['members.member.update']['types'],
   },
   'members.member.destroy': {
     methods: ["DELETE"],
-    pattern: '/api/v1/folders/:folderId/member/:memberId',
-    tokens: [{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":0,"val":"member","end":""},{"old":"/api/v1/folders/:folderId/member/:memberId","type":1,"val":"memberId","end":""}],
+    pattern: '/api/v1/folders/:folderId/members/:memberId',
+    tokens: [{"old":"/api/v1/folders/:folderId/members/:memberId","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/members/:memberId","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/members/:memberId","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/members/:memberId","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/members/:memberId","type":0,"val":"members","end":""},{"old":"/api/v1/folders/:folderId/members/:memberId","type":1,"val":"memberId","end":""}],
     types: placeholder as Registry['members.member.destroy']['types'],
   },
   'invitations.invitation.index': {
@@ -275,6 +287,18 @@ const routes = {
     pattern: '/api/v1/browser-integrations/:integrationId',
     tokens: [{"old":"/api/v1/browser-integrations/:integrationId","type":0,"val":"api","end":""},{"old":"/api/v1/browser-integrations/:integrationId","type":0,"val":"v1","end":""},{"old":"/api/v1/browser-integrations/:integrationId","type":0,"val":"browser-integrations","end":""},{"old":"/api/v1/browser-integrations/:integrationId","type":1,"val":"integrationId","end":""}],
     types: placeholder as Registry['browserIntegrations.integration.destroy']['types'],
+  },
+  'search.search.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/search/bookmarks',
+    tokens: [{"old":"/api/v1/search/bookmarks","type":0,"val":"api","end":""},{"old":"/api/v1/search/bookmarks","type":0,"val":"v1","end":""},{"old":"/api/v1/search/bookmarks","type":0,"val":"search","end":""},{"old":"/api/v1/search/bookmarks","type":0,"val":"bookmarks","end":""}],
+    types: placeholder as Registry['search.search.index']['types'],
+  },
+  'search.search.folder_search': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/search/:folderId',
+    tokens: [{"old":"/api/v1/search/:folderId","type":0,"val":"api","end":""},{"old":"/api/v1/search/:folderId","type":0,"val":"v1","end":""},{"old":"/api/v1/search/:folderId","type":0,"val":"search","end":""},{"old":"/api/v1/search/:folderId","type":1,"val":"folderId","end":""}],
+    types: placeholder as Registry['search.search.folder_search']['types'],
   },
 } as const satisfies Record<string, AdonisEndpoint>
 

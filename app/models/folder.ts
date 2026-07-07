@@ -1,5 +1,12 @@
 import { FolderSchema } from '#database/schema'
-import { afterSave, beforeSave, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import {
+  afterCreate,
+  beforeSave,
+  belongsTo,
+  column,
+  hasMany,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
 import User from './user.ts'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Bookmark from './bookmark.ts'
@@ -41,7 +48,7 @@ export default class Folder extends FolderSchema {
     }
   }
 
-  @afterSave()
+  @afterCreate()
   public static async createDefaultMember(folder: Folder) {
     if (folder.isSystem) return
 

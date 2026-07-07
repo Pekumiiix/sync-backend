@@ -44,10 +44,12 @@ export interface ApiDefinition {
     folder: {
       index: typeof routes['folder.folder.index']
       store: typeof routes['folder.folder.store']
-      join: typeof routes['folder.folder.join']
       destroy: typeof routes['folder.folder.destroy']
       update: typeof routes['folder.folder.update']
       show: typeof routes['folder.folder.show']
+      join: typeof routes['folder.folder.join']
+      addPassword: typeof routes['folder.folder.add_password']
+      removePassword: typeof routes['folder.folder.remove_password']
     }
   }
   bookmarks: {
@@ -93,6 +95,12 @@ export interface ApiDefinition {
     integration: {
       index: typeof routes['browserIntegrations.integration.index']
       destroy: typeof routes['browserIntegrations.integration.destroy']
+    }
+  }
+  search: {
+    search: {
+      index: typeof routes['search.search.index']
+      folderSearch: typeof routes['search.search.folder_search']
     }
   }
 }

@@ -11,14 +11,26 @@
 
 import limiter from '@adonisjs/limiter/services/main'
 
-export const throttle = limiter.define('global', () => {
-  return limiter.allowRequests(10).every('1 minute')
+export const throttle = limiter.define('global', (ctx) => {
+  const key = ctx.auth?.user?.id ? `user_${ctx.auth.user.id}` : `ip_${ctx.request.ip()}`
+
+  return limiter.allowRequests(50).every('1 minute').usingKey(key)
 })
 
-export const authThrottle = limiter.define('auth', () => {
-  return limiter.allowRequests(5).every('5 mins')
+export const authThrottle = limiter.define('auth', (ctx) => {
+  const key = `ip_${ctx.request.ip()}`
+
+  return limiter.allowRequests(5).every('5 mins').usingKey(key)
 })
 
-export const resendThrottle = limiter.define('resendVerification', () => {
-  return limiter.allowRequests(1).every('1 minute')
+export const resendThrottle = limiter.define('resendVerification', (ctx) => {
+  const key = ctx.auth?.user?.id ? `user_${ctx.auth.user.id}` : `ip_${ctx.request.ip()}`
+
+  return limiter.allowRequests(1).every('1 minute').usingKey(key)
+})
+
+export const searchThrottle = limiter.define('search', (ctx) => {
+  const key = ctx.auth?.user?.id ? `user_${ctx.auth.user.id}` : `ip_${ctx.request.ip()}`
+
+  return limiter.allowRequests(60).every('1 minute').usingKey(key)
 })

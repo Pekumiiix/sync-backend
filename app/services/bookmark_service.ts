@@ -99,6 +99,10 @@ export class BookmarkService {
 
     const oldFolderId = bookmark.folderId
 
+    if (oldFolderId === newFolderId) {
+      throw new Exception('Bookmark is already in the specified folder.', { status: 400 })
+    }
+
     await MemberService.requireAccessLevel(user.id, oldFolderId, 'editor')
 
     await MemberService.requireAccessLevel(user.id, newFolderId, 'editor')
@@ -112,7 +116,12 @@ export class BookmarkService {
 
       await trx.from('folders').where('id', oldFolderId).decrement('bookmark_count', 1)
       await trx.from('folders').where('id', newFolderId).increment('bookmark_count', 1)
+
+      await FolderService.syncFolderRecentImages(oldFolderId, trx)
+      await FolderService.syncFolderRecentImages(newFolderId, trx)
     })
+
+    await bookmark.load('folder')
 
     return bookmark
   }

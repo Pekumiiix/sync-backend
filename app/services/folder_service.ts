@@ -104,7 +104,11 @@ export class FolderService {
     const [systemFolders, ownedFolders, sharedFolders] = await Promise.all([
       user.related('ownedFolders').query().where('is_system', true).orderBy('created_at', 'asc'),
       user.related('ownedFolders').query().where('is_system', false).orderBy('created_at', 'asc'),
-      user.related('sharedFolders').query().orderBy('created_at', 'asc'),
+      user
+        .related('sharedFolders')
+        .query()
+        .whereNot('folders.user_id', user.id)
+        .orderBy('created_at', 'asc'),
     ])
 
     return { systemFolders, ownedFolders, sharedFolders }

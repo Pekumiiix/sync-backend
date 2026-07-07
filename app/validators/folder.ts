@@ -19,3 +19,7 @@ export const updateFolderValidator = vine.create({
 export const joinFolderValidator = vine.create({
   password: vine.string().minLength(1).maxLength(255).optional(),
 })
+
+export const addPasswordValidator = vine.create({
+  password: vine.string().minLength(1).maxLength(255),
+})

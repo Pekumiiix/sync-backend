@@ -14,7 +14,7 @@ export class MemberService {
       return {
         isMember: true,
         isOwner: true,
-        role: 'admin' as RoleType,
+        role: 'owner' as RoleType,
         accessLevel: 'editor' as AccessLevelType,
       }
     }

@@ -1,4 +1,5 @@
 import {
+  addPasswordValidator,
   createFolderValidator,
   joinFolderValidator,
   updateFolderValidator,
@@ -15,6 +16,8 @@ import { type ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
 import { getBookmarksQueryValidator } from '#validators/bookmark'
+import Folder from '#models/folder'
+import { MemberService } from '#services/member_service'
 
 export default class FoldersController {
   async index(ctx: HttpContext) {
@@ -119,6 +122,7 @@ export default class FoldersController {
           isSystem: folder.isSystem,
           bookmarkCount: folder.bookmarkCount,
           memberCount: folder.memberCount,
+          isProtected: folder.password !== null,
         },
         permission,
         previewMembers,
@@ -149,6 +153,54 @@ export default class FoldersController {
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'Successfully joined the folder.'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
+  async addPassword(ctx: HttpContext) {
+    const { params, response, auth, request } = ctx
+
+    const folderId = params.folderId
+
+    const { password } = await request.validateUsing(addPasswordValidator)
+
+    const user = auth.user!
+
+    const folder = await Folder.findOrFail(folderId)
+
+    await MemberService.requireRole(user.id, folderId, 'owner')
+
+    folder.password = password
+
+    await folder.save()
+
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'Folder password updated successfully.'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
+  async removePassword(ctx: HttpContext) {
+    const { params, response, auth } = ctx
+
+    const folderId = params.folderId
+
+    const user = auth.user!
+
+    const folder = await Folder.findOrFail(folderId)
+
+    await MemberService.requireRole(user.id, folderId, 'owner')
+
+    folder.password = null
+
+    await folder.save()
+
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'Folder password removed successfully.'
     )
 
     return response.ok(formattedResponse)

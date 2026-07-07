@@ -133,10 +133,6 @@ router
           .openapi({ summary: 'Create a new folder' })
 
         router
-          .post(':folderId/join', [controllers.v1.core.Folder, 'join'])
-          .openapi({ summary: 'Join a folder' })
-
-        router
           .delete(':folderId', [controllers.v1.core.Folder, 'destroy'])
           .openapi({ summary: 'Delete a folder' })
         router
@@ -145,6 +141,18 @@ router
         router
           .get(':folderId', [controllers.v1.core.Folder, 'show'])
           .openapi({ summary: 'Get folder details' })
+
+        router
+          .post(':folderId/join', [controllers.v1.core.Folder, 'join'])
+          .openapi({ summary: 'Join a folder' })
+        router
+          .patch(':folderId/password', [controllers.v1.core.Folder, 'addPassword'])
+          .openapi({ summary: 'Add or update a folder password' })
+        router
+          .delete(':folderId/password', [controllers.v1.core.Folder, 'removePassword'])
+          .openapi({
+            summary: 'Remove a folder password',
+          })
       })
       .prefix('folders')
       .as('folder')
@@ -215,7 +223,7 @@ router
           .delete(':memberId', [controllers.v1.core.Member, 'destroy'])
           .openapi({ summary: 'Remove a member' })
       })
-      .prefix('/folders/:folderId/member')
+      .prefix('/folders/:folderId/members')
       .as('members')
       .use(throttle)
       .use(middleware.auth())
@@ -301,6 +309,25 @@ router
       .openapi({
         tags: ['Browser Integrations'],
         description: 'Browser integration related endpoints',
+      })
+
+    // Search routes
+    router
+      .group(() => {
+        router
+          .get('bookmarks', [controllers.v1.core.Search, 'index'])
+          .openapi({ summary: 'Search bookmarks' })
+        router
+          .get('/:folderId', [controllers.v1.core.Search, 'folderSearch'])
+          .openapi({ summary: 'Search bookmarks in a specific folder' })
+      })
+      .prefix('search')
+      .as('search')
+      .use(throttle)
+      .use(middleware.auth())
+      .openapi({
+        tags: ['Search'],
+        description: 'Search related endpoints',
       })
   })
   .prefix('/api/v1')

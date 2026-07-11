@@ -68,6 +68,40 @@ export class BookmarkService {
     events.BookmarkDeleted.dispatch(user, bookmark.folderId, bookmark.title)
   }
 
+  static async bulkDeleteBookmarks(bookmarkIds: string[], user: User) {
+    if (!bookmarkIds.length) return []
+
+    const bookmarks = await Bookmark.query().whereIn('id', bookmarkIds)
+
+    if (bookmarks.length !== bookmarkIds.length) {
+      throw new Exception('One or more bookmarks not found.', { status: 404 })
+    }
+
+    const folderId = bookmarks[0].folderId
+
+    const allFromSameFolder = bookmarks.every((b) => b.folderId === folderId)
+
+    if (!allFromSameFolder) {
+      throw new Exception('All bookmarks must originate from the same folder.', { status: 400 })
+    }
+
+    await MemberService.requireAccessLevel(user.id, folderId, 'editor')
+
+    await db.transaction(async (trx) => {
+      await Bookmark.query({ client: trx }).whereIn('id', bookmarkIds).delete()
+
+      const moveCount = bookmarkIds.length
+
+      await trx.from('folders').where('id', folderId).decrement('bookmark_count', moveCount)
+
+      await FolderService.syncFolderRecentImages(folderId, trx)
+    })
+
+    for (const bookmark of bookmarks) {
+      events.BookmarkDeleted.dispatch(user, folderId, bookmark.title)
+    }
+  }
+
   static async updateBookmark(bookmarkId: string, user: User, data: UpdateBookmarkType) {
     const bookmark = await this.getBookmarkById(bookmarkId)
 
@@ -92,6 +126,30 @@ export class BookmarkService {
     await bookmark.save()
 
     return bookmark
+  }
+
+  static async bulkUnpinBookmarks(bookmarkIds: string[], user: User) {
+    if (!bookmarkIds.length) return []
+
+    const bookmarks = await Bookmark.query().whereIn('id', bookmarkIds)
+
+    if (bookmarks.length !== bookmarkIds.length) {
+      throw new Exception('One or more bookmarks not found.', { status: 404 })
+    }
+
+    const folderId = bookmarks[0].folderId
+
+    const allFromSameFolder = bookmarks.every((b) => b.folderId === folderId)
+
+    if (!allFromSameFolder) {
+      throw new Exception('All bookmarks must originate from the same folder.', { status: 400 })
+    }
+
+    await MemberService.requireAccessLevel(user.id, folderId, 'editor')
+
+    await db.transaction(async (trx) => {
+      await Bookmark.query({ client: trx }).whereIn('id', bookmarkIds).update({ isPinned: false })
+    })
   }
 
   static async moveBookmark(bookmarkId: string, newFolderId: string, user: User) {
@@ -124,6 +182,49 @@ export class BookmarkService {
     await bookmark.load('folder')
 
     return bookmark
+  }
+
+  static async bulkMoveBookmarks(bookmarkIds: string[], newFolderId: string, user: User) {
+    if (!bookmarkIds.length) return []
+
+    const bookmarks = await Bookmark.query().whereIn('id', bookmarkIds)
+
+    if (bookmarks.length !== bookmarkIds.length) {
+      throw new Exception('One or more bookmarks not found.', { status: 404 })
+    }
+
+    const oldFolderId = bookmarks[0].folderId
+
+    const allFromSameFolder = bookmarks.every((b) => b.folderId === oldFolderId)
+
+    if (!allFromSameFolder) {
+      throw new Exception('All bookmarks must originate from the same folder.', { status: 400 })
+    }
+
+    if (oldFolderId === newFolderId) {
+      return bookmarks
+    }
+
+    await MemberService.requireAccessLevel(user.id, oldFolderId, 'editor')
+    await MemberService.requireAccessLevel(user.id, newFolderId, 'editor')
+
+    await db.transaction(async (trx) => {
+      await Bookmark.query({ client: trx })
+        .whereIn('id', bookmarkIds)
+        .update({ folderId: newFolderId })
+
+      const moveCount = bookmarkIds.length
+
+      await trx.from('folders').where('id', oldFolderId).decrement('bookmark_count', moveCount)
+      await trx.from('folders').where('id', newFolderId).increment('bookmark_count', moveCount)
+
+      await FolderService.syncFolderRecentImages(oldFolderId, trx)
+      await FolderService.syncFolderRecentImages(newFolderId, trx)
+    })
+
+    await bookmarks[0].load('folder')
+
+    return bookmarks
   }
 
   static async pinnedBookmarks(folder: Folder) {

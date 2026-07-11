@@ -179,6 +179,15 @@ router
         router
           .get('browsers', [controllers.v1.core.Bookmark, 'browsers'])
           .openapi({ summary: "List unique browsers used in a user or folder's bookmarks" })
+        router
+          .post('unpin', [controllers.v1.core.Bookmark, 'bulkUnpin'])
+          .openapi({ summary: 'Unpin multiple bookmarks' })
+        router
+          .post('move', [controllers.v1.core.Bookmark, 'bulkMove'])
+          .openapi({ summary: 'Move multiple bookmarks to a different folder' })
+        router
+          .post('delete', [controllers.v1.core.Bookmark, 'bulkDestroy'])
+          .openapi({ summary: 'Delete multiple bookmarks' })
 
         router
           .patch(':bookmarkId', [controllers.v1.core.Bookmark, 'update'])

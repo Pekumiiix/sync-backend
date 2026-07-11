@@ -53,6 +53,12 @@ export default class MembersController {
       .preload('user')
       .firstOrFail()
 
+    if (member.userId === user.id) {
+      return response.forbidden({
+        message: 'You cannot change your own access level.',
+      })
+    }
+
     member.accessLevel = accessLevel
 
     await member.save()

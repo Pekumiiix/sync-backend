@@ -1,5 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import {
+  bulkDeleteBookmarkValidator,
+  bulkMoveBookmarkValidator,
+  bulkUnpinBookmarkValidator,
   createBookmarkValidator,
   fetchUrlDataValidator,
   getBookmarksQueryValidator,
@@ -125,6 +128,23 @@ export default class BookmarksController {
     return response.ok(formattedResponse)
   }
 
+  async bulkDestroy(ctx: HttpContext) {
+    const { response, auth, request } = ctx
+
+    const user = auth.user!
+
+    const { bookmarkIds } = await request.validateUsing(bulkDeleteBookmarkValidator)
+
+    await BookmarkService.bulkDeleteBookmarks(bookmarkIds, user)
+
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'Bookmarks deleted successfully!'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
   async update(ctx: HttpContext) {
     const { response, auth, params, request } = ctx
 
@@ -178,6 +198,23 @@ export default class BookmarksController {
     return response.ok(formattedResponse)
   }
 
+  async bulkUnpin(ctx: HttpContext) {
+    const { response, auth, request } = ctx
+
+    const user = auth.user!
+
+    const { bookmarkIds } = await request.validateUsing(bulkUnpinBookmarkValidator)
+
+    await BookmarkService.bulkUnpinBookmarks(bookmarkIds, user)
+
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'Bookmarks unpinned successfully!'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
   async move(ctx: HttpContext) {
     const { response, auth, params, request } = ctx
 
@@ -192,6 +229,24 @@ export default class BookmarksController {
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark) },
       'Bookmark moved successfully!'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
+  async bulkMove(ctx: HttpContext) {
+    const { response, auth, request } = ctx
+
+    const user = auth.user!
+
+    const { bookmarkIds, folderId: newFolderId } =
+      await request.validateUsing(bulkMoveBookmarkValidator)
+
+    await BookmarkService.bulkMoveBookmarks(bookmarkIds, newFolderId, user)
+
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'Bookmarks moved successfully!'
     )
 
     return response.ok(formattedResponse)

@@ -319,6 +319,42 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['browsers']>>>
     }
   }
+  'bookmarks.bookmark.bulk_unpin': {
+    methods: ["POST"]
+    pattern: '/api/v1/bookmarks/unpin'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/bookmark').bulkUnpinBookmarkValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/bookmark').bulkUnpinBookmarkValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['bulkUnpin']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['bulkUnpin']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'bookmarks.bookmark.bulk_move': {
+    methods: ["POST"]
+    pattern: '/api/v1/bookmarks/move'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/bookmark').bulkMoveBookmarkValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/bookmark').bulkMoveBookmarkValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['bulkMove']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['bulkMove']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'bookmarks.bookmark.bulk_destroy': {
+    methods: ["POST"]
+    pattern: '/api/v1/bookmarks/delete'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/bookmark').bulkDeleteBookmarkValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/bookmark').bulkDeleteBookmarkValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['bulkDestroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['bulkDestroy']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'bookmarks.bookmark.update': {
     methods: ["PATCH"]
     pattern: '/api/v1/bookmarks/:bookmarkId'

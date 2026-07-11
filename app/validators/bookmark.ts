@@ -2,6 +2,8 @@ import vine from '@vinejs/vine'
 import { SUPPORTED_BROWSERS } from '#enums/browser'
 import { type Infer } from '@vinejs/vine/types'
 
+const bookmarkIds = () => vine.array(vine.string().uuid())
+
 export const fetchUrlDataValidator = vine.create({
   url: vine.string().url(),
 })
@@ -27,6 +29,19 @@ export const updateBookmarkValidator = vine.create({
 
 export const moveBookmarkValidator = vine.create({
   folderId: vine.string().uuid(),
+})
+
+export const bulkMoveBookmarkValidator = vine.create({
+  bookmarkIds: bookmarkIds(),
+  folderId: vine.string().uuid(),
+})
+
+export const bulkDeleteBookmarkValidator = vine.create({
+  bookmarkIds: bookmarkIds(),
+})
+
+export const bulkUnpinBookmarkValidator = vine.create({
+  bookmarkIds: bookmarkIds(),
 })
 
 export const getBookmarksQueryValidator = vine.create({

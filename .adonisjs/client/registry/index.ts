@@ -162,6 +162,24 @@ const routes = {
     tokens: [{"old":"/api/v1/bookmarks/browsers","type":0,"val":"api","end":""},{"old":"/api/v1/bookmarks/browsers","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmarks/browsers","type":0,"val":"bookmarks","end":""},{"old":"/api/v1/bookmarks/browsers","type":0,"val":"browsers","end":""}],
     types: placeholder as Registry['bookmarks.bookmark.browsers']['types'],
   },
+  'bookmarks.bookmark.bulk_unpin': {
+    methods: ["POST"],
+    pattern: '/api/v1/bookmarks/unpin',
+    tokens: [{"old":"/api/v1/bookmarks/unpin","type":0,"val":"api","end":""},{"old":"/api/v1/bookmarks/unpin","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmarks/unpin","type":0,"val":"bookmarks","end":""},{"old":"/api/v1/bookmarks/unpin","type":0,"val":"unpin","end":""}],
+    types: placeholder as Registry['bookmarks.bookmark.bulk_unpin']['types'],
+  },
+  'bookmarks.bookmark.bulk_move': {
+    methods: ["POST"],
+    pattern: '/api/v1/bookmarks/move',
+    tokens: [{"old":"/api/v1/bookmarks/move","type":0,"val":"api","end":""},{"old":"/api/v1/bookmarks/move","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmarks/move","type":0,"val":"bookmarks","end":""},{"old":"/api/v1/bookmarks/move","type":0,"val":"move","end":""}],
+    types: placeholder as Registry['bookmarks.bookmark.bulk_move']['types'],
+  },
+  'bookmarks.bookmark.bulk_destroy': {
+    methods: ["POST"],
+    pattern: '/api/v1/bookmarks/delete',
+    tokens: [{"old":"/api/v1/bookmarks/delete","type":0,"val":"api","end":""},{"old":"/api/v1/bookmarks/delete","type":0,"val":"v1","end":""},{"old":"/api/v1/bookmarks/delete","type":0,"val":"bookmarks","end":""},{"old":"/api/v1/bookmarks/delete","type":0,"val":"delete","end":""}],
+    types: placeholder as Registry['bookmarks.bookmark.bulk_destroy']['types'],
+  },
   'bookmarks.bookmark.update': {
     methods: ["PATCH"],
     pattern: '/api/v1/bookmarks/:bookmarkId',

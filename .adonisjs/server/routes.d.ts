@@ -30,6 +30,9 @@ export type ScannedRoutes = {
     'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.preview': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.browsers': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.bulk_unpin': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.bulk_move': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.bulk_destroy': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.update': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.pin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
@@ -97,6 +100,9 @@ export type ScannedRoutes = {
     'folder.folder.join': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.preview': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.bulk_unpin': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.bulk_move': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.bulk_destroy': { paramsTuple?: []; params?: {} }
     'invitations.invitation.store': { paramsTuple?: []; params?: {} }
   }
   DELETE: {

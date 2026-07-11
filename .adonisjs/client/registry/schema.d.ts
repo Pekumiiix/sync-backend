@@ -320,7 +320,7 @@ export interface Registry {
     }
   }
   'bookmarks.bookmark.bulk_unpin': {
-    methods: ["POST"]
+    methods: ["PATCH"]
     pattern: '/api/v1/bookmarks/unpin'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/bookmark').bulkUnpinBookmarkValidator)>>
@@ -332,7 +332,7 @@ export interface Registry {
     }
   }
   'bookmarks.bookmark.bulk_move': {
-    methods: ["POST"]
+    methods: ["PATCH"]
     pattern: '/api/v1/bookmarks/move'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/bookmark').bulkMoveBookmarkValidator)>>
@@ -344,7 +344,7 @@ export interface Registry {
     }
   }
   'bookmarks.bookmark.bulk_destroy': {
-    methods: ["POST"]
+    methods: ["DELETE"]
     pattern: '/api/v1/bookmarks/delete'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/bookmark').bulkDeleteBookmarkValidator)>>

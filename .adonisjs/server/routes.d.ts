@@ -100,15 +100,13 @@ export type ScannedRoutes = {
     'folder.folder.join': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.preview': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmark.bulk_unpin': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmark.bulk_move': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmark.bulk_destroy': { paramsTuple?: []; params?: {} }
     'invitations.invitation.store': { paramsTuple?: []; params?: {} }
   }
   DELETE: {
     'oauths.google.destroy': { paramsTuple?: []; params?: {} }
     'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.remove_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'bookmarks.bookmark.bulk_destroy': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'members.member.leave': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
@@ -121,6 +119,8 @@ export type ScannedRoutes = {
     'profile.profile.update_settings': { paramsTuple?: []; params?: {} }
     'folder.folder.update': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.add_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'bookmarks.bookmark.bulk_unpin': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.bulk_move': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.update': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.pin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.unpin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }

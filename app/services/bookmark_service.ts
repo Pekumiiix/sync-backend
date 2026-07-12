@@ -12,6 +12,7 @@ import db from '@adonisjs/lucid/services/db'
 import { FolderService } from './folder_service.ts'
 import type User from '#models/user'
 import { MemberService } from './member_service.ts'
+import { DateTime } from 'luxon'
 
 export class BookmarkService {
   static async getBookmarkById(bookmarkId: string) {
@@ -43,6 +44,11 @@ export class BookmarkService {
         { client: trx }
       )
 
+      await trx
+        .from('folders')
+        .where('id', folder.id)
+        .update({ updated_at: DateTime.now().toSQL() })
+
       return newBookmark
     })
 
@@ -63,6 +69,11 @@ export class BookmarkService {
       bookmark.useTransaction(trx)
 
       await bookmark.delete()
+
+      await trx
+        .from('folders')
+        .where('id', bookmark.folderId)
+        .update({ updated_at: DateTime.now().toSQL() })
     })
 
     events.BookmarkDeleted.dispatch(user, bookmark.folderId, bookmark.title)
@@ -93,6 +104,7 @@ export class BookmarkService {
       const moveCount = bookmarkIds.length
 
       await trx.from('folders').where('id', folderId).decrement('bookmark_count', moveCount)
+      await trx.from('folders').where('id', folderId).update({ updated_at: DateTime.now().toSQL() })
 
       await FolderService.syncFolderRecentImages(folderId, trx)
     })
@@ -173,7 +185,15 @@ export class BookmarkService {
       await bookmark.save()
 
       await trx.from('folders').where('id', oldFolderId).decrement('bookmark_count', 1)
+      await trx
+        .from('folders')
+        .where('id', oldFolderId)
+        .update({ updated_at: DateTime.now().toSQL() })
       await trx.from('folders').where('id', newFolderId).increment('bookmark_count', 1)
+      await trx
+        .from('folders')
+        .where('id', newFolderId)
+        .update({ updated_at: DateTime.now().toSQL() })
 
       await FolderService.syncFolderRecentImages(oldFolderId, trx)
       await FolderService.syncFolderRecentImages(newFolderId, trx)
@@ -216,7 +236,15 @@ export class BookmarkService {
       const moveCount = bookmarkIds.length
 
       await trx.from('folders').where('id', oldFolderId).decrement('bookmark_count', moveCount)
+      await trx
+        .from('folders')
+        .where('id', oldFolderId)
+        .update({ updated_at: DateTime.now().toSQL() })
       await trx.from('folders').where('id', newFolderId).increment('bookmark_count', moveCount)
+      await trx
+        .from('folders')
+        .where('id', newFolderId)
+        .update({ updated_at: DateTime.now().toSQL() })
 
       await FolderService.syncFolderRecentImages(oldFolderId, trx)
       await FolderService.syncFolderRecentImages(newFolderId, trx)

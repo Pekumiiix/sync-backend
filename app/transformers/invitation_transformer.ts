@@ -3,10 +3,11 @@ import type Invitation from '#models/invitation'
 
 export default class InvitationTransformer extends BaseTransformer<Invitation> {
   toObject() {
-    const baseData = this.pick(this.resource, ['id', 'folderId', 'token', 'createdAt', 'status'])
+    const baseData = this.pick(this.resource, ['id', 'folderId', 'token', 'createdAt'])
 
     return {
       ...baseData,
+      status: this.resource.computedStatus,
       inviter: this.resource.inviter
         ? {
             id: this.resource.inviter.id,

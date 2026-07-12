@@ -3,11 +3,21 @@ import { belongsTo } from '@adonisjs/lucid/orm'
 import User from './user.ts'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Folder from './folder.ts'
+import { DateTime } from 'luxon'
 
 export default class Invitation extends InvitationSchema {
-  @belongsTo(() => User)
+  @belongsTo(() => User, {
+    foreignKey: 'inviterId',
+  })
   declare inviter: BelongsTo<typeof User>
 
   @belongsTo(() => Folder)
   declare folder: BelongsTo<typeof Folder>
+
+  public get computedStatus() {
+    if (this.status === 'pending' && this.expiresAt < DateTime.now()) {
+      return 'expired'
+    }
+    return this.status
+  }
 }

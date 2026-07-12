@@ -142,7 +142,7 @@ export class InvitationService {
       throw new Exception('Invitation not found.', { status: 404 })
     }
 
-    if (invitation.status !== 'pending') {
+    if (invitation.computedStatus !== 'pending') {
       throw new Exception('You can only decline pending invitations.', { status: 400 })
     }
 

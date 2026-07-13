@@ -49,11 +49,11 @@ export default class InvitationsController {
   async destroy(ctx: HttpContext) {
     const { params, response, auth } = ctx
 
-    const invitationId = params.invitationId
+    const invitationToken = params.token
 
     const user = auth.user!
 
-    const invitation = await InvitationService.declineInvitation(invitationId, user)
+    const invitation = await InvitationService.declineInvitation(invitationToken, user)
 
     const transformedInvitation = InvitationTransformer.transform(invitation)
 
@@ -70,7 +70,7 @@ export default class InvitationsController {
 
     const user = auth.user!
 
-    const { invitation } = await InvitationService.acceptInvitation(params.invitationId, user)
+    const { invitation } = await InvitationService.acceptInvitation(params.token, user)
 
     events.MemberJoined.dispatch(invitation.folderId, user)
 

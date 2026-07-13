@@ -248,14 +248,14 @@ const routes = {
   },
   'invitations.invitation.destroy': {
     methods: ["PATCH"],
-    pattern: '/api/v1/invitations/:invitationId/decline',
-    tokens: [{"old":"/api/v1/invitations/:invitationId/decline","type":0,"val":"api","end":""},{"old":"/api/v1/invitations/:invitationId/decline","type":0,"val":"v1","end":""},{"old":"/api/v1/invitations/:invitationId/decline","type":0,"val":"invitations","end":""},{"old":"/api/v1/invitations/:invitationId/decline","type":1,"val":"invitationId","end":""},{"old":"/api/v1/invitations/:invitationId/decline","type":0,"val":"decline","end":""}],
+    pattern: '/api/v1/invitations/:token/decline',
+    tokens: [{"old":"/api/v1/invitations/:token/decline","type":0,"val":"api","end":""},{"old":"/api/v1/invitations/:token/decline","type":0,"val":"v1","end":""},{"old":"/api/v1/invitations/:token/decline","type":0,"val":"invitations","end":""},{"old":"/api/v1/invitations/:token/decline","type":1,"val":"token","end":""},{"old":"/api/v1/invitations/:token/decline","type":0,"val":"decline","end":""}],
     types: placeholder as Registry['invitations.invitation.destroy']['types'],
   },
   'invitations.invitation.accept': {
     methods: ["PATCH"],
-    pattern: '/api/v1/invitations/:invitationId/accept',
-    tokens: [{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"api","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"v1","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"invitations","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":1,"val":"invitationId","end":""},{"old":"/api/v1/invitations/:invitationId/accept","type":0,"val":"accept","end":""}],
+    pattern: '/api/v1/invitations/:token/accept',
+    tokens: [{"old":"/api/v1/invitations/:token/accept","type":0,"val":"api","end":""},{"old":"/api/v1/invitations/:token/accept","type":0,"val":"v1","end":""},{"old":"/api/v1/invitations/:token/accept","type":0,"val":"invitations","end":""},{"old":"/api/v1/invitations/:token/accept","type":1,"val":"token","end":""},{"old":"/api/v1/invitations/:token/accept","type":0,"val":"accept","end":""}],
     types: placeholder as Registry['invitations.invitation.accept']['types'],
   },
   'notifications.notification.index': {

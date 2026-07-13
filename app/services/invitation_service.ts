@@ -82,17 +82,17 @@ export class InvitationService {
     return invitation
   }
 
-  static async acceptInvitation(invitationId: number, user: User) {
+  static async acceptInvitation(token: string, user: User) {
     return await db.transaction(async (trx) => {
       const invitation = await Invitation.query({ client: trx })
-        .where('id', invitationId)
+        .where('token', token)
         .where('email', user.email)
         .preload('inviter')
         .preload('folder')
         .forUpdate()
         .firstOrFail()
 
-      if (invitation.status !== 'pending') {
+      if (invitation.computedStatus !== 'pending') {
         throw new Exception('Invitation is no longer pending.', { status: 400 })
       }
 
@@ -130,9 +130,9 @@ export class InvitationService {
     })
   }
 
-  static async declineInvitation(invitationId: string, user: User) {
+  static async declineInvitation(token: string, user: User) {
     const invitation = await Invitation.query()
-      .where('id', invitationId)
+      .where('token', token)
       .where('email', user.email)
       .preload('inviter')
       .preload('folder')

@@ -16,7 +16,7 @@ export class NotificationService {
 
   static async getUserNotifications(user: User, page: number, limit: number) {
     const [notifications, unreadCount] = await Promise.all([
-      user.related('notifications').query().paginate(page, limit),
+      user.related('notifications').query().orderBy('created_at', 'desc').paginate(page, limit),
       user.related('notifications').query().whereNull('read_at').count('* as count'),
     ])
 

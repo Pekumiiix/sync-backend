@@ -252,10 +252,10 @@ router
           .openapi({ summary: 'Create a new invitation' })
 
         router
-          .patch(':invitationId/decline', [controllers.v1.core.Invitation, 'destroy'])
+          .patch(':token/decline', [controllers.v1.core.Invitation, 'destroy'])
           .openapi({ summary: 'Decline an invitation' })
         router
-          .patch(':invitationId/accept', [controllers.v1.core.Invitation, 'accept'])
+          .patch(':token/accept', [controllers.v1.core.Invitation, 'accept'])
           .openapi({ summary: 'Accept an invitation' })
       })
       .prefix('invitations')

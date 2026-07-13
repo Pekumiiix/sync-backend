@@ -489,11 +489,11 @@ export interface Registry {
   }
   'invitations.invitation.destroy': {
     methods: ["PATCH"]
-    pattern: '/api/v1/invitations/:invitationId/decline'
+    pattern: '/api/v1/invitations/:token/decline'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { invitationId: ParamValue }
+      params: { token: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['destroy']>>>
@@ -501,11 +501,11 @@ export interface Registry {
   }
   'invitations.invitation.accept': {
     methods: ["PATCH"]
-    pattern: '/api/v1/invitations/:invitationId/accept'
+    pattern: '/api/v1/invitations/:token/accept'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { invitationId: ParamValue }
+      params: { token: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['accept']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['accept']>>>

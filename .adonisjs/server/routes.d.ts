@@ -44,8 +44,8 @@ export type ScannedRoutes = {
     'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
     'invitations.invitation.index': { paramsTuple?: []; params?: {} }
     'invitations.invitation.store': { paramsTuple?: []; params?: {} }
-    'invitations.invitation.destroy': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
-    'invitations.invitation.accept': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
+    'invitations.invitation.destroy': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
+    'invitations.invitation.accept': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'notifications.notification.index': { paramsTuple?: []; params?: {} }
     'notifications.notification.destroy_all': { paramsTuple?: []; params?: {} }
     'notifications.notification.mark_all_as_read': { paramsTuple?: []; params?: {} }
@@ -126,8 +126,8 @@ export type ScannedRoutes = {
     'bookmarks.bookmark.unpin': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'bookmarks.bookmark.move': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
     'members.member.update': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
-    'invitations.invitation.destroy': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
-    'invitations.invitation.accept': { paramsTuple: [ParamValue]; params: {'invitationId': ParamValue} }
+    'invitations.invitation.destroy': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
+    'invitations.invitation.accept': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'notifications.notification.mark_all_as_read': { paramsTuple?: []; params?: {} }
     'notifications.notification.mark_as_read': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
     'notifications.notification.mark_as_unread': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }

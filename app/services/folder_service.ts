@@ -34,7 +34,7 @@ export class FolderService {
       throw new Exception('System folders cannot be deleted.', { status: 400 })
     }
 
-    const members = await MemberService.getMembers(folder.id)
+    const members = await MemberService.getMembers(folder.id, user.id)
 
     await folder.delete()
 

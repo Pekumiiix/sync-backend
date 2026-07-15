@@ -47,8 +47,9 @@ export class NotificationService {
         folderName: member.folder.name,
 
         actorId: actor.id,
-        actorName: actor.firstName,
-        actorAvatar: actor.avatarUrl,
+        firstName: actor.firstName,
+        lastName: actor.lastName,
+        avatar: actor.avatarUrl,
 
         targetName,
       },

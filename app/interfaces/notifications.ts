@@ -1,8 +1,9 @@
 import { type NotificationType } from '#enums/notification'
 
 export interface NotificationActor {
-  actorName: string
-  actorAvatar: string | null
+  firstName: string
+  lastName: string
+  avatar: string | null
 }
 
 export interface NotificationFolder {
@@ -28,8 +29,9 @@ export interface NotificationMeta {
 }
 
 export interface NotificationData {
-  actorName: string
-  actorAvatar: string | null
+  firstName: string
+  lastName: string
+  avatar: string | null
 
   folderName: string
   folderId: string

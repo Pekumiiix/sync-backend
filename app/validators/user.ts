@@ -45,7 +45,7 @@ export const forgotPasswordValidator = vine.create({
  * Validator to use when resetting the password
  */
 export const resetPasswordValidator = vine.create({
-  token: vine.string().fixedLength(6),
+  token: vine.string().uuid(),
   password: password(),
 })
 

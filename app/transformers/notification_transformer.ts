@@ -14,8 +14,9 @@ export default class NotificationTransformer extends BaseTransformer<Notificatio
     return {
       ...baseData,
       actor: {
-        actorName: this.resource.data.actorName,
-        actorAvatar: this.resource.data.actorAvatar,
+        firstName: this.resource.data.firstName,
+        lastName: this.resource.data.lastName,
+        avatar: this.resource.data.avatar,
       },
       folder: {
         folderName: this.resource.data.folderName,
@@ -29,7 +30,7 @@ export default class NotificationTransformer extends BaseTransformer<Notificatio
 }
 
 function formatNotificationContent(type: NotificationType, data: NotificationData) {
-  const actor = data.actorName || 'Someone'
+  const actor = `${data.firstName} ${data.lastName}`.trim() || 'Someone'
   const folder = data.folderName || 'a folder'
   const target = data.targetName || 'someone'
 

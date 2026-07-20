@@ -16,9 +16,18 @@ export default class extends BaseSchema {
         .onDelete('CASCADE')
         .index()
 
+      table
+        .integer('access_token_id')
+        .unsigned()
+        .references('id')
+        .inTable('auth_access_tokens')
+        .onDelete('CASCADE')
+        .notNullable()
+
       table.enum('browser', [...SUPPORTED_BROWSERS]).notNullable()
 
-      table.string('device_name').nullable()
+      table.string('device_id').nullable()
+      table.string('os_platform').nullable()
       table.string('extension_version').nullable()
 
       table.timestamp('created_at', { useTz: true }).notNullable()

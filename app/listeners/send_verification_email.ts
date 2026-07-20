@@ -14,7 +14,7 @@ export default class SendVerificationEmail {
       message.subject('Verify your email address')
       message.htmlView('emails/verify_email', {
         firstName: user.firstName,
-        verificationLink,
+        verifyUrl: verificationLink,
         code: verificationCode,
       })
     })

@@ -15,7 +15,7 @@ export default class SendPasswordResetEmail {
 
       message.htmlView('emails/password_reset', {
         firstName: user.firstName,
-        resetLink: resetLink,
+        resetUrl: resetLink,
       })
     })
   }

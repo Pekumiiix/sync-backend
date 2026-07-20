@@ -5,6 +5,7 @@ export const extensionLoginValidator = vine.create({
   email: vine.string().email(),
   password: vine.string(),
   browser: vine.enum(SUPPORTED_BROWSERS),
-  deviceName: vine.string().optional(),
   extensionVersion: vine.string(),
+  osPlatform: vine.string().minLength(1).maxLength(50),
+  deviceId: vine.string().minLength(1).maxLength(100),
 })

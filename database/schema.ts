@@ -76,20 +76,24 @@ export class BookmarkSchema extends BaseModel {
 }
 
 export class BrowserIntegrationSchema extends BaseModel {
-  static $columns = ['browser', 'createdAt', 'deviceName', 'extensionVersion', 'id', 'lastSyncedAt', 'userId'] as const
+  static $columns = ['accessTokenId', 'browser', 'createdAt', 'deviceId', 'extensionVersion', 'id', 'lastSyncedAt', 'osPlatform', 'userId'] as const
   $columns = BrowserIntegrationSchema.$columns
+  @column()
+  declare accessTokenId: number
   @column()
   declare browser: BrowserType
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
-  declare deviceName: string | null
+  declare deviceId: string | null
   @column()
   declare extensionVersion: string | null
   @column({ isPrimary: true })
   declare id: string
   @column.dateTime()
   declare lastSyncedAt: DateTime | null
+  @column()
+  declare osPlatform: string | null
   @column()
   declare userId: string
 }

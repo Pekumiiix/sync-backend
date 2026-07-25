@@ -103,6 +103,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/extension/auth_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'extension.bookmark.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/extension/sync'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/extension').createBookmarkValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/extension').createBookmarkValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/extension/bookmark_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/extension/bookmark_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'oauths.google.redirect': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/oauth/google'

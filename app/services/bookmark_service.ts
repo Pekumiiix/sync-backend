@@ -13,6 +13,7 @@ import { FolderService } from './folder_service.ts'
 import type User from '#models/user'
 import { MemberService } from './member_service.ts'
 import { DateTime } from 'luxon'
+import mql from '@microlink/mql'
 
 export class BookmarkService {
   static async getBookmarkById(bookmarkId: string) {
@@ -23,6 +24,47 @@ export class BookmarkService {
       .firstOrFail()
 
     return bookmark
+  }
+
+  static async previewBookmark(url: string) {
+    const parsedUrl = new URL(url)
+
+    const domain = parsedUrl.hostname.replace('www.', '')
+
+    let mqlResponse
+
+    try {
+      mqlResponse = (await mql(url)) as any
+    } catch (error) {
+      console.error('[BookmarkService] Network or parsing error:', error)
+      throw new Error('Failed to connect to the URL preview service.')
+    }
+
+    const { status, data } = mqlResponse
+
+    if (status !== 'success') {
+      throw new Error(data?.message || 'Microlink returned an unsuccessful status.')
+    }
+
+    const openGraphData: {
+      title: string
+      description: string
+      coverImageUrl: string | undefined
+      faviconUrl: string | undefined
+      websiteName: string | undefined
+      domain: string
+      url: string
+    } = {
+      title: data.title,
+      description: data.description,
+      coverImageUrl: data.image?.url || undefined,
+      faviconUrl: data.logo?.url || undefined,
+      websiteName: data.publisher || undefined,
+      domain,
+      url: parsedUrl.href,
+    }
+
+    return openGraphData
   }
 
   static async createBookmark(user: User, data: CreateBookmarkType) {

@@ -25,6 +25,9 @@ export interface ApiDefinition {
     auth: {
       store: typeof routes['extension.auth.store']
     }
+    bookmark: {
+      store: typeof routes['extension.bookmark.store']
+    }
   }
   oauths: {
     google: {

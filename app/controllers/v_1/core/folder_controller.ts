@@ -131,6 +131,7 @@ export default class FoldersController {
         meta: {
           currentPage: meta.currentPage,
           totalPages: meta.lastPage,
+          totalCount: meta.total,
         },
       },
       'Folder retrieved successfully!'

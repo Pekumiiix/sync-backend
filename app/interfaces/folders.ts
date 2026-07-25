@@ -60,6 +60,7 @@ export interface ShowFolderResponse {
     meta: {
       currentPage: number
       totalPages: number
+      totalCount: number
     }
   }
 }

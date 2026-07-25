@@ -38,7 +38,8 @@
     "#start/*": "./start/*.js",
     "#config/*": "./config/*.js",
     "#utils/*": "./app/utils/*.js",
-    "#interfaces/*": "./app/interfaces/*.js"
+    "#interfaces/*": "./app/interfaces/*.js",
+    "#jobs/*": "./app/jobs/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^8.4.0",
@@ -70,6 +71,7 @@
     "@japa/api-client": "^3.2.1",
     "@microlink/mql": "^0.16.1",
     "@outloud/adonis-openapi": "^1.0.7",
+    "@rlanz/bull-queue": "^3.1.0",
     "@tuyau/core": "^1.2.2",
     "@vinejs/vine": "^4.4.0",
     "better-sqlite3": "^12.10.0",

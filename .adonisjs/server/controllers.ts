@@ -22,6 +22,7 @@ export const controllers = {
     },
     extension: {
       Auth: () => import('#controllers/v_1/extension/auth_controller'),
+      Bookmark: () => import('#controllers/v_1/extension/bookmark_controller'),
     },
     oauth: {
       Google: () => import('#controllers/v_1/oauth/google_controller'),

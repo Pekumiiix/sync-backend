@@ -9,7 +9,6 @@ import {
   moveBookmarkValidator,
   updateBookmarkValidator,
 } from '#validators/bookmark'
-import mql from '@microlink/mql'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
 import {
   type FetchBookmarkPreviewResponse,
@@ -19,7 +18,7 @@ import {
 } from '#interfaces/bookmarks'
 import { type ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
-import { Exception } from '@adonisjs/core/exceptions'
+import { apiError } from '#utils/response'
 
 export default class BookmarksController {
   async index(ctx: HttpContext) {
@@ -57,30 +56,8 @@ export default class BookmarksController {
 
     const { url } = await request.validateUsing(fetchUrlDataValidator)
 
-    const parsedUrl = new URL(url)
-
-    const domain = parsedUrl.hostname.replace('www.', '')
-
-    let openGraphData = {}
-
     try {
-      const { status, data } = (await mql(url)) as any
-
-      if (status !== 'success') {
-        console.log('Microlink API error:', data)
-
-        throw new Exception('Failed to fetch URL data from Microlink.', { status: 400 })
-      }
-
-      openGraphData = {
-        title: data.title,
-        description: data.description,
-        coverImageUrl: data.image?.url || null,
-        faviconUrl: data.logo?.url || null,
-        websiteName: data.publisher || null,
-        domain,
-        url: parsedUrl.href,
-      }
+      const openGraphData = await BookmarkService.previewBookmark(url)
 
       const formattedResponse: FetchBookmarkPreviewResponse = await ctx.serialize(
         { openGraphData },
@@ -89,8 +66,11 @@ export default class BookmarksController {
 
       return response.ok(formattedResponse)
     } catch (error) {
-      console.error('Error fetching URL data:', error)
-      throw new Exception('Failed to parse the provided URL.', { status: 400 })
+      return response.badRequest(
+        apiError(
+          error instanceof Error ? error.message : 'Failed to fetch URL data from Microlink.'
+        )
+      )
     }
   }
 

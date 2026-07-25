@@ -10,7 +10,7 @@
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 import { controllers } from '#generated/controllers'
-import { authThrottle, resendThrottle, throttle } from '#start/limiter'
+import { authThrottle, resendThrottle, searchThrottle, throttle } from '#start/limiter'
 
 router
   .group(() => {
@@ -65,11 +65,17 @@ router
         router
           .post('sign-in', [controllers.v1.extension.Auth, 'store'])
           .openapi({ summary: 'Login via browser extension' })
+          .use(authThrottle)
+          .use(middleware.guest())
+        router
+          .post('sync', [controllers.v1.extension.Bookmark, 'store'])
+          .use(middleware.auth())
+          .openapi({
+            summary: 'Add bookmarks via browser extension',
+          })
       })
       .prefix('extension')
       .as('extension')
-      .use(authThrottle)
-      .use(middleware.guest())
       .openapi({
         tags: ['Extension'],
         description: 'Browser extension related endpoints',
@@ -332,7 +338,7 @@ router
       })
       .prefix('search')
       .as('search')
-      .use(throttle)
+      .use(searchThrottle)
       .use(middleware.auth())
       .openapi({
         tags: ['Search'],

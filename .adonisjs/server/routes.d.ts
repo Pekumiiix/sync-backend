@@ -12,6 +12,7 @@ export type ScannedRoutes = {
     'auth.verify_email.store': { paramsTuple?: []; params?: {} }
     'auth.verify_email.resend': { paramsTuple?: []; params?: {} }
     'extension.auth.store': { paramsTuple?: []; params?: {} }
+    'extension.bookmark.store': { paramsTuple?: []; params?: {} }
     'oauths.google.redirect': { paramsTuple?: []; params?: {} }
     'oauths.google.store': { paramsTuple?: []; params?: {} }
     'oauths.google.destroy': { paramsTuple?: []; params?: {} }
@@ -96,6 +97,7 @@ export type ScannedRoutes = {
     'auth.verify_email.store': { paramsTuple?: []; params?: {} }
     'auth.verify_email.resend': { paramsTuple?: []; params?: {} }
     'extension.auth.store': { paramsTuple?: []; params?: {} }
+    'extension.bookmark.store': { paramsTuple?: []; params?: {} }
     'folder.folder.store': { paramsTuple?: []; params?: {} }
     'folder.folder.join': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }

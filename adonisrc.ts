@@ -30,6 +30,7 @@ export default defineConfig({
     () => import('@adonisjs/session/commands'),
     () => import('@adonisjs/mail/commands'),
     () => import('@outloud/adonis-openapi/commands'),
+    () => import('@rlanz/bull-queue/commands')
   ],
 
   /*
@@ -60,6 +61,7 @@ export default defineConfig({
     () => import('@adonisjs/ally/ally_provider'),
     () => import('@outloud/adonis-openapi/provider'),
     () => import('@adonisjs/limiter/limiter_provider'),
+    () => import('@rlanz/bull-queue/queue_provider')
   ],
 
   /*

@@ -19,6 +19,7 @@ import {
 import { type ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
 import { apiError } from '#utils/response'
+import { MemberService } from '#services/member_service'
 
 export default class BookmarksController {
   async index(ctx: HttpContext) {
@@ -83,8 +84,10 @@ export default class BookmarksController {
 
     const bookmark = await BookmarkService.createBookmark(user, data)
 
+    const { accessLevel } = await MemberService.checkPermissions(user.id, bookmark.folderId)
+
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
-      { bookmark: BookmarkTransformer.transform(bookmark) },
+      { bookmark: BookmarkTransformer.transform(bookmark, accessLevel) },
       'Bookmark created successfully!'
     )
 
@@ -136,8 +139,10 @@ export default class BookmarksController {
 
     const bookmark = await BookmarkService.updateBookmark(bookmarkId, user, data)
 
+    const { accessLevel } = await MemberService.checkPermissions(user.id, bookmark.folderId)
+
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
-      { bookmark: BookmarkTransformer.transform(bookmark) },
+      { bookmark: BookmarkTransformer.transform(bookmark, accessLevel) },
       'Bookmark updated successfully!'
     )
 
@@ -153,8 +158,10 @@ export default class BookmarksController {
 
     const bookmark = await BookmarkService.setPinStatus(bookmarkId, user, true)
 
+    const { accessLevel } = await MemberService.checkPermissions(user.id, bookmark.folderId)
+
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
-      { bookmark: BookmarkTransformer.transform(bookmark) },
+      { bookmark: BookmarkTransformer.transform(bookmark, accessLevel) },
       'Bookmark pinned successfully!'
     )
 
@@ -170,8 +177,10 @@ export default class BookmarksController {
 
     const bookmark = await BookmarkService.setPinStatus(bookmarkId, user, false)
 
+    const { accessLevel } = await MemberService.checkPermissions(user.id, bookmark.folderId)
+
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
-      { bookmark: BookmarkTransformer.transform(bookmark) },
+      { bookmark: BookmarkTransformer.transform(bookmark, accessLevel) },
       'Bookmark unpinned successfully!'
     )
 
@@ -206,8 +215,10 @@ export default class BookmarksController {
 
     const bookmark = await BookmarkService.moveBookmark(bookmarkId, newFolderId, user)
 
+    const { accessLevel } = await MemberService.checkPermissions(user.id, bookmark.folderId)
+
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
-      { bookmark: BookmarkTransformer.transform(bookmark) },
+      { bookmark: BookmarkTransformer.transform(bookmark, accessLevel) },
       'Bookmark moved successfully!'
     )
 

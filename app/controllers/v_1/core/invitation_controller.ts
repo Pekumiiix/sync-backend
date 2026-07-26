@@ -1,4 +1,4 @@
-import { storeInvitationValidator } from '#validators/invitation'
+import { acceptInvitationValidator, storeInvitationValidator } from '#validators/invitation'
 import type { HttpContext } from '@adonisjs/core/http'
 import InvitationTransformer from '#transformers/invitation_transformer'
 import { events } from '#generated/events'
@@ -66,11 +66,13 @@ export default class InvitationsController {
   }
 
   async accept(ctx: HttpContext) {
-    const { params, response, auth } = ctx
+    const { params, response, auth, request } = ctx
+
+    const { password } = await request.validateUsing(acceptInvitationValidator)
 
     const user = auth.user!
 
-    const { invitation } = await InvitationService.acceptInvitation(params.token, user)
+    const { invitation } = await InvitationService.acceptInvitation(params.token, user, password)
 
     events.MemberJoined.dispatch(invitation.folderId, user)
 

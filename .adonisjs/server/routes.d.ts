@@ -24,7 +24,6 @@ export type ScannedRoutes = {
     'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.update': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
-    'folder.folder.join': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.add_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.remove_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
@@ -99,7 +98,6 @@ export type ScannedRoutes = {
     'extension.auth.store': { paramsTuple?: []; params?: {} }
     'extension.bookmark.store': { paramsTuple?: []; params?: {} }
     'folder.folder.store': { paramsTuple?: []; params?: {} }
-    'folder.folder.join': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.preview': { paramsTuple?: []; params?: {} }
     'invitations.invitation.store': { paramsTuple?: []; params?: {} }

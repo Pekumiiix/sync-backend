@@ -4,9 +4,9 @@ import { NotificationService } from '#services/notification_service'
 
 export default class SendMemberRemovedNotification {
   async handle(event: MemberRemoved) {
-    const { folderId, actor, removedMemberFirstName } = event
+    const { folderId, actor, removedMemberFirstName, removedMemberId } = event
 
-    const members = await MemberService.getMembers(folderId, actor.id)
+    const members = await MemberService.getMembers(folderId, removedMemberId)
 
     await NotificationService.notifyMembers(
       members,

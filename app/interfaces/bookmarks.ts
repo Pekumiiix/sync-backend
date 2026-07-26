@@ -1,17 +1,18 @@
 import { type BrowserType } from '#enums/browser'
 
+// Core models
+
 export interface UrlData {
-  title: string | null
-  description: string | null
-  coverImageUrl: string | null
-  faviconUrl: string | null
-  websiteName: string | null
+  title: string
+  description: string
+  coverImageUrl: string | undefined
+  faviconUrl: string | undefined
+  websiteName: string | undefined
   domain: string
   url: string
 }
 
-export interface BookmarkAddedBy {
-  id: string
+interface BookmarkAddedBy {
   avatarUrl: string | null
   firstName: string
   lastName: string
@@ -19,7 +20,6 @@ export interface BookmarkAddedBy {
 
 export interface BookmarkData {
   id: string
-  folderId: string
   title: string | null
   description: string | null
   url: string
@@ -32,8 +32,14 @@ export interface BookmarkData {
   browser: string
   createdAt: string
   updatedAt: string
-  addedBy: BookmarkAddedBy
+  folder: {
+    id: string
+    name: string | null
+  }
+  addedBy: BookmarkAddedBy | null
 }
+
+// Response interfaces
 
 export interface StoreBookmarkResponse {
   success: true

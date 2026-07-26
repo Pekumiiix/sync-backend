@@ -5,7 +5,6 @@ interface Integration {
   browser: BrowserType
   lastSyncedAt: string
   createdAt: string
-  deviceName: string | null
   extensionVersion: string | null
 }
 

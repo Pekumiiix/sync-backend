@@ -8,7 +8,6 @@ export default class BrowserIntegrationTransformer extends BaseTransformer<Brows
       'browser',
       'lastSyncedAt',
       'createdAt',
-      'deviceName',
       'extensionVersion',
     ])
   }

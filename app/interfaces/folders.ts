@@ -36,7 +36,6 @@ export interface FolderPermission {
 }
 
 interface PreviewMember {
-  id: string
   firstName: string
   lastName: string
   avatarUrl: string | null
@@ -52,6 +51,7 @@ export interface ShowFolderResponse {
       isSystem: boolean
       bookmarkCount: number
       memberCount: number
+      isProtected: boolean
     }
     permission: FolderPermission
     previewMembers: PreviewMember[]

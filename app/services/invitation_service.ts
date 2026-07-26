@@ -6,13 +6,15 @@ import { Exception } from '@adonisjs/core/exceptions'
 import User from '#models/user'
 import { FolderService } from './folder_service.ts'
 import { type StoreInvitationValidator } from '#validators/invitation'
+import hash from '@adonisjs/core/services/hash'
+import { MemberService } from './member_service.ts'
 
 export class InvitationService {
   static async getUserInvitations(user: User) {
     const baseQuery = Invitation.query()
       .where('email', user.email)
-      .preload('inviter')
-      .preload('folder')
+      .preload('inviter', (query) => query.select('first_name', 'last_name', 'avatar_url'))
+      .preload('folder', (query) => query.select('name', 'password'))
 
     const [pendingInvitations, resolvedInvitations] = await Promise.all([
       baseQuery.clone().where('status', 'pending').orderBy('created_at', 'desc'),
@@ -67,11 +69,7 @@ export class InvitationService {
       throw new Exception('You cannot invite users to a system folder.', { status: 400 })
     }
 
-    const existingMember = await invitedUser
-      .related('memberships')
-      .query()
-      .where('folderId', folder.id)
-      .first()
+    const existingMember = await MemberService.checkMembership(data.folderId, invitedUser.id)
 
     if (existingMember) {
       throw new Exception('This user is already a member of this folder.', { status: 400 })
@@ -82,13 +80,13 @@ export class InvitationService {
     return invitation
   }
 
-  static async acceptInvitation(token: string, user: User) {
+  static async acceptInvitation(token: string, user: User, password?: string) {
     return await db.transaction(async (trx) => {
       const invitation = await Invitation.query({ client: trx })
         .where('token', token)
         .where('email', user.email)
-        .preload('inviter')
-        .preload('folder')
+        .preload('inviter', (query) => query.select('first_name', 'last_name', 'avatar_url'))
+        .preload('folder', (query) => query.select('name', 'password'))
         .forUpdate()
         .firstOrFail()
 
@@ -100,10 +98,15 @@ export class InvitationService {
         throw new Exception('Invitation has expired.', { status: 400 })
       }
 
-      const isAlreadyMember = await Member.query({ client: trx })
-        .where('folder_id', invitation.folderId)
-        .where('user_id', user.id)
-        .first()
+      if (invitation.folder.password !== null) {
+        const isPasswordValid = await hash.verify(invitation.folder.password, password || '')
+
+        if (!isPasswordValid) {
+          throw new Exception('Invalid password provided for this folder.', { status: 403 })
+        }
+      }
+
+      const isAlreadyMember = await MemberService.checkMembership(invitation.folderId, user.id, trx)
 
       if (isAlreadyMember) {
         throw new Exception('User is already a member of this folder.', { status: 400 })
@@ -134,8 +137,8 @@ export class InvitationService {
     const invitation = await Invitation.query()
       .where('token', token)
       .where('email', user.email)
-      .preload('inviter')
-      .preload('folder')
+      .preload('inviter', (query) => query.select('first_name', 'last_name', 'avatar_url'))
+      .preload('folder', (query) => query.select('name', 'password'))
       .first()
 
     if (!invitation) {

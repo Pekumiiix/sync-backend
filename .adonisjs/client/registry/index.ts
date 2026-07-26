@@ -126,12 +126,6 @@ const routes = {
     tokens: [{"old":"/api/v1/folders/:folderId","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId","type":1,"val":"folderId","end":""}],
     types: placeholder as Registry['folder.folder.show']['types'],
   },
-  'folder.folder.join': {
-    methods: ["POST"],
-    pattern: '/api/v1/folders/:folderId/join',
-    tokens: [{"old":"/api/v1/folders/:folderId/join","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/join","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/join","type":0,"val":"join","end":""}],
-    types: placeholder as Registry['folder.folder.join']['types'],
-  },
   'folder.folder.add_password': {
     methods: ["PATCH"],
     pattern: '/api/v1/folders/:folderId/password',

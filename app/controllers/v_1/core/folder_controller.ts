@@ -1,7 +1,6 @@
 import {
   addPasswordValidator,
   createFolderValidator,
-  joinFolderValidator,
   updateFolderValidator,
 } from '#validators/folder'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -25,13 +24,15 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const { systemFolders, ownedFolders, sharedFolders } = await FolderService.getFolders(user)
+    const { systemFolders, ownedFolders, sharedFolders, totalBookmarks } =
+      await FolderService.getFolders(user)
 
     const formattedResponse: FolderIndexResponse = await ctx.serialize(
       {
         systemFolders: FolderTransformer.transform(systemFolders),
         ownedFolders: FolderTransformer.transform(ownedFolders),
-        sharedFolders: FolderTransformer.transform(sharedFolders), //TODO: Transform shared folders to include permission data
+        sharedFolders: FolderTransformer.transform(sharedFolders),
+        meta: { totalBookmarks },
       },
       'Folders retrieved successfully!'
     )
@@ -107,7 +108,7 @@ export default class FoldersController {
     )
 
     const [pinnedBookmarks, paginatedBookmarks] = await Promise.all([
-      BookmarkService.pinnedBookmarks(folder),
+      BookmarkService.pinnedBookmarks(folder, user.id),
       BookmarkService.getPaginatedBookmarksForFolder(folder, query),
     ])
 
@@ -127,7 +128,7 @@ export default class FoldersController {
         permission,
         previewMembers,
         pinnedBookmarks,
-        bookmarks: BookmarkTransformer.transform(unpinnedBookmarks),
+        bookmarks: BookmarkTransformer.transform(unpinnedBookmarks, permission.accessLevel),
         meta: {
           currentPage: meta.currentPage,
           totalPages: meta.lastPage,
@@ -135,25 +136,6 @@ export default class FoldersController {
         },
       },
       'Folder retrieved successfully!'
-    )
-
-    return response.ok(formattedResponse)
-  }
-
-  async join(ctx: HttpContext) {
-    const { params, response, auth, request } = ctx
-
-    const { password } = await request.validateUsing(joinFolderValidator)
-
-    const folderId = params.folderId
-
-    const user = auth.user!
-
-    await FolderService.joinFolder(folderId, user, password)
-
-    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
-      null,
-      'Successfully joined the folder.'
     )
 
     return response.ok(formattedResponse)
@@ -170,7 +152,7 @@ export default class FoldersController {
 
     const folder = await Folder.findOrFail(folderId)
 
-    await MemberService.requireRole(user.id, folderId, 'owner')
+    await MemberService.requireRole(user.id, folder.id, 'owner')
 
     folder.password = password
 
@@ -193,7 +175,7 @@ export default class FoldersController {
 
     const folder = await Folder.findOrFail(folderId)
 
-    await MemberService.requireRole(user.id, folderId, 'owner')
+    await MemberService.requireRole(user.id, folder.id, 'owner')
 
     folder.password = null
 

@@ -6,6 +6,7 @@ import { updateMemberValidator } from '#validators/member'
 import { type ApiSuccessResponse } from '#interfaces/api'
 import { type MemberListResponse, type UpdateMemberResponse } from '#interfaces/members'
 import { MemberService } from '#services/member_service'
+import { apiError } from '#utils/response'
 
 export default class MembersController {
   async index(ctx: HttpContext) {
@@ -54,9 +55,7 @@ export default class MembersController {
       .firstOrFail()
 
     if (member.userId === user.id) {
-      return response.forbidden({
-        message: 'You cannot change your own access level.',
-      })
+      return response.forbidden(apiError('You cannot change your own access level.'))
     }
 
     member.accessLevel = accessLevel

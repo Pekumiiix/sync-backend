@@ -147,10 +147,6 @@ router
         router
           .get(':folderId', [controllers.v1.core.Folder, 'show'])
           .openapi({ summary: 'Get folder details' })
-
-        router
-          .post(':folderId/join', [controllers.v1.core.Folder, 'join'])
-          .openapi({ summary: 'Join a folder' })
         router
           .patch(':folderId/password', [controllers.v1.core.Folder, 'addPassword'])
           .openapi({ summary: 'Add or update a folder password' })

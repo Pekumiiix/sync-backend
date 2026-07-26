@@ -1,9 +1,17 @@
 import { BaseTransformer } from '@adonisjs/core/transformers'
 import type Bookmark from '#models/bookmark'
+import { type AccessLevelType } from '#enums/member'
 
 export default class BookmarkTransformer extends BaseTransformer<Bookmark> {
+  constructor(
+    resource: Bookmark,
+    protected accessLevel?: AccessLevelType | null
+  ) {
+    super(resource)
+  }
+
   toObject() {
-    const baseData = this.pick(this.resource, [
+    const { folderId, ...baseData } = this.pick(this.resource, [
       'id',
       'folderId',
       'title',
@@ -20,19 +28,24 @@ export default class BookmarkTransformer extends BaseTransformer<Bookmark> {
       'updatedAt',
     ])
 
+    const preloadedAccessLevel = this.resource.folder?.members?.[0]?.accessLevel as
+      | AccessLevelType
+      | undefined
+
     return {
       ...baseData,
-      folder: this.resource.folder
-        ? { id: this.resource.folder.id, name: this.resource.folder.name }
-        : null,
+      folder: {
+        id: folderId,
+        name: this.resource.folder.name ?? null,
+      },
       addedBy: this.resource.user
         ? {
-            id: this.resource.user.id,
             avatarUrl: this.resource.user.avatarUrl,
             firstName: this.resource.user.firstName,
             lastName: this.resource.user.lastName,
           }
         : null,
+      canEdit: this.accessLevel === 'editor' || preloadedAccessLevel === 'editor',
     }
   }
 }

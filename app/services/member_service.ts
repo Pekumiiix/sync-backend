@@ -5,6 +5,7 @@ import Member from '#models/member'
 import type User from '#models/user'
 import { Exception } from '@adonisjs/core/exceptions'
 import db from '@adonisjs/lucid/services/db'
+import { type TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export class MemberService {
   static async checkPermissions(userId: string, folderId: string) {
@@ -89,7 +90,6 @@ export class MemberService {
     const members = await Member.query().where('folder_id', folderId).preload('user').limit(limit)
 
     return members.map((member) => ({
-      id: member.user.id,
       firstName: member.user.firstName,
       lastName: member.user.lastName,
       avatarUrl: member.user.avatarUrl,
@@ -112,7 +112,7 @@ export class MemberService {
 
       await member.delete()
 
-      events.MemberRemoved.dispatch(folderId, member.user.firstName, initiator)
+      events.MemberRemoved.dispatch(initiator, folderId, member.user.firstName, member.user.id)
 
       return member
     })
@@ -150,5 +150,14 @@ export class MemberService {
       .preload('user')
       .preload('folder')
       .orderBy('created_at', 'asc')
+  }
+
+  static async checkMembership(folderId: string, userId: string, trx?: TransactionClientContract) {
+    const membership = await Member.query({ client: trx })
+      .where('folder_id', folderId)
+      .where('user_id', userId)
+      .first()
+
+    return membership !== null
   }
 }

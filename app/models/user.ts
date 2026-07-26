@@ -7,7 +7,6 @@ import { afterCreate, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import Folder from './folder.ts'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Member from './member.ts'
-import Bookmark from './bookmark.ts'
 import OauthIdentity from './o_auth_identity.ts'
 import Notification from './notification.ts'
 import BrowserIntegration from './browser_integration.ts'
@@ -18,9 +17,6 @@ export default class User extends compose(UserSchema, withAuthFinder(hash)) {
 
   @hasMany(() => Folder)
   declare ownedFolders: HasMany<typeof Folder>
-
-  @hasMany(() => Bookmark)
-  declare ownedBookmarks: HasMany<typeof Bookmark>
 
   @hasMany(() => Member)
   declare memberships: HasMany<typeof Member>
@@ -39,11 +35,6 @@ export default class User extends compose(UserSchema, withAuthFinder(hash)) {
     pivotColumns: ['role', 'access_level'],
   })
   declare sharedFolders: ManyToMany<typeof Folder>
-
-  @manyToMany(() => Bookmark, {
-    pivotTable: 'members',
-  })
-  declare sharedBookmarks: ManyToMany<typeof Bookmark>
 
   @afterCreate()
   public static async createDefaultFolder(user: User) {

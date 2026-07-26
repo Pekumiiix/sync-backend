@@ -1,7 +1,6 @@
 import type { InvitationStatusType } from '#enums/invitation'
 
 export interface InviterPreview {
-  id: string
   avatarUrl: string | null
   firstName: string
   lastName: string
@@ -16,7 +15,6 @@ export interface FolderPreview {
 
 export interface InvitationResponse {
   id: string
-  folderId: string
   token: string
   createdAt: string
   status: InvitationStatusType

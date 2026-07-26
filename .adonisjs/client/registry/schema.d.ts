@@ -247,18 +247,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['show']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'folder.folder.join': {
-    methods: ["POST"]
-    pattern: '/api/v1/folders/:folderId/join'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/folder').joinFolderValidator)>>
-      paramsTuple: [ParamValue]
-      params: { folderId: ParamValue }
-      query: ExtractQuery<InferInput<(typeof import('#validators/folder').joinFolderValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['join']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['join']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
   'folder.folder.add_password': {
     methods: ["PATCH"]
     pattern: '/api/v1/folders/:folderId/password'
@@ -515,12 +503,12 @@ export interface Registry {
     methods: ["PATCH"]
     pattern: '/api/v1/invitations/:token/accept'
     types: {
-      body: {}
+      body: ExtractBody<InferInput<(typeof import('#validators/invitation').acceptInvitationValidator)>>
       paramsTuple: [ParamValue]
       params: { token: ParamValue }
-      query: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/invitation').acceptInvitationValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['accept']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['accept']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/invitation_controller').default['accept']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'notifications.notification.index': {

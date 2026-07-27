@@ -45,5 +45,6 @@ export default defineConfig({
       type: 'exponential',
       delay: 10000,
     },
+    concurrency: 5,
   },
 })

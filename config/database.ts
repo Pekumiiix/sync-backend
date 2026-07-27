@@ -1,8 +1,8 @@
 import env from '#start/env'
 import app from '@adonisjs/core/services/app'
 import { defineConfig } from '@adonisjs/lucid'
-import { dirname, join } from 'path/win32'
-import { fileURLToPath, pathToFileURL } from 'url'
+import { dirname, join } from 'node:path/win32'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -30,6 +30,11 @@ const dbConfig = defineConfig({
       schemaGeneration: {
         enabled: true,
         rulesPaths: [pathToFileURL(join(__dirname, '../database/schema_rules.ts')).href],
+      },
+      pool: {
+        min: 2,
+        max: 20,
+        acquireTimeoutMillis: 60000,
       },
       debug: app.inDev,
     },

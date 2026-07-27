@@ -23,8 +23,8 @@ export default class extends BaseSchema {
         .notNullable()
         .index()
 
-      table.string('title').nullable()
-      table.string('description').nullable()
+      table.text('title').nullable()
+      table.text('description').nullable()
       table.string('website_name').nullable()
 
       table.string('url').notNullable()

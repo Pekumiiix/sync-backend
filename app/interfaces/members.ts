@@ -1,25 +1,11 @@
-import { type AccessLevelType, type RoleType } from '#enums/member'
 import { type FolderPermission } from './folders.ts'
+import type { Data } from '#client/data'
 
-export interface PreviewUser {
-  firstName: string
-  lastName: string
-  avatarUrl: string | null
-  email: string
-}
-
-export interface MemberResponse {
-  id: string
-  role: RoleType
-  accessLevel: AccessLevelType
-  folderId: string
-  user: PreviewUser
-}
-
+// Response interfaces
 export interface MemberListResponse {
   data: {
     folder: { id: string; name: string }
-    members: MemberResponse[]
+    members: Data.Member[]
     permission: FolderPermission
     meta: { totalMemberCount: number }
   }
@@ -28,7 +14,7 @@ export interface MemberListResponse {
 }
 
 export interface UpdateMemberResponse {
-  data: { member: MemberResponse }
+  data: { member: Data.Member }
   success: boolean
   message: string
 }

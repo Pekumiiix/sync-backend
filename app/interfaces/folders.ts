@@ -1,34 +1,7 @@
 import { type AccessLevelType, type RoleType } from '#enums/member'
-import type { BookmarkData } from '#interfaces/bookmarks'
+import type { Data } from '#client/data'
 
-export interface FolderResponse {
-  id: string
-  name: string
-  bookmarkCount: number
-  recentBookmarksImages: string[]
-  isProtected: boolean
-  isSystem: boolean
-  createdAt: string
-  updatedAt: string
-}
-
-export interface FolderIndexResponse {
-  success: true
-  message: string
-  data: {
-    systemFolders: FolderResponse[]
-    ownedFolders: FolderResponse[]
-    sharedFolders: FolderResponse[]
-  }
-}
-
-export interface FolderStoreResponse {
-  success: true
-  message: string
-  data: {
-    folder: FolderResponse
-  }
-}
+// Core models
 
 export interface FolderPermission {
   role: AccessLevelType
@@ -39,6 +12,26 @@ interface PreviewMember {
   firstName: string
   lastName: string
   avatarUrl: string | null
+}
+
+// Response interfaces
+
+export interface FolderIndexResponse {
+  success: true
+  message: string
+  data: {
+    systemFolders: Data.Folder[]
+    ownedFolders: Data.Folder[]
+    sharedFolders: Data.Folder[]
+  }
+}
+
+export interface FolderStoreResponse {
+  success: true
+  message: string
+  data: {
+    folder: Data.Folder
+  }
 }
 
 export interface ShowFolderResponse {
@@ -55,8 +48,8 @@ export interface ShowFolderResponse {
     }
     permission: FolderPermission
     previewMembers: PreviewMember[]
-    pinnedBookmarks: BookmarkData[]
-    bookmarks: BookmarkData[]
+    pinnedBookmarks: Data.Bookmark[]
+    bookmarks: Data.Bookmark[]
     meta: {
       currentPage: number
       totalPages: number

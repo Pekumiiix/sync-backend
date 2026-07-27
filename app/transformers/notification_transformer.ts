@@ -19,8 +19,8 @@ export default class NotificationTransformer extends BaseTransformer<Notificatio
         avatar: this.resource.data.avatar,
       },
       folder: {
-        folderName: this.resource.data.folderName,
-        folderId: this.resource.data.folderId,
+        name: this.resource.data.folderName,
+        id: this.resource.data.folderId,
       },
       isRead: this.resource.readAt !== null,
       message: notificationText.message,

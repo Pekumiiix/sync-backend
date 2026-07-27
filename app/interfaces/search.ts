@@ -1,8 +1,8 @@
-import { type BookmarkData } from './bookmarks.ts'
+import type { Data } from '#client/data'
 
 export interface SearchResponse {
   data: {
-    bookmarks: BookmarkData[]
+    bookmarks: Data.Bookmark[]
     meta: {
       currentPage: number
       totalPages: number

@@ -3,6 +3,7 @@ import User from '#models/user'
 import { extensionLoginValidator } from '#validators/extension_user'
 import { BrowserIntegrationService } from '#services/browser_integration_service'
 import type { ExtensionSignInResponse } from '#interfaces/extension'
+import UserTransformer from '#transformers/user_transformer'
 
 export default class AuthController {
   async store(ctx: HttpContext) {
@@ -30,13 +31,7 @@ export default class AuthController {
     const formattedResponse: ExtensionSignInResponse = await ctx.serialize(
       {
         token: token.value!.release(),
-        user: {
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          avatarUrl: user.avatarUrl,
-        },
+        user: UserTransformer.transform(user),
       },
       'Extension login successful!'
     )

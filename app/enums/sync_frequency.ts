@@ -1,4 +1,4 @@
-export const SYNC_FREQUENCY = ['immediate', '3_hours', '6_hours', '12_hours']
+export const SYNC_FREQUENCY = ['immediate', '3_hours', '6_hours', '12_hours'] as const
 
 export const SYNC_FREQUENCY_IN_HOURS: Record<string, number> = {
   'immediate': 0,

@@ -1,28 +1,8 @@
-import { type NotificationType } from '#enums/notification'
+import type { Data } from '#client/data'
 
-export interface NotificationActor {
-  firstName: string
-  lastName: string
-  avatar: string | null
-}
+// Core models
 
-export interface NotificationFolder {
-  folderName: string
-  folderId: string
-}
-
-export interface NotificationItemResponse {
-  id: string
-  type: NotificationType
-  createdAt: string
-  actor: NotificationActor
-  folder: NotificationFolder
-  isRead: boolean
-  title: string
-  message: string
-}
-
-export interface NotificationMeta {
+interface NotificationMeta {
   unreadCount: number
   totalCount: number
   currentPage: number
@@ -39,9 +19,10 @@ export interface NotificationData {
   targetName: string | null
 }
 
+// Response interfaces
 export interface ListNotificationsResponse {
   data: {
-    notifications: NotificationItemResponse[]
+    notifications: Data.Notification[]
     meta: NotificationMeta
   }
   success: boolean
@@ -50,7 +31,7 @@ export interface ListNotificationsResponse {
 
 export interface NotificationSuccessResponse {
   data: {
-    notification: NotificationItemResponse
+    notification: Data.Notification
   }
   success: true
   message: string

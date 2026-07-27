@@ -238,7 +238,7 @@ export class UserSchema extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
   @column()
-  declare isEmailVerified: boolean | null
+  declare isEmailVerified: boolean
   @column()
   declare lastName: string
   @column()

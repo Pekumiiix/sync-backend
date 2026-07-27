@@ -1,4 +1,5 @@
 import { type BrowserType } from '#enums/browser'
+import type { Data } from '#client/data'
 
 // Core models
 
@@ -12,40 +13,13 @@ export interface UrlData {
   url: string
 }
 
-interface BookmarkAddedBy {
-  avatarUrl: string | null
-  firstName: string
-  lastName: string
-}
-
-export interface BookmarkData {
-  id: string
-  title: string | null
-  description: string | null
-  url: string
-  domain: string
-  faviconUrl: string | null
-  coverImageUrl: string | null
-  websiteName: string | null
-  tags: string[]
-  isPinned: boolean
-  browser: string
-  createdAt: string
-  updatedAt: string
-  folder: {
-    id: string
-    name: string | null
-  }
-  addedBy: BookmarkAddedBy | null
-}
-
 // Response interfaces
 
 export interface StoreBookmarkResponse {
   success: true
   message: string
   data: {
-    bookmark: BookmarkData
+    bookmark: Data.Bookmark
   }
 }
 
@@ -53,8 +27,8 @@ export interface IndexBookmarksResponse {
   success: true
   message: string
   data: {
-    bookmarks: BookmarkData[]
-    pinnedBookmarks: BookmarkData[]
+    bookmarks: Data.Bookmark[]
+    pinnedBookmarks: Data.Bookmark[]
     meta: {
       currentPage: number
       totalPages: number

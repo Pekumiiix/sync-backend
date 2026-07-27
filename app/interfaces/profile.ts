@@ -1,9 +1,9 @@
-import { type UserResponse } from './user.ts'
+import type { Data } from '#client/data'
 
 export interface ProfileResponse {
   success: boolean
   message: string
   data: {
-    user: UserResponse
+    user: Data.User
   }
 }

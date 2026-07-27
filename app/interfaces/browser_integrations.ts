@@ -1,17 +1,11 @@
-import type { BrowserType } from '#enums/browser'
+import type { Data } from '#client/data'
 
-interface Integration {
-  id: string
-  browser: BrowserType
-  lastSyncedAt: string
-  createdAt: string
-  extensionVersion: string | null
-}
+// Response interfaces
 
 export interface GetBrowserIntegrationsResponse {
   success: boolean
   message: string
   data: {
-    integrations: Integration[]
+    integrations: Data.BrowserIntegration[]
   }
 }

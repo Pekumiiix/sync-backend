@@ -1,35 +1,15 @@
-import type { InvitationStatusType } from '#enums/invitation'
+import type { Data } from '#client/data'
 
-export interface InviterPreview {
-  avatarUrl: string | null
-  firstName: string
-  lastName: string
-}
-
-export interface FolderPreview {
-  id: string
-  name: string
-  recentBookmarksImages: string[]
-  isProtected: boolean
-}
-
-export interface InvitationResponse {
-  id: string
-  token: string
-  createdAt: string
-  status: InvitationStatusType
-  inviter: InviterPreview
-  folder: FolderPreview
-}
+// Response interfaces
 
 export interface ListInvitationsResponse {
-  data: { pendingInvitations: InvitationResponse[]; resolvedInvitations: InvitationResponse[] }
+  data: { pendingInvitations: Data.Invitation[]; resolvedInvitations: Data.Invitation[] }
   success: boolean
   message: string
 }
 
 export interface InvitationSuccessResponse {
-  data: { invitation: InvitationResponse }
+  data: { invitation: Data.Invitation }
   success: boolean
   message: string
 }

@@ -1,4 +1,4 @@
-import { SYNC_FREQUENCY_IN_HOURS_TO_STRING } from '#enums/sync_frequency'
+import { SYNC_FREQUENCY_IN_HOURS_TO_STRING, type SyncFrequency } from '#enums/sync_frequency'
 import type { UserSettingsSchema } from '#interfaces/user'
 import type User from '#models/user'
 import { BaseTransformer } from '@adonisjs/core/transformers'
@@ -29,7 +29,9 @@ export default class UserTransformer extends BaseTransformer<User> {
         notifyOnNewBookmark: rawSettings.notifyOnNewBookmark ?? true,
       },
       sync: {
-        frequency: SYNC_FREQUENCY_IN_HOURS_TO_STRING[rawSettings.syncFrequencyInHours],
+        frequency: SYNC_FREQUENCY_IN_HOURS_TO_STRING[
+          rawSettings.syncFrequencyInHours
+        ] as SyncFrequency,
       },
     }
 

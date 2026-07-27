@@ -6,6 +6,8 @@ import { generateVerificationCode } from '#utils/string'
 import { apiError } from '#utils/response'
 import { events } from '#generated/events'
 import { type ApiSuccessResponse } from '#interfaces/api'
+import UserTransformer from '#transformers/user_transformer'
+import { type ProfileResponse } from '#interfaces/profile'
 
 export default class VerifyEmailController {
   async store(ctx: HttpContext) {
@@ -34,8 +36,8 @@ export default class VerifyEmailController {
 
     await user.save()
 
-    const formattedData: ApiSuccessResponse = await ctx.serialize(
-      null,
+    const formattedData: ProfileResponse = await ctx.serialize(
+      { user: UserTransformer.transform(user) },
       'Email verified successfully!'
     )
 
@@ -62,7 +64,7 @@ export default class VerifyEmailController {
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
-      'A new verification code has been sent!'
+      'A new verification mail has been sent!'
     )
 
     return response.ok(formattedResponse)

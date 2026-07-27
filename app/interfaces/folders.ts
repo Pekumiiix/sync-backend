@@ -23,6 +23,9 @@ export interface FolderIndexResponse {
     systemFolders: Data.Folder[]
     ownedFolders: Data.Folder[]
     sharedFolders: Data.Folder[]
+    meta: {
+      totalBookmarks: number
+    }
   }
 }
 

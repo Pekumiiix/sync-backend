@@ -35,12 +35,18 @@ export class InvitationService {
       throw new Exception('A pending invitation already exists for this user.', { status: 400 })
     }
 
-    return await Invitation.create({
+    const invitation = await Invitation.create({
       ...data,
       inviterId: inviterId,
       token: crypto.randomUUID(),
       expiresAt: DateTime.now().plus({ days: 7 }),
     })
+
+    await invitation.load('folder', (query) =>
+      query.select('name', 'password', 'recent_bookmarks_images')
+    )
+
+    return invitation
   }
 
   static async sendInvitation(inviter: User, data: StoreInvitationValidator) {

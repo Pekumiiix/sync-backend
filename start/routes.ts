@@ -149,9 +149,11 @@ router
           .openapi({ summary: 'Get folder details' })
         router
           .patch(':folderId/password', [controllers.v1.core.Folder, 'addPassword'])
+          .use(middleware.requirePaidSubscriptions())
           .openapi({ summary: 'Add or update a folder password' })
         router
           .delete(':folderId/password', [controllers.v1.core.Folder, 'removePassword'])
+          .use(middleware.requirePaidSubscriptions())
           .openapi({
             summary: 'Remove a folder password',
           })
@@ -339,6 +341,21 @@ router
       .openapi({
         tags: ['Search'],
         description: 'Search related endpoints',
+      })
+
+    // Marketing routes
+    router
+      .group(() => {
+        router
+          .post('contact', [controllers.v1.marketing.Contact, 'store'])
+          .openapi({ summary: 'Submit a contact inquiry' })
+      })
+      .prefix('marketing')
+      .as('marketing')
+      .use(throttle)
+      .openapi({
+        tags: ['Marketing'],
+        description: 'Marketing related endpoints',
       })
   })
   .prefix('/api/v1')

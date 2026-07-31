@@ -318,6 +318,12 @@ const routes = {
     tokens: [{"old":"/api/v1/search/:folderId","type":0,"val":"api","end":""},{"old":"/api/v1/search/:folderId","type":0,"val":"v1","end":""},{"old":"/api/v1/search/:folderId","type":0,"val":"search","end":""},{"old":"/api/v1/search/:folderId","type":1,"val":"folderId","end":""}],
     types: placeholder as Registry['search.search.folder_search']['types'],
   },
+  'marketing.contact.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/marketing/contact',
+    tokens: [{"old":"/api/v1/marketing/contact","type":0,"val":"api","end":""},{"old":"/api/v1/marketing/contact","type":0,"val":"v1","end":""},{"old":"/api/v1/marketing/contact","type":0,"val":"marketing","end":""},{"old":"/api/v1/marketing/contact","type":0,"val":"contact","end":""}],
+    types: placeholder as Registry['marketing.contact.store']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

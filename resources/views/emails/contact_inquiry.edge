@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>New Contact Inquiry</title>
+    <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  </head>
+  <body style="margin:0; padding:0; width:100%; background-color:#ffffff;">
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="width:100%; border-collapse:collapse; margin:0; padding:0; background-color:#ffffff;"
+    >
+      <tr>
+        <td align="center" style="padding:0;">
+          <!--[if mso]>
+        <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td>
+        <![endif]-->
+          <table
+            role="presentation"
+            width="480"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="width:100%; max-width:480px; border-collapse:collapse;"
+          >
+            <tr>
+              <td style="padding:28px 16px;">
+                <!--Logo-->
+                <table
+                  role="presentation"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="border-collapse:collapse;"
+                >
+                  <tr>
+                    <td style="padding-bottom:46px; vertical-align:middle;">
+                      <img
+                        src="https://i.ibb.co/WWdnk3LP/logo.png"
+                        alt="SYNC logo"
+                        width="22"
+                        height="22"
+                        style="width:22px; height:22px; vertical-align:middle; border:0; display:inline-block; outline:none; text-decoration:none;"
+                      />
+                      <span
+                        style="font-family:'Segoe UI', Helvetica, Arial, sans-serif; font-size:18px; font-weight:600; color:#24273F; vertical-align:middle; padding-left:4px;"
+                      >
+                        SYNC
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+                <!--Body-->
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="width:100%; border-collapse:collapse;"
+                >
+                  <tr>
+                    <td style="padding-bottom:8px;">
+                      <p
+                        style="margin:0; font-family:'Segoe UI', Helvetica, Arial, sans-serif; font-size:20px; font-weight:500; line-height:28px; color:#0F172A;"
+                      >
+                        New Contact Inquiry
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom:24px;">
+                      <p
+                        style="margin:0; font-family:Helvetica, Arial, sans-serif; font-size:13px; line-height:22px; color:#666879;"
+                      >
+                        A new message has been submitted via the website contact form. Here are the details:
+                      </p>
+                    </td>
+                  </tr>
+                  
+                  <!-- User Details Section -->
+                  <tr>
+                    <td style="padding-bottom:24px;">
+                      <p style="margin:0 0 8px 0; font-family:Helvetica, Arial, sans-serif; font-size:13px; line-height:20px; color:#0F172A;">
+                        <strong style="color:#64748B; font-weight:600;">Name:</strong> {{ firstName }} {{ lastName }}
+                      </p>
+                      <p style="margin:0 0 8px 0; font-family:Helvetica, Arial, sans-serif; font-size:13px; line-height:20px; color:#0F172A;">
+                        <strong style="color:#64748B; font-weight:600;">Email:</strong> 
+                        <a href="mailto:{{ email }}" style="color:#6B4CF5; text-decoration:none;">{{ email }}</a>
+                      </p>
+                      <p style="margin:0 0 8px 0; font-family:Helvetica, Arial, sans-serif; font-size:13px; line-height:20px; color:#0F172A;">
+                        <strong style="color:#64748B; font-weight:600;">Company:</strong> {{ company }}
+                      </p>
+                      <p style="margin:0 0 0 0; font-family:Helvetica, Arial, sans-serif; font-size:13px; line-height:20px; color:#0F172A;">
+                        <strong style="color:#64748B; font-weight:600;">Country:</strong> {{ country }}
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Message Header -->
+                  <tr>
+                    <td style="padding-bottom:12px;">
+                      <p
+                        style="margin:0; font-family:Helvetica, Arial, sans-serif; font-size:13px; font-weight:600; color:#64748B;"
+                      >
+                        Message:
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Message Block -->
+                  <tr>
+                    <td style="padding-bottom:24px;">
+                      <table
+                        role="presentation"
+                        width="100%"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        style="border-collapse:collapse;"
+                      >
+                        <tr>
+                          <td
+                            style="background-color:#F1F5F9; border-radius:8px; padding:16px; border: 1px solid #E2E8F0;"
+                          >
+                            <p
+                              style="margin:0; font-family:Helvetica, Arial, sans-serif; font-size:13px; line-height:22px; color:#0F172A; white-space: pre-wrap;"
+                            >
+                              {{ message }}
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Divider -->
+                  <tr>
+                    <td style="padding-bottom:18px;">
+                      <table
+                        role="presentation"
+                        width="100%"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        style="border-collapse:collapse;"
+                      >
+                        <tr>
+                          <td
+                            height="1"
+                            style="height:1px; line-height:1px; font-size:0; background-color:#E2E8F0;"
+                          >
+                            &nbsp;
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  
+                  <tr>
+                    <td style="padding-bottom:18px;">
+                      <p
+                        style="margin:0; font-family:Helvetica, Arial, sans-serif; font-size:12px; line-height:20px; color:#64748B;"
+                      >
+                        To reply to the user, simply reply directly to this email.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <!--Footer-->
+            <tr>
+              <td style="padding-top:20px; text-align:center;">
+                <p
+                  style="margin:0; padding-bottom:10px; font-family:Helvetica, Arial, sans-serif; font-size:12px; line-height:100%; color:#666879; text-align:center;"
+                >
+                  Sync Internal System Notification
+                </p>
+                <p
+                  style="margin:0; font-family:Helvetica, Arial, sans-serif; font-size:12px; line-height:100%; color:#666879; text-align:center;"
+                >
+                  ©
+                  {{ new Date().getFullYear() }}
+                  Sync, Inc.
+                </p>
+              </td>
+            </tr>
+          </table>
+          <!--[if mso]>
+        </td></tr></table>
+        <![endif]-->
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

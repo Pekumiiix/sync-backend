@@ -98,6 +98,29 @@ export class BrowserIntegrationSchema extends BaseModel {
   declare userId: string
 }
 
+export class ContactSubmissionSchema extends BaseModel {
+  static $columns = ['company', 'country', 'createdAt', 'email', 'firstName', 'id', 'lastName', 'message', 'updatedAt'] as const
+  $columns = ContactSubmissionSchema.$columns
+  @column()
+  declare company: string | null
+  @column()
+  declare country: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare email: string
+  @column()
+  declare firstName: string
+  @column({ isPrimary: true })
+  declare id: string
+  @column()
+  declare lastName: string
+  @column()
+  declare message: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class FolderSchema extends BaseModel {
   static $columns = ['bookmarkCount', 'createdAt', 'id', 'isSystem', 'memberCount', 'name', 'password', 'recentBookmarksImages', 'updatedAt', 'userId'] as const
   $columns = FolderSchema.$columns

@@ -105,6 +105,10 @@ export class InvitationService {
       }
 
       if (invitation.folder.password !== null) {
+        if (user.plan === 'free') {
+          throw new Exception('This feature requires a paid subscription.', { status: 403 })
+        }
+
         const isPasswordValid = await hash.verify(invitation.folder.password, password || '')
 
         if (!isPasswordValid) {

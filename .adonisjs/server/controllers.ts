@@ -31,5 +31,8 @@ export const controllers = {
       Notification: () => import('#controllers/v_1/users/notification_controller'),
       Profile: () => import('#controllers/v_1/users/profile_controller'),
     },
+    marketing: {
+      Contact: () => import('#controllers/v_1/marketing/contact_controller'),
+    },
   },
 }

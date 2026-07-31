@@ -631,4 +631,16 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/search_controller').default['folderSearch']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'marketing.contact.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/marketing/contact'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/marketing').contactValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/marketing').contactValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/marketing/contact_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/marketing/contact_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
 }

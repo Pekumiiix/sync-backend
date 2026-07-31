@@ -108,4 +108,9 @@ export interface ApiDefinition {
       folderSearch: typeof routes['search.search.folder_search']
     }
   }
+  marketing: {
+    contact: {
+      store: typeof routes['marketing.contact.store']
+    }
+  }
 }

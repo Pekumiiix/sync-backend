@@ -1,3 +1,4 @@
+import { type ApiSuccessResponse } from '#interfaces/api'
 import ContactSubmission from '#models/contact_submission'
 import env from '#start/env'
 import { contactValidator } from '#validators/marketing'
@@ -21,7 +22,7 @@ export default class ContactController {
         .htmlView('emails/contact_inquiry', { ...payload })
     })
 
-    const formattedResponse = await ctx.serialize(
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'Your contact inquiry has been submitted successfully!'
     )

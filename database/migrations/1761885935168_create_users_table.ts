@@ -22,6 +22,8 @@ export default class extends BaseSchema {
         .enum('plan', [...USER_PLANS])
         .defaultTo('free')
         .notNullable()
+      table.string('subscription_status').defaultTo('inactive').notNullable()
+      table.timestamp('subscription_updated_at', { useTz: true }).nullable()
 
       table.string('email_verification_token').nullable()
       table.timestamp('email_verification_token_expires_at', { useTz: true }).nullable()

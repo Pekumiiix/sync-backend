@@ -70,6 +70,7 @@
     "@adonisjs/session": "^8.1.0",
     "@adonisjs/shield": "^9.0.0",
     "@japa/api-client": "^3.2.1",
+    "@lemonsqueezy/lemonsqueezy.js": "^4.0.0",
     "@microlink/mql": "^0.16.1",
     "@outloud/adonis-openapi": "^1.0.7",
     "@rlanz/bull-queue": "^3.1.0",

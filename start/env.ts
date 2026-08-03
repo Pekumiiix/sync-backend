@@ -36,6 +36,11 @@ export default await Env.create(new URL('../', import.meta.url), {
   // Frontend
   FRONTEND_URL: Env.schema.string({ format: 'url', tld: false }),
 
+  // Lemon Squeezy
+  LEMON_SQUEEZY_API_KEY: Env.schema.string(),
+  LEMON_SQUEEZY_STORE_ID: Env.schema.string(),
+  LEMON_SQUEEZY_WEBHOOK_SECRET: Env.schema.string(),
+
   /*
   |----------------------------------------------------------
   | Variables for configuring the mail package
@@ -72,5 +77,5 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   QUEUE_REDIS_HOST: Env.schema.string({ format: 'host' }),
   QUEUE_REDIS_PORT: Env.schema.number(),
-  QUEUE_REDIS_PASSWORD: Env.schema.string.optional()
+  QUEUE_REDIS_PASSWORD: Env.schema.string.optional(),
 })

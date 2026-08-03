@@ -343,6 +343,26 @@ router
         description: 'Search related endpoints',
       })
 
+    // Billing routes
+
+    router
+      .group(() => {
+        router
+          .post('checkout', [controllers.v1.core.Billing, 'store'])
+          .use(middleware.auth())
+          .openapi({ summary: 'Create a checkout session' })
+        router.post('webhook', [controllers.v1.core.Billing, 'webhook']).openapi({
+          summary: 'Handle webhook events from LemonSqueezy',
+        })
+      })
+      .prefix('billing')
+      .as('billing')
+      .use(throttle)
+      .openapi({
+        tags: ['Billing'],
+        description: 'Billing related endpoints',
+      })
+
     // Marketing routes
     router
       .group(() => {

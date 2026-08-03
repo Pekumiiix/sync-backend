@@ -631,6 +631,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/search_controller').default['folderSearch']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'billing.billing.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/billing/checkout'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/billing').billingValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/billing').billingValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/billing_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/billing_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'billing.billing.webhook': {
+    methods: ["POST"]
+    pattern: '/api/v1/billing/webhook'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/billing_controller').default['webhook']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/billing_controller').default['webhook']>>>
+    }
+  }
   'marketing.contact.store': {
     methods: ["POST"]
     pattern: '/api/v1/marketing/contact'

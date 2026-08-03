@@ -19,10 +19,14 @@ export const controllers = {
       Invitation: () => import('#controllers/v_1/core/invitation_controller'),
       Member: () => import('#controllers/v_1/core/member_controller'),
       Search: () => import('#controllers/v_1/core/search_controller'),
+      Billing: () => import('#controllers/v_1/core/billing_controller'),
     },
     extension: {
       Auth: () => import('#controllers/v_1/extension/auth_controller'),
       Bookmark: () => import('#controllers/v_1/extension/bookmark_controller'),
+    },
+    marketing: {
+      Contact: () => import('#controllers/v_1/marketing/contact_controller'),
     },
     oauth: {
       Google: () => import('#controllers/v_1/oauth/google_controller'),
@@ -30,9 +34,6 @@ export const controllers = {
     users: {
       Notification: () => import('#controllers/v_1/users/notification_controller'),
       Profile: () => import('#controllers/v_1/users/profile_controller'),
-    },
-    marketing: {
-      Contact: () => import('#controllers/v_1/marketing/contact_controller'),
     },
   },
 }

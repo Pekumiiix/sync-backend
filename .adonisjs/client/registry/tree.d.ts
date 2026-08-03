@@ -108,6 +108,12 @@ export interface ApiDefinition {
       folderSearch: typeof routes['search.search.folder_search']
     }
   }
+  billing: {
+    billing: {
+      store: typeof routes['billing.billing.store']
+      webhook: typeof routes['billing.billing.webhook']
+    }
+  }
   marketing: {
     contact: {
       store: typeof routes['marketing.contact.store']

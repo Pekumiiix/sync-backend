@@ -318,6 +318,18 @@ const routes = {
     tokens: [{"old":"/api/v1/search/:folderId","type":0,"val":"api","end":""},{"old":"/api/v1/search/:folderId","type":0,"val":"v1","end":""},{"old":"/api/v1/search/:folderId","type":0,"val":"search","end":""},{"old":"/api/v1/search/:folderId","type":1,"val":"folderId","end":""}],
     types: placeholder as Registry['search.search.folder_search']['types'],
   },
+  'billing.billing.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/billing/checkout',
+    tokens: [{"old":"/api/v1/billing/checkout","type":0,"val":"api","end":""},{"old":"/api/v1/billing/checkout","type":0,"val":"v1","end":""},{"old":"/api/v1/billing/checkout","type":0,"val":"billing","end":""},{"old":"/api/v1/billing/checkout","type":0,"val":"checkout","end":""}],
+    types: placeholder as Registry['billing.billing.store']['types'],
+  },
+  'billing.billing.webhook': {
+    methods: ["POST"],
+    pattern: '/api/v1/billing/webhook',
+    tokens: [{"old":"/api/v1/billing/webhook","type":0,"val":"api","end":""},{"old":"/api/v1/billing/webhook","type":0,"val":"v1","end":""},{"old":"/api/v1/billing/webhook","type":0,"val":"billing","end":""},{"old":"/api/v1/billing/webhook","type":0,"val":"webhook","end":""}],
+    types: placeholder as Registry['billing.billing.webhook']['types'],
+  },
   'marketing.contact.store': {
     methods: ["POST"],
     pattern: '/api/v1/marketing/contact',

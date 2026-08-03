@@ -56,6 +56,8 @@ export type ScannedRoutes = {
     'browserIntegrations.integration.destroy': { paramsTuple: [ParamValue]; params: {'integrationId': ParamValue} }
     'search.search.index': { paramsTuple?: []; params?: {} }
     'search.search.folder_search': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'billing.billing.store': { paramsTuple?: []; params?: {} }
+    'billing.billing.webhook': { paramsTuple?: []; params?: {} }
     'marketing.contact.store': { paramsTuple?: []; params?: {} }
   }
   GET: {
@@ -102,6 +104,8 @@ export type ScannedRoutes = {
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.preview': { paramsTuple?: []; params?: {} }
     'invitations.invitation.store': { paramsTuple?: []; params?: {} }
+    'billing.billing.store': { paramsTuple?: []; params?: {} }
+    'billing.billing.webhook': { paramsTuple?: []; params?: {} }
     'marketing.contact.store': { paramsTuple?: []; params?: {} }
   }
   DELETE: {

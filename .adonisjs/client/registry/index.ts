@@ -324,6 +324,12 @@ const routes = {
     tokens: [{"old":"/api/v1/billing/checkout","type":0,"val":"api","end":""},{"old":"/api/v1/billing/checkout","type":0,"val":"v1","end":""},{"old":"/api/v1/billing/checkout","type":0,"val":"billing","end":""},{"old":"/api/v1/billing/checkout","type":0,"val":"checkout","end":""}],
     types: placeholder as Registry['billing.billing.store']['types'],
   },
+  'billing.billing.destroy': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/billing/cancel-subscription',
+    tokens: [{"old":"/api/v1/billing/cancel-subscription","type":0,"val":"api","end":""},{"old":"/api/v1/billing/cancel-subscription","type":0,"val":"v1","end":""},{"old":"/api/v1/billing/cancel-subscription","type":0,"val":"billing","end":""},{"old":"/api/v1/billing/cancel-subscription","type":0,"val":"cancel-subscription","end":""}],
+    types: placeholder as Registry['billing.billing.destroy']['types'],
+  },
   'billing.billing.webhook': {
     methods: ["POST"],
     pattern: '/api/v1/billing/webhook',

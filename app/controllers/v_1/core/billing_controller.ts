@@ -1,17 +1,18 @@
+import { type ApiSuccessResponse } from '#interfaces/api'
+import { type CreateCheckoutResponse } from '#interfaces/billing'
 import User from '#models/user'
+import { BillingService } from '#services/billing_service'
 import env from '#start/env'
-import { apiError } from '#utils/response'
 import { billingValidator } from '#validators/billing'
+import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
-import { lemonSqueezySetup, createCheckout } from '@lemonsqueezy/lemonsqueezy.js'
 import { DateTime } from 'luxon'
 import crypto from 'node:crypto'
 
-lemonSqueezySetup({
-  apiKey: env.get('LEMON_SQUEEZY_API_KEY'),
-})
-
+@inject()
 export default class BillingController {
+  constructor(protected billingService: BillingService) {}
+
   async store(ctx: HttpContext) {
     const { request, response, auth } = ctx
 
@@ -19,26 +20,26 @@ export default class BillingController {
 
     const { variantId } = await request.validateUsing(billingValidator)
 
-    const { error, data } = await createCheckout(env.get('LEMON_SQUEEZY_STORE_ID'), variantId, {
-      checkoutData: {
-        email: user.email,
-        custom: {
-          user_id: user.id.toString(),
-        },
-      },
-      productOptions: {
-        redirectUrl: `${env.get('FRONTEND_URL')}/app/all-bookmarks?billing=success`,
-      },
-    })
+    const { url } = await this.billingService.createCheckoutSession(user, variantId)
 
-    if (error) {
-      console.error('Error creating checkout session:', error)
-      return response.internalServerError(apiError('Failed to create checkout session'))
-    }
-
-    const formatedResponse = await ctx.serialize(
-      { url: data.data.attributes.url },
+    const formatedResponse: CreateCheckoutResponse = await ctx.serialize(
+      { url },
       'Checkout created successfully'
+    )
+
+    return response.ok(formatedResponse)
+  }
+
+  async destroy(ctx: HttpContext) {
+    const { response, auth } = ctx
+
+    const user = auth.user!
+
+    await this.billingService.cancelSubscription(user)
+
+    const formatedResponse: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'Subscription cancelled successfully'
     )
 
     return response.ok(formatedResponse)
@@ -85,14 +86,27 @@ export default class BillingController {
 
     switch (eventName) {
       case 'subscription_created':
+        user.subscriptionId = event.data.id
+        user.plan = event.data.attributes.variant_name.toLowerCase()
+        user.subscriptionStatus = event.data.attributes.status
+        break
       case 'subscription_updated':
         user.plan = event.data.attributes.variant_name.toLowerCase()
         user.subscriptionStatus = event.data.attributes.status
         break
       case 'subscription_cancelled':
+        user.subscriptionStatus = 'cancelled'
+
+        const endsAt = event.data.attributes.ends_at
+
+        if (endsAt) {
+          user.subscriptionExpiresAt = DateTime.fromISO(endsAt)
+        }
+        break
       case 'subscription_expired':
         user.plan = 'free'
-        user.subscriptionStatus = 'inactive'
+        user.subscriptionStatus = 'expired'
+        user.subscriptionExpiresAt = null
         break
     }
 

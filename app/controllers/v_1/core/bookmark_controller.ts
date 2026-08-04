@@ -5,6 +5,7 @@ import {
   bulkUnpinBookmarkValidator,
   createBookmarkValidator,
   fetchUrlDataValidator,
+  getBookBrowserTypesValidator,
   getBookmarksQueryValidator,
   moveBookmarkValidator,
   updateBookmarkValidator,
@@ -18,10 +19,16 @@ import {
 } from '#interfaces/bookmarks'
 import { type ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
-import { apiError } from '#utils/response'
 import { MemberService } from '#services/member_service'
+import { inject } from '@adonisjs/core'
 
+@inject()
 export default class BookmarksController {
+  constructor(
+    protected bookmarkService: BookmarkService,
+    protected memberService: MemberService
+  ) {}
+
   async index(ctx: HttpContext) {
     const { response, auth, request } = ctx
 
@@ -29,7 +36,7 @@ export default class BookmarksController {
 
     const query = await request.validateUsing(getBookmarksQueryValidator, { data: request.qs() })
 
-    const { pinnedBookmarks, paginatedBookmarks } = await BookmarkService.getAllForUser(
+    const { pinnedBookmarks, paginatedBookmarks } = await this.bookmarkService.getAllForUser(
       user.id,
       query
     )
@@ -57,22 +64,14 @@ export default class BookmarksController {
 
     const { url } = await request.validateUsing(fetchUrlDataValidator)
 
-    try {
-      const openGraphData = await BookmarkService.previewBookmark(url)
+    const openGraphData = await this.bookmarkService.previewBookmark(url)
 
-      const formattedResponse: FetchBookmarkPreviewResponse = await ctx.serialize(
-        { openGraphData },
-        'URL data fetched successfully!'
-      )
+    const formattedResponse: FetchBookmarkPreviewResponse = await ctx.serialize(
+      { openGraphData },
+      'URL data fetched successfully!'
+    )
 
-      return response.ok(formattedResponse)
-    } catch (error) {
-      return response.badRequest(
-        apiError(
-          error instanceof Error ? error.message : 'Failed to fetch URL data from Microlink.'
-        )
-      )
-    }
+    return response.ok(formattedResponse)
   }
 
   async store(ctx: HttpContext) {
@@ -82,9 +81,9 @@ export default class BookmarksController {
 
     const user = auth.user!
 
-    const bookmark = await BookmarkService.createBookmark(user, data)
+    const bookmark = await this.bookmarkService.createBookmark(user, data)
 
-    const { accessLevel } = await MemberService.checkPermissions(user.id, bookmark.folderId)
+    const { accessLevel } = await this.memberService.checkPermissions(user.id, bookmark.folderId)
 
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark, accessLevel) },
@@ -101,7 +100,7 @@ export default class BookmarksController {
 
     const bookmarkId = params.bookmarkId
 
-    await BookmarkService.deleteBookmark(bookmarkId, user)
+    await this.bookmarkService.deleteBookmark(bookmarkId, user)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
@@ -118,7 +117,7 @@ export default class BookmarksController {
 
     const { bookmarkIds } = await request.validateUsing(bulkDeleteBookmarkValidator)
 
-    await BookmarkService.bulkDeleteBookmarks(bookmarkIds, user)
+    await this.bookmarkService.bulkDeleteBookmarks(bookmarkIds, user)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
@@ -137,9 +136,9 @@ export default class BookmarksController {
 
     const bookmarkId = params.bookmarkId
 
-    const bookmark = await BookmarkService.updateBookmark(bookmarkId, user, data)
+    const bookmark = await this.bookmarkService.updateBookmark(bookmarkId, user, data)
 
-    const { accessLevel } = await MemberService.checkPermissions(user.id, bookmark.folderId)
+    const { accessLevel } = await this.memberService.checkPermissions(user.id, bookmark.folderId)
 
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark, accessLevel) },
@@ -156,9 +155,9 @@ export default class BookmarksController {
 
     const bookmarkId = params.bookmarkId
 
-    const bookmark = await BookmarkService.setPinStatus(bookmarkId, user, true)
+    const bookmark = await this.bookmarkService.setPinStatus(bookmarkId, user, true)
 
-    const { accessLevel } = await MemberService.checkPermissions(user.id, bookmark.folderId)
+    const { accessLevel } = await this.memberService.checkPermissions(user.id, bookmark.folderId)
 
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark, accessLevel) },
@@ -175,9 +174,9 @@ export default class BookmarksController {
 
     const bookmarkId = params.bookmarkId
 
-    const bookmark = await BookmarkService.setPinStatus(bookmarkId, user, false)
+    const bookmark = await this.bookmarkService.setPinStatus(bookmarkId, user, false)
 
-    const { accessLevel } = await MemberService.checkPermissions(user.id, bookmark.folderId)
+    const { accessLevel } = await this.memberService.checkPermissions(user.id, bookmark.folderId)
 
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark, accessLevel) },
@@ -194,7 +193,7 @@ export default class BookmarksController {
 
     const { bookmarkIds } = await request.validateUsing(bulkUnpinBookmarkValidator)
 
-    await BookmarkService.bulkUnpinBookmarks(bookmarkIds, user)
+    await this.bookmarkService.bulkUnpinBookmarks(bookmarkIds, user)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
@@ -213,9 +212,9 @@ export default class BookmarksController {
 
     const { folderId: newFolderId } = await request.validateUsing(moveBookmarkValidator)
 
-    const bookmark = await BookmarkService.moveBookmark(bookmarkId, newFolderId, user)
+    const bookmark = await this.bookmarkService.moveBookmark(bookmarkId, newFolderId, user)
 
-    const { accessLevel } = await MemberService.checkPermissions(user.id, bookmark.folderId)
+    const { accessLevel } = await this.memberService.checkPermissions(user.id, bookmark.folderId)
 
     const formattedResponse: StoreBookmarkResponse = await ctx.serialize(
       { bookmark: BookmarkTransformer.transform(bookmark, accessLevel) },
@@ -233,7 +232,7 @@ export default class BookmarksController {
     const { bookmarkIds, folderId: newFolderId } =
       await request.validateUsing(bulkMoveBookmarkValidator)
 
-    await BookmarkService.bulkMoveBookmarks(bookmarkIds, newFolderId, user)
+    await this.bookmarkService.bulkMoveBookmarks(bookmarkIds, newFolderId, user)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
@@ -248,15 +247,11 @@ export default class BookmarksController {
 
     const user = auth.user!
 
-    const folderId = request.input('folderId')
+    const { folderId } = await request.validateUsing(getBookBrowserTypesValidator)
 
-    let browsers = []
-
-    if (!folderId) {
-      browsers = await BookmarkService.getAllBrowserTypesForUser(user.id)
-    } else {
-      browsers = await BookmarkService.getAllBrowserTypesForFolder(folderId)
-    }
+    const browsers = folderId
+      ? await this.bookmarkService.getAllBrowserTypesForFolder(folderId)
+      : await this.bookmarkService.getAllBrowserTypesForUser(user.id)
 
     const formattedResponse: GetBrowsersResponse = await ctx.serialize(
       { browsers },

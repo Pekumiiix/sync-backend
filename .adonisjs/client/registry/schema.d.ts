@@ -314,9 +314,9 @@ export interface Registry {
       body: {}
       paramsTuple: []
       params: {}
-      query: {}
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/bookmark').getBookBrowserTypesValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['browsers']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['browsers']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/bookmark_controller').default['browsers']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'bookmarks.bookmark.bulk_unpin': {
@@ -641,6 +641,18 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/billing').billingValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/billing_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/billing_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'billing.billing.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/billing/cancel-subscription'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/billing_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/billing_controller').default['destroy']>>>
     }
   }
   'billing.billing.webhook': {

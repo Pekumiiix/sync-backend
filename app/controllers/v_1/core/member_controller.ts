@@ -1,24 +1,30 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { inject } from '@adonisjs/core'
 import { FolderService } from '#services/folder_service'
-import Member from '#models/member'
+import { MemberService } from '#services/member_service'
 import MemberTransformer from '#transformers/member_transformer'
 import { updateMemberValidator } from '#validators/member'
 import { type ApiSuccessResponse } from '#interfaces/api'
 import { type MemberListResponse, type UpdateMemberResponse } from '#interfaces/members'
-import { MemberService } from '#services/member_service'
-import { apiError } from '#utils/response'
 
+@inject()
 export default class MembersController {
+  constructor(
+    protected folderService: FolderService,
+    protected memberService: MemberService
+  ) {}
+
   async index(ctx: HttpContext) {
     const { response, params, auth } = ctx
 
-    const folderId = params.folderId
-
     const user = auth.user!
 
-    const { folder, permission } = await FolderService.getFolderWithPermissions(folderId, user)
+    const { folder, permission } = await this.folderService.getFolderWithPermissions(
+      params.folderId,
+      user
+    )
 
-    const members = await folder.related('members').query().preload('user')
+    const members = await this.memberService.getMembers(params.folderId)
 
     const formattedResponse: MemberListResponse = await ctx.serialize(
       {
@@ -39,28 +45,16 @@ export default class MembersController {
   async update(ctx: HttpContext) {
     const { response, params, auth, request } = ctx
 
-    const { accessLevel } = await request.validateUsing(updateMemberValidator)
-
-    const folderId = params.folderId
-    const memberId = params.memberId
-
     const user = auth.user!
 
-    await MemberService.requireRole(user.id, folderId, 'owner')
+    const { accessLevel } = await request.validateUsing(updateMemberValidator)
 
-    const member = await Member.query()
-      .where('id', memberId)
-      .where('folder_id', folderId)
-      .preload('user')
-      .firstOrFail()
-
-    if (member.userId === user.id) {
-      return response.forbidden(apiError('You cannot change your own access level.'))
-    }
-
-    member.accessLevel = accessLevel
-
-    await member.save()
+    const member = await this.memberService.updateMemberAccess(
+      params.folderId,
+      params.memberId,
+      user,
+      accessLevel
+    )
 
     const formattedResponse: UpdateMemberResponse = await ctx.serialize(
       { member: MemberTransformer.transform(member) },
@@ -73,13 +67,10 @@ export default class MembersController {
   async destroy(ctx: HttpContext) {
     const { params, response, auth } = ctx
 
-    const folderId = params.folderId
-
     const initiator = auth.user!
 
-    await MemberService.requireRole(initiator.id, folderId, 'owner')
-
-    await MemberService.destroyMember(folderId, params.memberId, initiator)
+    await this.memberService.requireRole(initiator.id, params.folderId, 'owner')
+    await this.memberService.destroyMember(params.folderId, params.memberId, initiator)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
@@ -92,11 +83,9 @@ export default class MembersController {
   async leave(ctx: HttpContext) {
     const { response, params, auth } = ctx
 
-    const folderId = params.folderId
-
     const user = auth.user!
 
-    await MemberService.leaveFolder(folderId, user)
+    await this.memberService.leaveFolder(params.folderId, user)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,

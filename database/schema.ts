@@ -85,7 +85,7 @@ export class BrowserIntegrationSchema extends BaseModel {
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
-  declare deviceId: string | null
+  declare deviceId: string
   @column()
   declare extensionVersion: string | null
   @column({ isPrimary: true })
@@ -244,7 +244,7 @@ export class RateLimitSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['avatarUrl', 'createdAt', 'email', 'emailVerificationToken', 'emailVerificationTokenExpiresAt', 'firstName', 'id', 'isEmailVerified', 'lastName', 'location', 'password', 'plan', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'settings', 'subscriptionStatus', 'subscriptionUpdatedAt', 'updatedAt'] as const
+  static $columns = ['avatarUrl', 'createdAt', 'email', 'emailVerificationToken', 'emailVerificationTokenExpiresAt', 'firstName', 'id', 'isEmailVerified', 'lastName', 'location', 'password', 'plan', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'settings', 'subscriptionExpiresAt', 'subscriptionId', 'subscriptionStatus', 'subscriptionUpdatedAt', 'updatedAt'] as const
   $columns = UserSchema.$columns
   @column()
   declare avatarUrl: string | null
@@ -276,6 +276,10 @@ export class UserSchema extends BaseModel {
   declare resetPasswordTokenExpiresAt: DateTime | null
   @column()
   declare settings: JSON<UserSettingsSchema>
+  @column.dateTime()
+  declare subscriptionExpiresAt: DateTime | null
+  @column()
+  declare subscriptionId: string | null
   @column()
   declare subscriptionStatus: string
   @column.dateTime()

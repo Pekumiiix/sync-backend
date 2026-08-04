@@ -15,17 +15,24 @@ import { type ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
 import { getBookmarksQueryValidator } from '#validators/bookmark'
-import Folder from '#models/folder'
 import { MemberService } from '#services/member_service'
+import { inject } from '@adonisjs/core'
 
+@inject()
 export default class FoldersController {
+  constructor(
+    protected memberService: MemberService,
+    protected folderService: FolderService,
+    protected bookmarkService: BookmarkService
+  ) {}
+
   async index(ctx: HttpContext) {
     const { response, auth } = ctx
 
     const user = auth.user!
 
     const { systemFolders, ownedFolders, sharedFolders, totalBookmarks } =
-      await FolderService.getFolders(user)
+      await this.folderService.getFolders(user)
 
     const formattedResponse: FolderIndexResponse = await ctx.serialize(
       {
@@ -47,7 +54,7 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const folder = await FolderService.createFolder(user, name)
+    const folder = await this.folderService.createFolder(user, name)
 
     const formattedResponse: FolderStoreResponse = await ctx.serialize(
       { folder: FolderTransformer.transform(folder) },
@@ -64,7 +71,7 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    await FolderService.deleteFolder(folderId, user)
+    await this.folderService.deleteFolder(folderId, user)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
@@ -83,7 +90,7 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const folder = await FolderService.updateFolder(folderId, user, name)
+    const folder = await this.folderService.updateFolder(folderId, user, name)
 
     const formattedResponse: FolderStoreResponse = await ctx.serialize(
       { folder: FolderTransformer.transform(folder) },
@@ -102,14 +109,12 @@ export default class FoldersController {
 
     const user = auth.user!
 
-    const { folder, permission, previewMembers } = await FolderService.getFolderWithPermissions(
-      folderId,
-      user
-    )
+    const { folder, permission, previewMembers } =
+      await this.folderService.getFolderWithPermissions(folderId, user)
 
     const [pinnedBookmarks, paginatedBookmarks] = await Promise.all([
-      BookmarkService.pinnedBookmarks(folder, user.id),
-      BookmarkService.getPaginatedBookmarksForFolder(folder, query),
+      this.bookmarkService.pinnedBookmarks(folder, user.id),
+      this.bookmarkService.getPaginatedBookmarksForFolder(folder, query),
     ])
 
     const unpinnedBookmarks = paginatedBookmarks.all()
@@ -144,19 +149,11 @@ export default class FoldersController {
   async addPassword(ctx: HttpContext) {
     const { params, response, auth, request } = ctx
 
-    const folderId = params.folderId
+    const user = auth.user!
 
     const { password } = await request.validateUsing(addPasswordValidator)
 
-    const user = auth.user!
-
-    const folder = await Folder.findOrFail(folderId)
-
-    await MemberService.requireRole(user.id, folder.id, 'owner')
-
-    folder.password = password
-
-    await folder.save()
+    await this.folderService.updatePassword(params.folderId, user, password)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
@@ -169,17 +166,9 @@ export default class FoldersController {
   async removePassword(ctx: HttpContext) {
     const { params, response, auth } = ctx
 
-    const folderId = params.folderId
-
     const user = auth.user!
 
-    const folder = await Folder.findOrFail(folderId)
-
-    await MemberService.requireRole(user.id, folder.id, 'owner')
-
-    folder.password = null
-
-    await folder.save()
+    await this.folderService.updatePassword(params.folderId, user, null)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,

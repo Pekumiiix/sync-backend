@@ -1,6 +1,6 @@
 import { events } from '#generated/events'
 import Bookmark from '#models/bookmark'
-import type Folder from '#models/folder'
+import Folder from '#models/folder'
 import BookmarkTransformer from '#transformers/bookmark_transformer'
 import {
   type CreateBookmarkType,
@@ -10,41 +10,82 @@ import {
 import { Exception } from '@adonisjs/core/exceptions'
 import db from '@adonisjs/lucid/services/db'
 import { FolderService } from './folder_service.ts'
-import type User from '#models/user'
+import User from '#models/user'
 import { MemberService } from './member_service.ts'
 import { DateTime } from 'luxon'
 import mql from '@microlink/mql'
 import { type UrlData } from '#interfaces/bookmarks'
+import logger from '@adonisjs/core/services/logger'
+import { inject } from '@adonisjs/core'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
+@inject()
 export class BookmarkService {
-  static async getBookmarkById(bookmarkId: string) {
-    const bookmark = await Bookmark.query()
+  constructor(
+    protected folderService: FolderService,
+    protected memberService: MemberService
+  ) {}
+
+  private async _syncFolderStats(
+    folderId: string,
+    countDelta: number,
+    trx: TransactionClientContract
+  ) {
+    const updatePayload: Record<string, any> = {
+      updated_at: DateTime.now().toSQL(),
+    }
+
+    if (countDelta !== 0) {
+      const operator = countDelta > 0 ? '+' : '-'
+      updatePayload.bookmark_count = db.raw(`bookmark_count ${operator} ?`, [Math.abs(countDelta)])
+    }
+
+    await trx.from('folders').where('id', folderId).update(updatePayload)
+
+    await this.folderService.syncFolderRecentImages(folderId, trx)
+  }
+
+  private _groupBookmarksByFolder(bookmarks: Bookmark[]): Record<string, Bookmark[]> {
+    const groups: Record<string, Bookmark[]> = {}
+    for (const bookmark of bookmarks) {
+      groups[bookmark.folderId] ??= []
+      groups[bookmark.folderId].push(bookmark)
+    }
+    return groups
+  }
+
+  async getBookmarkById(bookmarkId: string): Promise<Bookmark> {
+    return await Bookmark.query()
       .where('id', bookmarkId)
       .preload('user', (query) => query.select('first_name', 'last_name', 'avatar_url'))
       .preload('folder', (query) => query.select('name'))
       .firstOrFail()
-
-    return bookmark
   }
 
-  static async previewBookmark(url: string) {
+  async previewBookmark(url: string) {
     const parsedUrl = new URL(url)
-
     const domain = parsedUrl.hostname.replace('www.', '')
 
-    let mqlResponse
+    let mqlResponse: any
 
     try {
-      mqlResponse = (await mql(url)) as any
+      mqlResponse = await mql(url)
     } catch (error) {
-      console.error('[BookmarkService] Network or parsing error:', error)
-      throw new Error('Failed to connect to the URL preview service.')
+      logger.error({ url, error }, '[BookmarkService] Network or parsing error')
+
+      throw new Exception('Failed to connect to the URL preview service.', {
+        status: 502,
+        code: 'E_PREVIEW_SERVICE_ERROR',
+      })
     }
 
     const { status, data } = mqlResponse
 
     if (status !== 'success') {
-      throw new Error(data?.message || 'Microlink returned an unsuccessful status.')
+      throw new Exception(data?.message || 'Microlink returned an unsuccessful status.', {
+        status: 400,
+        code: 'E_METADATA_FETCH_FAILED',
+      })
     }
 
     const openGraphData: UrlData = {
@@ -60,8 +101,11 @@ export class BookmarkService {
     return openGraphData
   }
 
-  static async createBookmark(user: User, data: CreateBookmarkType) {
-    const { folder, permission } = await FolderService.getFolderWithPermissions(data.folderId, user)
+  async createBookmark(user: User, data: CreateBookmarkType) {
+    const { folder, permission } = await this.folderService.getFolderWithPermissions(
+      data.folderId,
+      user
+    )
 
     if (permission.accessLevel !== 'editor') {
       throw new Exception('You do not have permission to add a bookmark to this folder.', {
@@ -79,57 +123,44 @@ export class BookmarkService {
         { client: trx }
       )
 
-      await trx
-        .from('folders')
-        .where('id', folder.id)
-        .update({ updated_at: DateTime.now().toSQL() })
+      await this._syncFolderStats(folder.id, 1, trx)
 
       return newBookmark
     })
 
-    bookmark.$setRelated('user', user)
-    bookmark.$setRelated('folder', folder)
+    const partialUser = new User()
+    partialUser.firstName = user.firstName
+    partialUser.lastName = user.lastName
+    partialUser.avatarUrl = user.avatarUrl
+
+    const partialFolder = new Folder()
+    partialFolder.name = folder.name
+
+    bookmark.$setRelated('user', partialUser)
+    bookmark.$setRelated('folder', partialFolder)
 
     events.BookmarkCreated.dispatch(user, folder.id)
 
     return bookmark
   }
 
-  static async deleteBookmark(bookmarkId: string, user: User) {
+  async deleteBookmark(bookmarkId: string, user: User) {
     const bookmark = await this.getBookmarkById(bookmarkId)
 
-    await MemberService.requireAccessLevel(user.id, bookmark.folderId, 'editor')
+    await this.memberService.requireAccessLevel(user.id, bookmark.folderId, 'editor')
 
     await db.transaction(async (trx) => {
       bookmark.useTransaction(trx)
 
       await bookmark.delete()
 
-      await trx
-        .from('folders')
-        .where('id', bookmark.folderId)
-        .update({ updated_at: DateTime.now().toSQL() })
+      await this._syncFolderStats(bookmark.folderId, -1, trx)
     })
 
     events.BookmarkDeleted.dispatch(user, bookmark.folderId, bookmark.title)
   }
 
-  static groupFolders(bookmarks: Bookmark[]): Record<string, Bookmark[]> {
-    const folderGroups = bookmarks.reduce(
-      (acc, bookmark) => {
-        if (!acc[bookmark.folderId]) {
-          acc[bookmark.folderId] = []
-        }
-        acc[bookmark.folderId].push(bookmark)
-        return acc
-      },
-      {} as Record<string, typeof bookmarks>
-    )
-
-    return folderGroups
-  }
-
-  static async bulkDeleteBookmarks(bookmarkIds: string[], user: User) {
+  async bulkDeleteBookmarks(bookmarkIds: string[], user: User) {
     if (!bookmarkIds.length) return
 
     const bookmarks = await Bookmark.query().whereIn('id', bookmarkIds)
@@ -138,13 +169,12 @@ export class BookmarkService {
       throw new Exception('One or more bookmarks not found.', { status: 404 })
     }
 
-    const folderGroups = this.groupFolders(bookmarks)
-
+    const folderGroups = this._groupBookmarksByFolder(bookmarks)
     const uniqueFolderIds = Object.keys(folderGroups)
 
     await Promise.all(
       uniqueFolderIds.map((folderId) =>
-        MemberService.requireAccessLevel(user.id, folderId, 'editor')
+        this.memberService.requireAccessLevel(user.id, folderId, 'editor')
       )
     )
 
@@ -152,17 +182,9 @@ export class BookmarkService {
       await Bookmark.query({ client: trx }).whereIn('id', bookmarkIds).delete()
 
       await Promise.all(
-        uniqueFolderIds.map(async (folderId) => {
+        uniqueFolderIds.map((folderId) => {
           const deleteCount = folderGroups[folderId].length
-
-          await trx.from('folders').where('id', folderId).decrement('bookmark_count', deleteCount)
-
-          await trx
-            .from('folders')
-            .where('id', folderId)
-            .update({ updated_at: DateTime.now().toSQL() })
-
-          await FolderService.syncFolderRecentImages(folderId, trx)
+          return this._syncFolderStats(folderId, -deleteCount, trx)
         })
       )
     })
@@ -172,10 +194,10 @@ export class BookmarkService {
     }
   }
 
-  static async updateBookmark(bookmarkId: string, user: User, data: UpdateBookmarkType) {
+  async updateBookmark(bookmarkId: string, user: User, data: UpdateBookmarkType) {
     const bookmark = await this.getBookmarkById(bookmarkId)
 
-    await MemberService.requireAccessLevel(user.id, bookmark.folderId, 'editor')
+    await this.memberService.requireAccessLevel(user.id, bookmark.folderId, 'editor')
 
     bookmark.merge(data)
 
@@ -186,10 +208,10 @@ export class BookmarkService {
     return bookmark
   }
 
-  static async setPinStatus(bookmarkId: string, user: User, isPinned: boolean) {
+  async setPinStatus(bookmarkId: string, user: User, isPinned: boolean) {
     const bookmark = await this.getBookmarkById(bookmarkId)
 
-    await MemberService.requireAccessLevel(user.id, bookmark.folderId, 'editor')
+    await this.memberService.requireAccessLevel(user.id, bookmark.folderId, 'editor')
 
     bookmark.isPinned = isPinned
 
@@ -198,7 +220,7 @@ export class BookmarkService {
     return bookmark
   }
 
-  static async bulkUnpinBookmarks(bookmarkIds: string[], user: User) {
+  async bulkUnpinBookmarks(bookmarkIds: string[], user: User) {
     if (!bookmarkIds.length) return []
 
     const bookmarks = await Bookmark.query().whereIn('id', bookmarkIds)
@@ -207,31 +229,30 @@ export class BookmarkService {
       throw new Exception('One or more bookmarks not found.', { status: 404 })
     }
 
-    const groupedFolders = this.groupFolders(bookmarks)
-
-    const uniqueFolder = Object.keys(groupedFolders)
+    const groupedFolders = this._groupBookmarksByFolder(bookmarks)
+    const uniqueFolders = Object.keys(groupedFolders)
 
     await Promise.all(
-      uniqueFolder.map((folderId) => MemberService.requireAccessLevel(user.id, folderId, 'editor'))
+      uniqueFolders.map((folderId) =>
+        this.memberService.requireAccessLevel(user.id, folderId, 'editor')
+      )
     )
 
-    await db.transaction(async (trx) => {
-      await Bookmark.query({ client: trx }).whereIn('id', bookmarkIds).update({ isPinned: false })
-    })
+    await Bookmark.query().whereIn('id', bookmarkIds).update({ isPinned: false })
   }
 
-  static async moveBookmark(bookmarkId: string, newFolderId: string, user: User) {
+  async moveBookmark(bookmarkId: string, newFolderId: string, user: User) {
     const bookmark = await this.getBookmarkById(bookmarkId)
-
     const oldFolderId = bookmark.folderId
 
     if (oldFolderId === newFolderId) {
       throw new Exception('Bookmark is already in the specified folder.', { status: 400 })
     }
 
-    await MemberService.requireAccessLevel(user.id, oldFolderId, 'editor')
-
-    await MemberService.requireAccessLevel(user.id, newFolderId, 'editor')
+    await Promise.all([
+      this.memberService.requireAccessLevel(user.id, oldFolderId, 'editor'),
+      this.memberService.requireAccessLevel(user.id, newFolderId, 'editor'),
+    ])
 
     await db.transaction(async (trx) => {
       bookmark.useTransaction(trx)
@@ -240,27 +261,18 @@ export class BookmarkService {
 
       await bookmark.save()
 
-      await trx.from('folders').where('id', oldFolderId).decrement('bookmark_count', 1)
-      await trx
-        .from('folders')
-        .where('id', oldFolderId)
-        .update({ updated_at: DateTime.now().toSQL() })
-      await trx.from('folders').where('id', newFolderId).increment('bookmark_count', 1)
-      await trx
-        .from('folders')
-        .where('id', newFolderId)
-        .update({ updated_at: DateTime.now().toSQL() })
-
-      await FolderService.syncFolderRecentImages(oldFolderId, trx)
-      await FolderService.syncFolderRecentImages(newFolderId, trx)
+      await Promise.all([
+        this._syncFolderStats(oldFolderId, -1, trx),
+        this._syncFolderStats(newFolderId, 1, trx),
+      ])
     })
 
-    await bookmark.load('folder')
+    await bookmark.load('folder', (query) => query.select('name'))
 
     return bookmark
   }
 
-  static async bulkMoveBookmarks(bookmarkIds: string[], newFolderId: string, user: User) {
+  async bulkMoveBookmarks(bookmarkIds: string[], newFolderId: string, user: User) {
     if (!bookmarkIds.length) return []
 
     const bookmarks = await Bookmark.query().whereIn('id', bookmarkIds)
@@ -269,17 +281,15 @@ export class BookmarkService {
       throw new Exception('One or more bookmarks not found.', { status: 404 })
     }
 
-    const oldFolderGroups = this.groupFolders(bookmarks)
-
+    const oldFolderGroups = this._groupBookmarksByFolder(bookmarks)
     const uniqueFolderIds = Object.keys(oldFolderGroups)
 
-    await Promise.all(
-      uniqueFolderIds.map((oldFolderId) =>
-        MemberService.requireAccessLevel(user.id, oldFolderId, 'editor')
-      )
-    )
-
-    await MemberService.requireAccessLevel(user.id, newFolderId, 'editor')
+    await Promise.all([
+      ...uniqueFolderIds.map((oldFolderId) =>
+        this.memberService.requireAccessLevel(user.id, oldFolderId, 'editor')
+      ),
+      this.memberService.requireAccessLevel(user.id, newFolderId, 'editor'),
+    ])
 
     await db.transaction(async (trx) => {
       await Bookmark.query({ client: trx })
@@ -287,35 +297,13 @@ export class BookmarkService {
         .update({ folderId: newFolderId })
 
       await Promise.all(
-        uniqueFolderIds.map(async (folderId) => {
+        uniqueFolderIds.map((folderId) => {
           const decrementCount = oldFolderGroups[folderId].length
-
-          await trx
-            .from('folders')
-            .where('id', folderId)
-            .decrement('bookmark_count', decrementCount)
-
-          await trx
-            .from('folders')
-            .where('id', folderId)
-            .update({ updated_at: DateTime.now().toSQL() })
-
-          await FolderService.syncFolderRecentImages(folderId, trx)
+          return this._syncFolderStats(folderId, -decrementCount, trx)
         })
       )
 
-      const totalMovedCount = bookmarkIds.length
-      await trx
-        .from('folders')
-        .where('id', newFolderId)
-        .increment('bookmark_count', totalMovedCount)
-
-      await trx
-        .from('folders')
-        .where('id', newFolderId)
-        .update({ updated_at: DateTime.now().toSQL() })
-
-      await FolderService.syncFolderRecentImages(newFolderId, trx)
+      await this._syncFolderStats(newFolderId, bookmarkIds.length, trx)
     })
 
     for (const bookmark of bookmarks) {
@@ -325,7 +313,7 @@ export class BookmarkService {
     return bookmarks
   }
 
-  static async pinnedBookmarks(folder: Folder, userId: string) {
+  async pinnedBookmarks(folder: Folder, userId: string) {
     const [pinnedBookmarks, { accessLevel }] = await Promise.all([
       folder
         .related('bookmarks')
@@ -335,16 +323,13 @@ export class BookmarkService {
         .preload('folder', (query) => query.select('name'))
         .orderBy('updated_at', 'desc'),
 
-      MemberService.checkPermissions(userId, folder.id),
+      this.memberService.checkPermissions(userId, folder.id),
     ])
 
     return BookmarkTransformer.transform(pinnedBookmarks, accessLevel)
   }
 
-  static async getPaginatedBookmarksForFolder(
-    folder: Folder,
-    queryParams: GetBookmarksQueryParams
-  ) {
+  async getPaginatedBookmarksForFolder(folder: Folder, queryParams: GetBookmarksQueryParams) {
     const { page = 1, limit = 20, sort = 'title_desc', filter = 'all' } = queryParams
 
     const bookmarksQuery = folder
@@ -366,22 +351,23 @@ export class BookmarkService {
       bookmarksQuery.orderBy('created_at', sort === 'oldest' ? 'asc' : 'desc')
     }
 
-    const paginatedBookmarks = await bookmarksQuery.paginate(page, limit)
-
-    return paginatedBookmarks
+    return bookmarksQuery.paginate(page, limit)
   }
 
-  static async getAllForUser(userId: string, query: GetBookmarksQueryParams) {
+  async getAllForUser(userId: string, query: GetBookmarksQueryParams) {
     const { page = 1, limit = 20, sort = 'title_desc', filter = 'all' } = query
 
+    const allowedFolderIds = await this.folderService.getAccessibleFolderIds(userId)
+
+    if (allowedFolderIds.length === 0) {
+      return {
+        pinnedBookmarks: [],
+        paginatedBookmarks: await Bookmark.query().whereNull('id').paginate(1, limit),
+      }
+    }
+
     const baseQuery = Bookmark.query()
-      .where((builder) => {
-        builder.whereIn(
-          'folder_id',
-          db.from('members').select('folder_id').where('user_id', userId)
-        )
-        builder.orWhereIn('folder_id', db.from('folders').select('id').where('user_id', userId))
-      })
+      .whereIn('folder_id', allowedFolderIds)
       .preload('user', (q) => q.select('first_name', 'last_name', 'avatar_url'))
       .preload('folder', (q) =>
         q
@@ -396,7 +382,6 @@ export class BookmarkService {
     }
 
     const pinnedQuery = baseQuery.clone().where('is_pinned', true).orderBy('updated_at', 'desc')
-
     const unpinnedQuery = baseQuery.clone().where('is_pinned', false)
 
     if (sort === 'title_asc') {
@@ -418,26 +403,23 @@ export class BookmarkService {
     }
   }
 
-  static async getAllBrowserTypesForUser(userId: string) {
-    const browserTypes = await Bookmark.query()
+  async getAllBrowserTypesForUser(userId: string) {
+    const allowedFolderIds = await this.folderService.getAccessibleFolderIds(userId)
+
+    if (allowedFolderIds.length === 0) return []
+
+    return Bookmark.query()
       .select('browser')
-      .where((query) => {
-        query.whereIn('folderId', db.from('members').select('folder_id').where('user_id', userId))
-        query.orWhereIn('folderId', db.from('folders').select('id').where('user_id', userId))
-      })
+      .whereIn('folder_id', allowedFolderIds)
       .whereNotNull('browser')
       .distinct('browser')
-
-    return browserTypes
   }
 
-  static async getAllBrowserTypesForFolder(folderId: string) {
-    const browserTypes = await Bookmark.query()
+  async getAllBrowserTypesForFolder(folderId: string) {
+    return Bookmark.query()
       .select('browser')
-      .where('folderId', folderId)
+      .where('folder_id', folderId)
       .whereNotNull('browser')
       .distinct('browser')
-
-    return browserTypes
   }
 }

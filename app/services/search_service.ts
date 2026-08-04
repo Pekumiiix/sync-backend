@@ -1,31 +1,49 @@
+import { inject } from '@adonisjs/core'
+import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 import Bookmark from '#models/bookmark'
 import { type SearchQueryParams } from '#validators/search'
-import db from '@adonisjs/lucid/services/db'
+import { FolderService } from './folder_service.ts'
 
+@inject()
 export class SearchService {
-  static async searchBookmarks(userId: string, data: SearchQueryParams) {
+  constructor(protected folderService: FolderService) {}
+
+  private _applySearchConstraints(
+    builder: ModelQueryBuilderContract<typeof Bookmark>,
+    searchTerm: string
+  ) {
+    builder.where((searchBuilder) => {
+      searchBuilder
+        .whereILike('title', `%${searchTerm}%`)
+        .orWhereILike('url', `%${searchTerm}%`)
+        .orWhereRaw('tags::text ILIKE ?', [`%${searchTerm}%`])
+    })
+  }
+
+  async searchBookmarks(userId: string, data: SearchQueryParams) {
     const { query, page = 1, limit = 10 } = data
 
-    const bookmarks = await Bookmark.query()
-      .where((searchBuilder) => {
-        searchBuilder.whereILike('title', `%${query}%`)
-        searchBuilder.orWhereILike('url', `%${query}%`)
-        searchBuilder.orWhereRaw(
-          `EXISTS (
-                SELECT 1 
-                FROM jsonb_array_elements_text(tags) AS tag 
-                WHERE tag ILIKE ?
-              )`,
-          [`%${query}%`]
-        )
-      })
-      .where((aclBuilder) => {
-        aclBuilder
-          .whereIn('folder_id', db.from('members').select('folder_id').where('user_id', userId))
-          .orWhereIn('folder_id', db.from('folders').select('id').where('user_id', userId))
-      })
-      .preload('folder')
-      .preload('user')
+    const allowedFolderIds = await this.folderService.getAccessibleFolderIds(userId)
+
+    if (allowedFolderIds.length === 0) {
+      const emptyBookmarks = await Bookmark.query().whereNull('id').paginate(page, limit)
+      return {
+        bookmarks: [],
+        meta: {
+          currentPage: emptyBookmarks.currentPage,
+          totalPages: emptyBookmarks.lastPage,
+          totalCount: emptyBookmarks.total,
+        },
+      }
+    }
+
+    const bookmarksQuery = Bookmark.query().whereIn('folder_id', allowedFolderIds)
+
+    this._applySearchConstraints(bookmarksQuery, query)
+
+    const bookmarks = await bookmarksQuery
+      .preload('folder', (q) => q.select('name'))
+      .preload('user', (q) => q.select('first_name', 'last_name', 'avatar_url'))
       .paginate(page, limit)
 
     const meta = bookmarks.getMeta()
@@ -40,27 +58,17 @@ export class SearchService {
     }
   }
 
-  static async searchBookmarksInFolder(folderId: string, data: SearchQueryParams) {
+  async searchBookmarksInFolder(folderId: string, data: SearchQueryParams) {
     const { query, page = 1, limit = 10 } = data
 
-    const bookmarks = await Bookmark.query()
-      .where('folder_id', folderId)
-      .where((searchBuilder) => {
-        searchBuilder.whereILike('title', `%${query}%`)
-        searchBuilder.orWhereILike('url', `%${query}%`)
-        searchBuilder.orWhereRaw(
-          `EXISTS (
-                SELECT 1 
-                FROM jsonb_array_elements_text(tags) AS tag 
-                WHERE tag ILIKE ?
-              )`,
-          [`%${query}%`]
-        )
-      })
-      .preload('folder')
-      .preload('user')
-      .paginate(page, limit)
+    const bookmarksQuery = Bookmark.query().where('folder_id', folderId)
 
+    this._applySearchConstraints(bookmarksQuery, query)
+
+    const bookmarks = await bookmarksQuery
+      .preload('folder', (q) => q.select('name'))
+      .preload('user', (q) => q.select('first_name', 'last_name', 'avatar_url'))
+      .paginate(page, limit)
     const meta = bookmarks.getMeta()
 
     return {

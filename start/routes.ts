@@ -351,6 +351,10 @@ router
           .post('checkout', [controllers.v1.core.Billing, 'store'])
           .use(middleware.auth())
           .openapi({ summary: 'Create a checkout session' })
+        router
+          .delete('cancel-subscription', [controllers.v1.core.Billing, 'destroy'])
+          .use(middleware.auth())
+          .openapi({ summary: 'Cancel a subscription' })
         router.post('webhook', [controllers.v1.core.Billing, 'webhook']).openapi({
           summary: 'Handle webhook events from LemonSqueezy',
         })

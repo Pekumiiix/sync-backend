@@ -8,13 +8,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('id').primary().defaultTo(this.db.rawQuery('gen_random_uuid()').knexQuery)
 
-      table
-        .uuid('user_id')
-        .notNullable()
-        .references('id')
-        .inTable('users')
-        .onDelete('CASCADE')
-        .index()
+      table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE')
 
       table
         .integer('access_token_id')
@@ -23,15 +17,20 @@ export default class extends BaseSchema {
         .inTable('auth_access_tokens')
         .onDelete('CASCADE')
         .notNullable()
+        .unique()
 
       table.enum('browser', [...SUPPORTED_BROWSERS]).notNullable()
 
-      table.string('device_id').nullable()
+      table.string('device_id').notNullable()
       table.string('os_platform').nullable()
       table.string('extension_version').nullable()
 
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('last_synced_at', { useTz: true }).nullable()
+
+      table.index(['user_id', 'created_at'])
+
+      table.unique(['user_id', 'device_id', 'browser'])
     })
   }
 

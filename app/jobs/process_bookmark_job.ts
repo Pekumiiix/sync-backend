@@ -1,6 +1,7 @@
 import { type BrowserType } from '#enums/browser'
 import User from '#models/user'
 import { BookmarkService } from '#services/bookmark_service'
+import logger from '@adonisjs/core/services/logger'
 import { Job } from '@rlanz/bull-queue'
 
 interface ProcessBookmarkJobPayload {
@@ -44,6 +45,12 @@ export default class ProcessBookmarkJob extends Job {
    * This is an optional method that gets called when the retries has exceeded and is marked failed.
    */
   async rescue(payload: ProcessBookmarkJobPayload) {
-    console.error(`[ProcessBookmark] Permanently failed for URL: ${payload.url}`, payload)
+    logger.error(
+      {
+        url: payload.url,
+        payload,
+      },
+      '[ProcessBookmark] Job permanently failed'
+    )
   }
 }

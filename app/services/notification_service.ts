@@ -2,9 +2,10 @@ import { type NotificationType } from '#enums/notification'
 import type Member from '#models/member'
 import Notification from '#models/notification'
 import type User from '#models/user'
+import { DateTime } from 'luxon'
 
 export class NotificationService {
-  static async getNotification(notificationId: string, user: User) {
+  async getNotification(notificationId: string, user: User) {
     const notification = await user
       .related('notifications')
       .query()
@@ -14,7 +15,7 @@ export class NotificationService {
     return { notification }
   }
 
-  static async getUserNotifications(user: User, page: number, limit: number) {
+  async getUserNotifications(user: User, page: number, limit: number) {
     const [notifications, unreadCount] = await Promise.all([
       user.related('notifications').query().orderBy('created_at', 'desc').paginate(page, limit),
       user.related('notifications').query().whereNull('read_at').count('* as count'),
@@ -31,7 +32,7 @@ export class NotificationService {
     }
   }
 
-  static async notifyMembers(
+  async notifyMembers(
     members: Member[],
     actor: User,
     targetName: string | null,
@@ -56,5 +57,39 @@ export class NotificationService {
     }))
 
     await Notification.createMany(notificationsToInsert)
+  }
+
+  async deleteNotification(notificationId: string, user: User) {
+    const { notification } = await this.getNotification(notificationId, user)
+
+    await notification.delete()
+  }
+
+  async deleteAllNotifications(user: User) {
+    await user.related('notifications').query().delete()
+  }
+
+  async markAsRead(notificationId: string, user: User) {
+    const { notification } = await this.getNotification(notificationId, user)
+
+    notification.readAt = DateTime.now()
+
+    await notification.save()
+
+    return notification
+  }
+
+  async markAsUnread(notificationId: string, user: User) {
+    const { notification } = await this.getNotification(notificationId, user)
+
+    notification.readAt = null
+
+    await notification.save()
+
+    return notification
+  }
+
+  async markAllAsRead(user: User) {
+    await user.related('notifications').query().update({ readAt: DateTime.now().toSQL() })
   }
 }

@@ -13,13 +13,13 @@ export const controllers = {
       VerifyEmail: () => import('#controllers/v_1/auth/verify_email_controller'),
     },
     core: {
+      Billing: () => import('#controllers/v_1/core/billing_controller'),
       Bookmark: () => import('#controllers/v_1/core/bookmark_controller'),
       Folder: () => import('#controllers/v_1/core/folder_controller'),
       Integration: () => import('#controllers/v_1/core/integration_controller'),
       Invitation: () => import('#controllers/v_1/core/invitation_controller'),
       Member: () => import('#controllers/v_1/core/member_controller'),
       Search: () => import('#controllers/v_1/core/search_controller'),
-      Billing: () => import('#controllers/v_1/core/billing_controller'),
     },
     extension: {
       Auth: () => import('#controllers/v_1/extension/auth_controller'),

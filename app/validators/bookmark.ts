@@ -3,13 +3,14 @@ import { SUPPORTED_BROWSERS } from '#enums/browser'
 import { type Infer } from '@vinejs/vine/types'
 
 const bookmarkIds = () => vine.array(vine.string().uuid())
+const folderId = () => vine.string().uuid()
 
 export const fetchUrlDataValidator = vine.create({
   url: vine.string().url(),
 })
 
 export const createBookmarkValidator = vine.create({
-  folderId: vine.string().uuid(),
+  folderId: folderId(),
   title: vine.string().minLength(1).maxLength(255),
   description: vine.string().maxLength(1000).optional(),
   websiteName: vine.string().maxLength(255).optional(),
@@ -28,12 +29,12 @@ export const updateBookmarkValidator = vine.create({
 })
 
 export const moveBookmarkValidator = vine.create({
-  folderId: vine.string().uuid(),
+  folderId: folderId(),
 })
 
 export const bulkMoveBookmarkValidator = vine.create({
   bookmarkIds: bookmarkIds(),
-  folderId: vine.string().uuid(),
+  folderId: folderId(),
 })
 
 export const bulkDeleteBookmarkValidator = vine.create({
@@ -49,6 +50,10 @@ export const getBookmarksQueryValidator = vine.create({
   limit: vine.number().optional(),
   sort: vine.enum(['oldest', 'newest', 'title_asc', 'title_desc']).optional(),
   filter: vine.enum([...SUPPORTED_BROWSERS, 'all']).optional(),
+})
+
+export const getBookBrowserTypesValidator = vine.create({
+  folderId: folderId().optional(),
 })
 
 export type GetBookmarksQueryParams = Infer<typeof getBookmarksQueryValidator>

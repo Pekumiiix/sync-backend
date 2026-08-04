@@ -2,9 +2,13 @@ import { type ApiSuccessResponse } from '#interfaces/api'
 import type { GetBrowserIntegrationsResponse } from '#interfaces/browser_integrations'
 import { BrowserIntegrationService } from '#services/browser_integration_service'
 import BrowserIntegrationTransformer from '#transformers/browser_integration_transformer'
+import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 
+@inject()
 export default class IntegrationsController {
+  constructor(protected browserIntegrationService: BrowserIntegrationService) {}
+
   async index(ctx: HttpContext) {
     const { response, auth } = ctx
 
@@ -27,7 +31,7 @@ export default class IntegrationsController {
 
     const user = auth.user!
 
-    await BrowserIntegrationService.deleteIntegration(user, integrationId)
+    await this.browserIntegrationService.deleteIntegration(user, integrationId)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,

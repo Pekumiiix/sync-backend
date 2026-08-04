@@ -111,6 +111,7 @@ export interface ApiDefinition {
   billing: {
     billing: {
       store: typeof routes['billing.billing.store']
+      destroy: typeof routes['billing.billing.destroy']
       webhook: typeof routes['billing.billing.webhook']
     }
   }

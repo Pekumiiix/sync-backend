@@ -42,10 +42,25 @@ export default class extends BaseSchema {
 
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()
+
+      table.index(['folder_id', 'email'])
+      table.index(['email', 'status'])
+    })
+
+    this.defer(async (db) => {
+      await db.rawQuery(`
+        CREATE UNIQUE INDEX invitations_unique_pending_idx 
+        ON invitations (folder_id, email) 
+        WHERE status = 'pending';
+      `)
     })
   }
 
   async down() {
+    this.defer(async (db) => {
+      await db.rawQuery('DROP INDEX IF EXISTS invitations_unique_pending_idx;')
+    })
+
     this.schema.dropTable(this.tableName)
   }
 }

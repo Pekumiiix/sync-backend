@@ -1,15 +1,21 @@
+import { inject } from '@adonisjs/core'
+import { Exception } from '@adonisjs/core/exceptions'
+import db from '@adonisjs/lucid/services/db'
+import { type TransactionClientContract } from '@adonisjs/lucid/types/database'
+
 import { type AccessLevelType, type RoleType } from '#enums/member'
 import { events } from '#generated/events'
 import Folder from '#models/folder'
 import Member from '#models/member'
 import type User from '#models/user'
-import { Exception } from '@adonisjs/core/exceptions'
-import db from '@adonisjs/lucid/services/db'
-import { type TransactionClientContract } from '@adonisjs/lucid/types/database'
 
+@inject()
 export class MemberService {
-  static async checkPermissions(userId: string, folderId: string) {
-    const folder = await Folder.findOrFail(folderId)
+  async checkPermissions(userId: string, folderId: string) {
+    const [folder, membership] = await Promise.all([
+      Folder.query().select('id', 'user_id').where('id', folderId).firstOrFail(),
+      Member.query().where('user_id', userId).where('folder_id', folderId).first(),
+    ])
 
     if (folder.userId === userId) {
       return {
@@ -19,11 +25,6 @@ export class MemberService {
         accessLevel: 'editor' as AccessLevelType,
       }
     }
-
-    const membership = await Member.query()
-      .where('user_id', userId)
-      .where('folder_id', folderId)
-      .first()
 
     if (membership) {
       return {
@@ -42,7 +43,7 @@ export class MemberService {
     }
   }
 
-  static async requireRole(userId: string, folderId: string, allowedRole: RoleType) {
+  async requireRole(userId: string, folderId: string, allowedRole: RoleType) {
     const permissions = await this.checkPermissions(userId, folderId)
 
     if (!permissions.isMember || !permissions.role) {
@@ -62,11 +63,7 @@ export class MemberService {
     return permissions
   }
 
-  static async requireAccessLevel(
-    userId: string,
-    folderId: string,
-    allowedAccessLevel: AccessLevelType
-  ) {
+  async requireAccessLevel(userId: string, folderId: string, allowedAccessLevel: AccessLevelType) {
     const permissions = await this.checkPermissions(userId, folderId)
 
     if (!permissions.isMember || !permissions.accessLevel) {
@@ -86,8 +83,11 @@ export class MemberService {
     return permissions
   }
 
-  static async getFolderPreviews(folderId: string, limit: number) {
-    const members = await Member.query().where('folder_id', folderId).preload('user').limit(limit)
+  async getFolderPreviews(folderId: string, limit: number) {
+    const members = await Member.query()
+      .where('folder_id', folderId)
+      .preload('user', (q) => q.select('first_name', 'last_name', 'avatar_url'))
+      .limit(limit)
 
     return members.map((member) => ({
       firstName: member.user.firstName,
@@ -96,12 +96,12 @@ export class MemberService {
     }))
   }
 
-  static async destroyMember(folderId: string, memberId: string, initiator: User) {
+  async destroyMember(folderId: string, memberId: string, initiator: User) {
     return await db.transaction(async (trx) => {
       const member = await Member.query({ client: trx })
         .where('id', memberId)
         .where('folder_id', folderId)
-        .preload('user')
+        .preload('user', (q) => q.select('id', 'first_name'))
         .firstOrFail()
 
       if (member.userId === initiator.id) {
@@ -112,13 +112,13 @@ export class MemberService {
 
       await member.delete()
 
-      events.MemberRemoved.dispatch(initiator, folderId, member.user.firstName, member.user.id)
+      events.MemberRemoved.dispatch(initiator, folderId, member.user.firstName)
 
       return member
     })
   }
 
-  static async leaveFolder(folderId: string, user: User) {
+  async leaveFolder(folderId: string, user: User) {
     const member = await db.transaction(async (trx) => {
       const membership = await Member.query({ client: trx })
         .where('user_id', user.id)
@@ -128,8 +128,6 @@ export class MemberService {
       if (membership.role === 'owner') {
         throw new Exception('Folder owners cannot leave their own folder.', { status: 403 })
       }
-
-      membership.useTransaction(trx)
 
       await membership.delete()
 
@@ -141,23 +139,48 @@ export class MemberService {
     return member
   }
 
-  static async getMembers(folderId: string, excludeUserId?: string) {
+  async getMembers(folderId: string, excludeUserId?: string) {
     return await Member.query()
       .where('folder_id', folderId)
       .if(excludeUserId, (query) => {
         query.whereNot('user_id', excludeUserId!)
       })
-      .preload('user')
-      .preload('folder')
+      .preload('user', (q) => q.select('id', 'first_name', 'last_name', 'avatar_url'))
+      .preload('folder', (q) => q.select('id', 'name'))
       .orderBy('created_at', 'asc')
   }
 
-  static async checkMembership(folderId: string, userId: string, trx?: TransactionClientContract) {
+  async checkMembership(folderId: string, userId: string, trx?: TransactionClientContract) {
     const membership = await Member.query({ client: trx })
       .where('folder_id', folderId)
       .where('user_id', userId)
       .first()
 
     return membership !== null
+  }
+
+  async updateMemberAccess(
+    folderId: string,
+    memberId: string,
+    initiator: User,
+    accessLevel: AccessLevelType
+  ) {
+    await this.requireRole(initiator.id, folderId, 'owner')
+
+    const member = await Member.query()
+      .where('id', memberId)
+      .where('folder_id', folderId)
+      .preload('user', (q) => q.select('id', 'first_name', 'last_name', 'avatar_url'))
+      .firstOrFail()
+
+    if (member.userId === initiator.id) {
+      throw new Exception('You cannot change your own access level.', { status: 403 })
+    }
+
+    member.accessLevel = accessLevel
+
+    await member.save()
+
+    return member
   }
 }

@@ -22,13 +22,16 @@ export default class extends BaseSchema {
         .enum('plan', [...USER_PLANS])
         .defaultTo('free')
         .notNullable()
+
+      table.string('subscription_id').unique().nullable()
       table.string('subscription_status').defaultTo('inactive').notNullable()
       table.timestamp('subscription_updated_at', { useTz: true }).nullable()
+      table.timestamp('subscription_expires_at', { useTz: true }).nullable()
 
-      table.string('email_verification_token').nullable()
+      table.string('email_verification_token').unique().nullable()
       table.timestamp('email_verification_token_expires_at', { useTz: true }).nullable()
 
-      table.string('reset_password_token').nullable()
+      table.string('reset_password_token').unique().nullable()
       table.timestamp('reset_password_token_expires_at', { useTz: true }).nullable()
 
       table
@@ -38,7 +41,7 @@ export default class extends BaseSchema {
             autoMergeDuplicate: false,
             notifyOnNewMember: true,
             notifyOnNewBookmark: true,
-            syncFrequencyInHours: 3,
+            syncFrequencyInHours: 6,
           })
         )
         .notNullable()

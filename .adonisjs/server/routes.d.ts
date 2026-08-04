@@ -57,6 +57,7 @@ export type ScannedRoutes = {
     'search.search.index': { paramsTuple?: []; params?: {} }
     'search.search.folder_search': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'billing.billing.store': { paramsTuple?: []; params?: {} }
+    'billing.billing.destroy': { paramsTuple?: []; params?: {} }
     'billing.billing.webhook': { paramsTuple?: []; params?: {} }
     'marketing.contact.store': { paramsTuple?: []; params?: {} }
   }
@@ -119,6 +120,7 @@ export type ScannedRoutes = {
     'notifications.notification.destroy_all': { paramsTuple?: []; params?: {} }
     'notifications.notification.destroy': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
     'browserIntegrations.integration.destroy': { paramsTuple: [ParamValue]; params: {'integrationId': ParamValue} }
+    'billing.billing.destroy': { paramsTuple?: []; params?: {} }
   }
   PATCH: {
     'profile.profile.update': { paramsTuple?: []; params?: {} }

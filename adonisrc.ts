@@ -61,7 +61,8 @@ export default defineConfig({
     () => import('@adonisjs/ally/ally_provider'),
     () => import('@outloud/adonis-openapi/provider'),
     () => import('@adonisjs/limiter/limiter_provider'),
-    () => import('@rlanz/bull-queue/queue_provider')
+    () => import('@rlanz/bull-queue/queue_provider'),
+    () => import('#providers/lemonsqueezy_provider')
   ],
 
   /*

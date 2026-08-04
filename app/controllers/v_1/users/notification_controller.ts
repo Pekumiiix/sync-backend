@@ -1,3 +1,5 @@
+import { inject } from '@adonisjs/core'
+import type { HttpContext } from '@adonisjs/core/http'
 import { type ApiSuccessResponse } from '#interfaces/api'
 import type {
   ListNotificationsResponse,
@@ -6,21 +8,22 @@ import type {
 import { NotificationService } from '#services/notification_service'
 import NotificationTransformer from '#transformers/notification_transformer'
 import { notificationQueryParam } from '#validators/notification'
-import type { HttpContext } from '@adonisjs/core/http'
-import { DateTime } from 'luxon'
 
+@inject()
 export default class NotificationsController {
+  constructor(protected notificationService: NotificationService) {}
+
   async index(ctx: HttpContext) {
     const { auth, response, request } = ctx
+
+    const user = auth.user!
 
     const { page = 1, limit = 10 } = await request.validateUsing(notificationQueryParam, {
       data: request.qs(),
     })
 
-    const user = auth.user!
-
     const { notifications, unreadCount, totalCount, currentPage } =
-      await NotificationService.getUserNotifications(user, page, limit)
+      await this.notificationService.getUserNotifications(user, page, limit)
 
     const formattedResponse: ListNotificationsResponse = await ctx.serialize(
       {
@@ -36,16 +39,11 @@ export default class NotificationsController {
   async destroy(ctx: HttpContext) {
     const { params, auth, response } = ctx
 
-    const notificationId = params.notificationId
-
     const user = auth.user!
 
-    const { notification } = await NotificationService.getNotification(notificationId, user)
-
-    await notification.delete()
+    await this.notificationService.deleteNotification(params.notificationId, user)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(null, 'Notification deleted.')
-
     return response.ok(formattedResponse)
   }
 
@@ -54,31 +52,25 @@ export default class NotificationsController {
 
     const user = auth.user!
 
-    await user.related('notifications').query().delete()
+    await this.notificationService.deleteAllNotifications(user)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,
       'All notifications deleted.'
     )
-
     return response.ok(formattedResponse)
   }
 
   async markAsRead(ctx: HttpContext) {
     const { params, auth, response } = ctx
 
-    const notificationId = params.notificationId
-
     const user = auth.user!
 
-    const { notification } = await NotificationService.getNotification(notificationId, user)
-
-    notification.readAt = DateTime.now()
-
-    await notification.save()
+    const notification = await this.notificationService.markAsRead(params.notificationId, user)
 
     const formattedResponse: NotificationSuccessResponse = await ctx.serialize(
-      { notification },
+      // Ensure we run single records through the transformer for API consistency
+      { notification: NotificationTransformer.transform(notification) },
       'Notification read.'
     )
 
@@ -90,16 +82,10 @@ export default class NotificationsController {
 
     const user = auth.user!
 
-    const notificationId = params.notificationId
-
-    const { notification } = await NotificationService.getNotification(notificationId, user)
-
-    notification.readAt = null
-
-    await notification.save()
+    const notification = await this.notificationService.markAsUnread(params.notificationId, user)
 
     const formattedResponse: NotificationSuccessResponse = await ctx.serialize(
-      { notification },
+      { notification: NotificationTransformer.transform(notification) },
       'Notification marked as unread.'
     )
 
@@ -111,7 +97,7 @@ export default class NotificationsController {
 
     const user = auth.user!
 
-    await user.related('notifications').query().update({ readAt: DateTime.now() })
+    await this.notificationService.markAllAsRead(user)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,

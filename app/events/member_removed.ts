@@ -8,8 +8,7 @@ export default class MemberRemoved extends BaseEvent {
   constructor(
     public actor: User,
     public folderId: string,
-    public removedMemberFirstName: string,
-    public removedMemberId: string
+    public removedMemberFirstName: string
   ) {
     super()
   }

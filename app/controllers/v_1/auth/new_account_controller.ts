@@ -26,7 +26,10 @@ export default class NewAccountController {
 
     events.UserRegistered.dispatch(user, verificationToken)
 
-    const token = await User.accessTokens.create(user)
+    const token = await User.accessTokens.create(user, ['*'], {
+      name: 'Web dashboard session',
+      expiresIn: '1 day',
+    })
 
     const formattedResponse: AuthDataResponse = await ctx.serialize(
       {

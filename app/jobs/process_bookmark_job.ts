@@ -1,6 +1,7 @@
 import { type BrowserType } from '#enums/browser'
 import User from '#models/user'
 import { BookmarkService } from '#services/bookmark_service'
+import { inject } from '@adonisjs/core'
 import logger from '@adonisjs/core/services/logger'
 import { Job } from '@rlanz/bull-queue'
 
@@ -11,7 +12,12 @@ interface ProcessBookmarkJobPayload {
   browser: BrowserType
 }
 
+@inject()
 export default class ProcessBookmarkJob extends Job {
+  constructor(protected bookmarkService: BookmarkService) {
+    super()
+  }
+
   // This is the path to the file that is used to create the job
   static get $$filepath() {
     return import.meta.url
@@ -23,11 +29,16 @@ export default class ProcessBookmarkJob extends Job {
   async handle(payload: ProcessBookmarkJobPayload) {
     const { url, userId, folderId, browser } = payload
 
-    const user = await User.findOrFail(userId)
+    const user = await User.find(userId)
 
-    const openGraphData = await BookmarkService.previewBookmark(url)
+    if (!user) {
+      logger.warn(`User ${userId} not found. Discarding ProcessBookmarkJob for ${url}.`)
+      return
+    }
 
-    await BookmarkService.createBookmark(user, {
+    const openGraphData = await this.bookmarkService.previewBookmark(url)
+
+    await this.bookmarkService.createBookmark(user, {
       title: openGraphData.title,
       description: openGraphData.description,
       websiteName: openGraphData.websiteName,

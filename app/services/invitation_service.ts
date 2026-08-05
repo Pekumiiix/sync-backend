@@ -67,14 +67,14 @@ export class InvitationService {
       this.folderService.getFolderWithPermissions(data.folderId, inviter),
     ])
 
-    if (!invitedUser) {
-      throw new Exception('The user you are trying to invite does not exist.', { status: 404 })
-    }
-
     if (permission.role !== 'owner') {
       throw new Exception('You do not have permission to invite users to this folder.', {
         status: 403,
       })
+    }
+
+    if (!invitedUser) {
+      throw new Exception('The user you are trying to invite does not exist.', { status: 404 })
     }
 
     if (folder.isSystem) {

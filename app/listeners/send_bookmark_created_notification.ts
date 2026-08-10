@@ -13,7 +13,11 @@ export default class SendBookmarkCreatedNotification {
   async handle(event: BookmarkCreated) {
     const { creator, folderId } = event
 
-    const members = await this.memberService.getMembers(folderId, creator.id)
+    const members = await this.memberService.getNotifiableMembers(
+      folderId,
+      'notifyOnNewBookmark',
+      creator.id
+    )
 
     await this.notificationService.notifyMembers(members, creator, null, 'new_bookmark')
   }

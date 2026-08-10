@@ -69,7 +69,6 @@ export default class NotificationsController {
     const notification = await this.notificationService.markAsRead(params.notificationId, user)
 
     const formattedResponse: NotificationSuccessResponse = await ctx.serialize(
-      // Ensure we run single records through the transformer for API consistency
       { notification: NotificationTransformer.transform(notification) },
       'Notification read.'
     )

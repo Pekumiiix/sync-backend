@@ -4,8 +4,13 @@ import { extensionLoginValidator } from '#validators/extension_user'
 import { BrowserIntegrationService } from '#services/browser_integration_service'
 import type { ExtensionSignInResponse } from '#interfaces/extension'
 import UserTransformer from '#transformers/user_transformer'
+import { inject } from '@adonisjs/core'
+import { ApiSuccessResponse } from '#interfaces/api'
 
+@inject()
 export default class AuthController {
+  constructor(private browserIntegrationService: BrowserIntegrationService) {}
+
   async store(ctx: HttpContext) {
     const { request, response } = ctx
     const { email, password, browser, deviceId, osPlatform, extensionVersion } =
@@ -20,7 +25,7 @@ export default class AuthController {
       expiresIn: '1 year',
     })
 
-    await BrowserIntegrationService.upsertIntegration(user, {
+    await this.browserIntegrationService.upsertIntegration(user, {
       browser,
       osPlatform,
       deviceId,
@@ -31,9 +36,26 @@ export default class AuthController {
     const formattedResponse: ExtensionSignInResponse = await ctx.serialize(
       {
         token: token.value!.release(),
-        user: UserTransformer.transform(user),
+        user: UserTransformer.transform(user).useVariant('forExtension'),
       },
       'Extension login successful!'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
+  async destroy(ctx: HttpContext) {
+    const { response, auth } = ctx
+
+    const user = auth.user!
+
+    const currentUserToken = user.currentAccessToken!
+
+    await User.accessTokens.delete(user, currentUserToken.identifier)
+
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'Extension logout successful!'
     )
 
     return response.ok(formattedResponse)

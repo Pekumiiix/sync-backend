@@ -13,6 +13,7 @@ export type ScannedRoutes = {
     'auth.verify_email.resend': { paramsTuple?: []; params?: {} }
     'extension.auth.store': { paramsTuple?: []; params?: {} }
     'extension.bookmark.store': { paramsTuple?: []; params?: {} }
+    'extension.auth.destroy': { paramsTuple: [ParamValue]; params: {'integrationId': ParamValue} }
     'oauths.google.redirect': { paramsTuple?: []; params?: {} }
     'oauths.google.store': { paramsTuple?: []; params?: {} }
     'oauths.google.destroy': { paramsTuple?: []; params?: {} }
@@ -110,6 +111,7 @@ export type ScannedRoutes = {
     'marketing.contact.store': { paramsTuple?: []; params?: {} }
   }
   DELETE: {
+    'extension.auth.destroy': { paramsTuple: [ParamValue]; params: {'integrationId': ParamValue} }
     'oauths.google.destroy': { paramsTuple?: []; params?: {} }
     'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.remove_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }

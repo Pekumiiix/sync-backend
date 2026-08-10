@@ -6,6 +6,6 @@ export interface ExtensionSignInResponse {
   message: string
   data: {
     token: string
-    user: Data.User
+    user: Data.User.Variants['forExtension']
   }
 }

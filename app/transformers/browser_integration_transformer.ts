@@ -9,6 +9,7 @@ export default class BrowserIntegrationTransformer extends BaseTransformer<Brows
       'lastSyncedAt',
       'createdAt',
       'extensionVersion',
+      'osPlatform',
     ])
   }
 }

@@ -24,6 +24,7 @@ export interface ApiDefinition {
   extension: {
     auth: {
       store: typeof routes['extension.auth.store']
+      destroy: typeof routes['extension.auth.destroy']
     }
     bookmark: {
       store: typeof routes['extension.bookmark.store']

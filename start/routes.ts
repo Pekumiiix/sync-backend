@@ -73,6 +73,10 @@ router
           .openapi({
             summary: 'Add bookmarks via browser extension',
           })
+        router
+          .delete('sign-out/:integrationId', [controllers.v1.extension.Auth, 'destroy'])
+          .use(middleware.auth())
+          .openapi({ summary: 'Logout via browser extension' })
       })
       .prefix('extension')
       .as('extension')

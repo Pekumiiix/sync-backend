@@ -13,7 +13,11 @@ export default class SendMemberJoinedNotification {
   async handle(event: MemberJoined) {
     const { folderId, actor } = event
 
-    const members = await this.memberService.getMembers(folderId, actor.id)
+    const members = await this.memberService.getNotifiableMembers(
+      folderId,
+      'notifyOnNewMember',
+      actor.id
+    )
 
     await this.notificationService.notifyMembers(members, actor, null, 'member_joined')
   }

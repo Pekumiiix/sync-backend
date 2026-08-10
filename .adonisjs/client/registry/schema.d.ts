@@ -115,6 +115,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/extension/bookmark_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'extension.auth.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/extension/sign-out/:integrationId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { integrationId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/extension/auth_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/extension/auth_controller').default['destroy']>>>
+    }
+  }
   'oauths.google.redirect': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/oauth/google'

@@ -113,33 +113,47 @@ export class BookmarkService {
       })
     }
 
-    const bookmark = await db.transaction(async (trx) => {
-      const newBookmark = await folder.related('bookmarks').create(
-        {
-          ...data,
-          userId: user.id,
-          isPinned: false,
-        },
-        { client: trx }
-      )
+    const bookmarkPayload = {
+      ...data,
+      userId: user.id,
+      isPinned: false,
+    }
 
-      await this._syncFolderStats(folder.id, 1, trx)
+    const { bookmark, isNewRecord } = await db.transaction(async (trx) => {
+      let newBookmark: Bookmark
+      let isNew = true
 
-      return newBookmark
+      if (user.settings?.autoMergeDuplicate) {
+        const existing = await Bookmark.query({ client: trx })
+          .where('url', data.url)
+          .andWhere('folderId', folder.id)
+          .first()
+
+        if (existing) {
+          newBookmark = await existing.useTransaction(trx).merge(bookmarkPayload).save()
+          isNew = false
+        } else {
+          newBookmark = await folder.related('bookmarks').create(bookmarkPayload, { client: trx })
+        }
+      } else {
+        newBookmark = await folder.related('bookmarks').create(bookmarkPayload, { client: trx })
+      }
+
+      if (isNew) {
+        await this._syncFolderStats(folder.id, 1, trx)
+      }
+
+      return { bookmark: newBookmark, isNewRecord: isNew }
     })
 
-    const partialUser = new User()
-    partialUser.firstName = user.firstName
-    partialUser.lastName = user.lastName
-    partialUser.avatarUrl = user.avatarUrl
+    bookmark.$setRelated('user', user)
+    bookmark.$setRelated('folder', folder)
 
-    const partialFolder = new Folder()
-    partialFolder.name = folder.name
-
-    bookmark.$setRelated('user', partialUser)
-    bookmark.$setRelated('folder', partialFolder)
-
-    events.BookmarkCreated.dispatch(user, folder.id)
+    if (isNewRecord) {
+      events.BookmarkCreated.dispatch(user, folder.id)
+    } else {
+      events.BookmarkUpdated.dispatch(user, folder.id)
+    }
 
     return bookmark
   }

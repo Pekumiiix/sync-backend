@@ -7,7 +7,7 @@ export class BrowserIntegrationService {
     const existingIntegration = await user
       .related('browserIntegrations')
       .query()
-      .where('deviceId', data.deviceId)
+      .where('device_id', data.deviceId)
       .first()
 
     const oldTokenId = existingIntegration?.accessTokenId

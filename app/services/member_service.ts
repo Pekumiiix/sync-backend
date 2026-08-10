@@ -8,6 +8,7 @@ import { events } from '#generated/events'
 import Folder from '#models/folder'
 import Member from '#models/member'
 import type User from '#models/user'
+import { UserSettingsSchema } from '#interfaces/user'
 
 @inject()
 export class MemberService {
@@ -148,6 +149,20 @@ export class MemberService {
       .preload('user', (q) => q.select('id', 'first_name', 'last_name', 'avatar_url'))
       .preload('folder', (q) => q.select('id', 'name'))
       .orderBy('created_at', 'asc')
+  }
+
+  async getNotifiableMembers(
+    folderId: string,
+    settingsKey: keyof UserSettingsSchema,
+    excludeUserId: string
+  ) {
+    const members = await this.getMembers(folderId, excludeUserId)
+
+    return members.filter((member) => {
+      const settingValue = member.user.settings?.[settingsKey]
+
+      return settingValue ?? true
+    })
   }
 
   async checkMembership(folderId: string, userId: string, trx?: TransactionClientContract) {

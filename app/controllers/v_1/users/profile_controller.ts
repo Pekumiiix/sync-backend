@@ -2,6 +2,7 @@ import { SYNC_FREQUENCY_IN_HOURS } from '#enums/sync_frequency'
 import { type ProfileResponse } from '#interfaces/profile'
 import { type FrequencyHours } from '#interfaces/user'
 import UserTransformer from '#transformers/user_transformer'
+import { apiError } from '#utils/response'
 import { updateProfileValidator, updateSettingsValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 
@@ -48,13 +49,28 @@ export default class ProfileController {
 
     const { frequency, ...data } = validatedSettings
 
-    const frequncyInHours =
-      SYNC_FREQUENCY_IN_HOURS[frequency ?? user.settings?.syncFrequencyInHours]
+    let frequencyInHours: number = user.settings.syncFrequencyInHours
+
+    if (frequency) {
+      frequencyInHours = SYNC_FREQUENCY_IN_HOURS[frequency]
+
+      if (frequencyInHours === 0 && user.plan !== 'standard') {
+        return response.badRequest(
+          apiError('Sync frequency cannot be set to "off" for non-standard users.')
+        )
+      }
+
+      if (frequencyInHours === 3 && user.plan === 'free') {
+        return response.badRequest(
+          apiError('Sync frequency cannot be set to "3 hours" for free users.')
+        )
+      }
+    }
 
     user.merge({
       settings: {
         ...user.settings,
-        syncFrequencyInHours: frequncyInHours as FrequencyHours,
+        syncFrequencyInHours: frequencyInHours as FrequencyHours,
         ...data,
       },
     })

@@ -13,10 +13,13 @@ import {
 } from '#interfaces/folders'
 import { type ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
-import BookmarkTransformer from '#transformers/bookmark_transformer'
-import { getBookmarksQueryValidator } from '#validators/bookmark'
 import { MemberService } from '#services/member_service'
 import { inject } from '@adonisjs/core'
+import BookmarkTransformer from '#transformers/bookmark_transformer'
+import { IndexBookmarksResponse } from '#interfaces/bookmarks'
+import Folder from '#models/folder'
+import { apiError } from '#utils/response'
+import { getBookmarksQueryValidator } from '#validators/bookmark'
 
 @inject()
 export default class FoldersController {
@@ -101,24 +104,14 @@ export default class FoldersController {
   }
 
   async show(ctx: HttpContext) {
-    const { params, response, auth, request } = ctx
+    const { params, response, auth } = ctx
 
-    const query = await request.validateUsing(getBookmarksQueryValidator, { data: request.qs() })
-
-    const folderId = params.folderId
+    const folderId: string = params.folderId
 
     const user = auth.user!
 
     const { folder, permission, previewMembers } =
       await this.folderService.getFolderWithPermissions(folderId, user)
-
-    const [pinnedBookmarks, paginatedBookmarks] = await Promise.all([
-      this.bookmarkService.pinnedBookmarks(folder, user.id),
-      this.bookmarkService.getPaginatedBookmarksForFolder(folder, query),
-    ])
-
-    const unpinnedBookmarks = paginatedBookmarks.all()
-    const meta = paginatedBookmarks.getMeta()
 
     const formattedResponse: ShowFolderResponse = await ctx.serialize(
       {
@@ -132,15 +125,44 @@ export default class FoldersController {
         },
         permission,
         previewMembers,
+      },
+      'Folder retrieved successfully!'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
+  async showBookmarks(ctx: HttpContext) {
+    const { response, auth, request, params } = ctx
+
+    const user = auth.user!
+
+    const folderId: string = params.folderId
+
+    const query = await request.validateUsing(getBookmarksQueryValidator, { data: request.qs() })
+
+    const folder = await Folder.find(folderId)
+
+    if (!folder) {
+      return response.notFound(apiError('Folder not found'))
+    }
+
+    const { pinnedBookmarks, bookmarks } =
+      await this.bookmarkService.getPaginatedBookmarksForFolder(folder, query, user.id)
+
+    const meta = bookmarks.getMeta()
+
+    const formattedResponse: IndexBookmarksResponse = await ctx.serialize(
+      {
+        bookmarks: BookmarkTransformer.transform(bookmarks.all()),
         pinnedBookmarks,
-        bookmarks: BookmarkTransformer.transform(unpinnedBookmarks, permission.accessLevel),
         meta: {
           currentPage: meta.currentPage,
           totalPages: meta.lastPage,
           totalCount: meta.total,
         },
       },
-      'Folder retrieved successfully!'
+      'Bookmarks retrieved successfully!'
     )
 
     return response.ok(formattedResponse)

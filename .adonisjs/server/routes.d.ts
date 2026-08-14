@@ -25,6 +25,7 @@ export type ScannedRoutes = {
     'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.update': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'folder.folder.show_bookmarks': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.add_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.remove_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
@@ -68,6 +69,7 @@ export type ScannedRoutes = {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'folder.folder.show_bookmarks': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.browsers': { paramsTuple?: []; params?: {} }
     'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
@@ -83,6 +85,7 @@ export type ScannedRoutes = {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'folder.folder.show_bookmarks': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.browsers': { paramsTuple?: []; params?: {} }
     'members.member.index': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }

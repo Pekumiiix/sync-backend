@@ -343,7 +343,11 @@ export class BookmarkService {
     return BookmarkTransformer.transform(pinnedBookmarks, accessLevel)
   }
 
-  async getPaginatedBookmarksForFolder(folder: Folder, queryParams: GetBookmarksQueryParams) {
+  async getPaginatedBookmarksForFolder(
+    folder: Folder,
+    queryParams: GetBookmarksQueryParams,
+    userId: string
+  ) {
     const { page = 1, limit = 20, sort = 'title_desc', filter = 'all' } = queryParams
 
     const bookmarksQuery = folder
@@ -365,7 +369,12 @@ export class BookmarkService {
       bookmarksQuery.orderBy('created_at', sort === 'oldest' ? 'asc' : 'desc')
     }
 
-    return bookmarksQuery.paginate(page, limit)
+    const [pinnedBookmarks, bookmarks] = await Promise.all([
+      this.pinnedBookmarks(folder, userId),
+      bookmarksQuery.paginate(page, limit),
+    ])
+
+    return { pinnedBookmarks, bookmarks }
   }
 
   async getAllForUser(userId: string, query: GetBookmarksQueryParams) {

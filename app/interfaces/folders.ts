@@ -51,12 +51,5 @@ export interface ShowFolderResponse {
     }
     permission: FolderPermission
     previewMembers: PreviewMember[]
-    pinnedBookmarks: Data.Bookmark[]
-    bookmarks: Data.Bookmark[]
-    meta: {
-      currentPage: number
-      totalPages: number
-      totalCount: number
-    }
   }
 }

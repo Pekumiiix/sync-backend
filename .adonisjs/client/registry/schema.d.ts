@@ -254,9 +254,21 @@ export interface Registry {
       body: {}
       paramsTuple: [ParamValue]
       params: { folderId: ParamValue }
-      query: ExtractQueryForGet<InferInput<(typeof import('#validators/bookmark').getBookmarksQueryValidator)>>
+      query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['show']>>> | { status: 422; response: { errors: SimpleError[] } }
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['show']>>>
+    }
+  }
+  'folder.folder.show_bookmarks': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/folders/:folderId/bookmarks'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { folderId: ParamValue }
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/bookmark').getBookmarksQueryValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['showBookmarks']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['showBookmarks']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'folder.folder.add_password': {

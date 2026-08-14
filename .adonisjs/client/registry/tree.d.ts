@@ -51,6 +51,7 @@ export interface ApiDefinition {
       destroy: typeof routes['folder.folder.destroy']
       update: typeof routes['folder.folder.update']
       show: typeof routes['folder.folder.show']
+      showBookmarks: typeof routes['folder.folder.show_bookmarks']
       addPassword: typeof routes['folder.folder.add_password']
       removePassword: typeof routes['folder.folder.remove_password']
     }

@@ -151,6 +151,10 @@ router
         router
           .get(':folderId', [controllers.v1.core.Folder, 'show'])
           .openapi({ summary: 'Get folder details' })
+
+        router.get(':folderId/bookmarks', [controllers.v1.core.Folder, 'showBookmarks']).openapi({
+          summary: 'List all bookmarks in a specific folder',
+        })
         router
           .patch(':folderId/password', [controllers.v1.core.Folder, 'addPassword'])
           .use(middleware.requirePaidSubscriptions())

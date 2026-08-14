@@ -132,6 +132,12 @@ const routes = {
     tokens: [{"old":"/api/v1/folders/:folderId","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId","type":1,"val":"folderId","end":""}],
     types: placeholder as Registry['folder.folder.show']['types'],
   },
+  'folder.folder.show_bookmarks': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/folders/:folderId/bookmarks',
+    tokens: [{"old":"/api/v1/folders/:folderId/bookmarks","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/bookmarks","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/bookmarks","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/bookmarks","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/bookmarks","type":0,"val":"bookmarks","end":""}],
+    types: placeholder as Registry['folder.folder.show_bookmarks']['types'],
+  },
   'folder.folder.add_password': {
     methods: ["PATCH"],
     pattern: '/api/v1/folders/:folderId/password',

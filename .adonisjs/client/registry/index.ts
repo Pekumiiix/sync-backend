@@ -144,6 +144,12 @@ const routes = {
     tokens: [{"old":"/api/v1/folders/:folderId/password","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/password","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/password","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/password","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/password","type":0,"val":"password","end":""}],
     types: placeholder as Registry['folder.folder.add_password']['types'],
   },
+  'folder.folder.change_password': {
+    methods: ["PATCH"],
+    pattern: '/api/v1/folders/:folderId/password/change',
+    tokens: [{"old":"/api/v1/folders/:folderId/password/change","type":0,"val":"api","end":""},{"old":"/api/v1/folders/:folderId/password/change","type":0,"val":"v1","end":""},{"old":"/api/v1/folders/:folderId/password/change","type":0,"val":"folders","end":""},{"old":"/api/v1/folders/:folderId/password/change","type":1,"val":"folderId","end":""},{"old":"/api/v1/folders/:folderId/password/change","type":0,"val":"password","end":""},{"old":"/api/v1/folders/:folderId/password/change","type":0,"val":"change","end":""}],
+    types: placeholder as Registry['folder.folder.change_password']['types'],
+  },
   'folder.folder.remove_password': {
     methods: ["DELETE"],
     pattern: '/api/v1/folders/:folderId/password',

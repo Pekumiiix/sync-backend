@@ -1,5 +1,6 @@
 import {
   addPasswordValidator,
+  changePasswordValidator,
   createFolderValidator,
   updateFolderValidator,
 } from '#validators/folder'
@@ -176,6 +177,23 @@ export default class FoldersController {
     const { password } = await request.validateUsing(addPasswordValidator)
 
     await this.folderService.updatePassword(params.folderId, user, password)
+
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'Folder password updated successfully.'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
+  async changePassword(ctx: HttpContext) {
+    const { params, response, auth, request } = ctx
+
+    const user = auth.user!
+
+    const { oldPassword, newPassword } = await request.validateUsing(changePasswordValidator)
+
+    await this.folderService.changePassword(params.folderId, user, oldPassword, newPassword)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(
       null,

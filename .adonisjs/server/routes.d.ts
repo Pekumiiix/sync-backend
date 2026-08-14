@@ -27,6 +27,7 @@ export type ScannedRoutes = {
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.show_bookmarks': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.add_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'folder.folder.change_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.remove_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.index': { paramsTuple?: []; params?: {} }
@@ -132,6 +133,7 @@ export type ScannedRoutes = {
     'profile.profile.update_settings': { paramsTuple?: []; params?: {} }
     'folder.folder.update': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.add_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'folder.folder.change_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'bookmarks.bookmark.bulk_unpin': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.bulk_move': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.update': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }

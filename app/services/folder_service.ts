@@ -7,6 +7,7 @@ import Folder from '#models/folder'
 import type User from '#models/user'
 import { MemberService } from './member_service.ts'
 import db from '@adonisjs/lucid/services/db'
+import hash from '@adonisjs/core/services/hash'
 
 @inject()
 export class FolderService {
@@ -137,7 +138,33 @@ export class FolderService {
 
     await this.memberService.requireRole(user.id, folder.id, 'owner')
 
+    if (password === null && folder.password === null) {
+      return folder
+    }
+
     folder.password = password
+
+    await folder.save()
+
+    return folder
+  }
+
+  async changePassword(folderId: string, user: User, oldPassword: string, newPassword: string) {
+    const folder = await Folder.findOrFail(folderId)
+
+    await this.memberService.requireRole(user.id, folder.id, 'owner')
+
+    if (folder.password === null) {
+      throw new Exception('Folder does not have a password set.', { status: 400 })
+    }
+
+    const isPasswordValid = await hash.verify(folder.password, oldPassword)
+
+    if (!isPasswordValid) {
+      throw new Exception('The provided password is incorrect.', { status: 400 })
+    }
+
+    folder.password = newPassword
     await folder.save()
 
     return folder

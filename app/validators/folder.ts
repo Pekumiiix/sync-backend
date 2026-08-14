@@ -19,3 +19,8 @@ export const updateFolderValidator = vine.create({
 export const addPasswordValidator = vine.create({
   password: vine.string().minLength(1).maxLength(255),
 })
+
+export const changePasswordValidator = vine.create({
+  oldPassword: vine.string().minLength(1).maxLength(255),
+  newPassword: vine.string().minLength(1).maxLength(255),
+})

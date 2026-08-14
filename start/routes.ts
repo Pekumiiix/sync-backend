@@ -160,6 +160,11 @@ router
           .use(middleware.requirePaidSubscriptions())
           .openapi({ summary: 'Add or update a folder password' })
         router
+          .patch(':folderId/password/change', [controllers.v1.core.Folder, 'changePassword'])
+          .openapi({
+            summary: 'Change a folder password',
+          })
+        router
           .delete(':folderId/password', [controllers.v1.core.Folder, 'removePassword'])
           .use(middleware.requirePaidSubscriptions())
           .openapi({

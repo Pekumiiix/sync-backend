@@ -283,6 +283,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['addPassword']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'folder.folder.change_password': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/folders/:folderId/password/change'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/folder').changePasswordValidator)>>
+      paramsTuple: [ParamValue]
+      params: { folderId: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/folder').changePasswordValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['changePassword']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/core/folder_controller').default['changePassword']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'folder.folder.remove_password': {
     methods: ["DELETE"]
     pattern: '/api/v1/folders/:folderId/password'

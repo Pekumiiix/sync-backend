@@ -1,3 +1,4 @@
+import { apiError } from '#utils/response'
 import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
 
@@ -11,14 +12,7 @@ export default class RequirePaidSubscriptionsMiddleware {
     const user = auth.user!
 
     if (user.plan === 'free') {
-      return response.forbidden({
-        errors: [
-          {
-            message: 'This feature requires a paid subscription.',
-            code: 'E_SUBSCRIPTION_REQUIRED',
-          },
-        ],
-      })
+      return response.forbidden(apiError('You need a paid subscription to access this resource'))
     }
 
     /**

@@ -53,6 +53,7 @@ export interface ApiDefinition {
       show: typeof routes['folder.folder.show']
       showBookmarks: typeof routes['folder.folder.show_bookmarks']
       addPassword: typeof routes['folder.folder.add_password']
+      changePassword: typeof routes['folder.folder.change_password']
       removePassword: typeof routes['folder.folder.remove_password']
     }
   }

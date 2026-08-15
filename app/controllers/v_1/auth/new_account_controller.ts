@@ -6,30 +6,45 @@ import { generateVerificationCode } from '#utils/string'
 import UserTransformer from '#transformers/user_transformer'
 import { events } from '#generated/events'
 import { type AuthDataResponse } from '#interfaces/user'
+import { inject } from '@adonisjs/core'
+import { AccessTokenService } from '#services/access_token_service'
+import db from '@adonisjs/lucid/services/db'
 
+@inject()
 export default class NewAccountController {
+  constructor(protected accessTokenService: AccessTokenService) {}
+
   async store(ctx: HttpContext) {
     const { request, response } = ctx
 
     const { firstName, lastName, email, password } = await request.validateUsing(signupValidator)
 
-    const user = await User.create({ firstName, lastName, email, password })
-
     const verificationToken = generateVerificationCode()
-
     const verificationExpiresAt = DateTime.now().plus({ hours: 12 })
 
-    user.emailVerificationToken = verificationToken
-    user.emailVerificationTokenExpiresAt = verificationExpiresAt
+    const { user, token } = await db.transaction(async (trx) => {
+      const createdUser = await User.create(
+        { firstName, lastName, email, password },
+        { client: trx }
+      )
 
-    await user.save()
+      createdUser.useTransaction(trx)
+
+      createdUser.emailVerificationToken = verificationToken
+      createdUser.emailVerificationTokenExpiresAt = verificationExpiresAt
+
+      await createdUser.save()
+
+      const createdToken =
+        await this.accessTokenService.createAccessTokenForWebDashboard(createdUser)
+
+      return {
+        user: createdUser,
+        token: createdToken,
+      }
+    })
 
     events.UserRegistered.dispatch(user, verificationToken)
-
-    const token = await User.accessTokens.create(user, ['*'], {
-      name: 'Web dashboard session',
-      expiresIn: '1 day',
-    })
 
     const formattedResponse: AuthDataResponse = await ctx.serialize(
       {

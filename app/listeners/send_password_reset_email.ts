@@ -1,22 +1,23 @@
 import type PasswordResetRequested from '#events/password_reset_requested'
-import env from '#start/env'
-import mail from '@adonisjs/mail/services/main'
+import SendPasswordResetEmailJob from '#jobs/send_password_reset_email_job'
+import queue from '@rlanz/bull-queue/services/main'
 
 export default class SendPasswordResetEmail {
   async handle(event: PasswordResetRequested) {
-    const { user, resetToken } = event
-
-    const resetLink = `${env.get('FRONTEND_URL')}/auth/reset-password?token=${resetToken}`
-
-    await mail.send((message) => {
-      message.to(user.email)
-      message.from(env.get('MAIL_FROM_ADDRESS'), env.get('MAIL_FROM_NAME'))
-      message.subject('Reset your password')
-
-      message.htmlView('emails/password_reset', {
-        firstName: user.firstName,
-        resetUrl: resetLink,
-      })
-    })
+    await queue.dispatch(
+      SendPasswordResetEmailJob,
+      {
+        firstName: event.user.firstName,
+        email: event.user.email,
+        resetToken: event.resetToken,
+      },
+      {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 5000,
+        },
+      }
+    )
   }
 }

@@ -4,8 +4,21 @@ import { apiError } from '#utils/response'
 import UserTransformer from '#transformers/user_transformer'
 import { type AuthDataResponse } from '#interfaces/user'
 import { type ApiSuccessResponse } from '#interfaces/api'
+import { inject } from '@adonisjs/core'
+import { OAuthService } from '#services/o_auth_service'
+import db from '@adonisjs/lucid/services/db'
+import { extensionOAuthValidator } from '#validators/extension_user'
+import { BrowserIntegrationService } from '#services/browser_integration_service'
+import { AccessTokenService } from '#services/access_token_service'
 
+@inject()
 export default class OauthsController {
+  constructor(
+    protected oAuthService: OAuthService,
+    protected browserIntegrationService: BrowserIntegrationService,
+    protected accessTokenService: AccessTokenService
+  ) {}
+
   async redirect({ ally }: HttpContext) {
     return ally.use('google').redirect()
   }
@@ -18,38 +31,23 @@ export default class OauthsController {
     if (google.accessDenied()) {
       return response.unauthorized(apiError('Access to Google account was denied'))
     }
+
     if (google.stateMisMatch() || google.hasError()) {
       return response.badRequest(apiError('Login failed, please try again'))
     }
 
     const googleUser = await google.user()
 
-    let user = await User.query()
-      .whereHas('oauthIdentities', (query) => {
-        query.where('provider', 'google').where('providerId', googleUser.id)
-      })
-      .first()
+    const { user, token } = await db.transaction(async (trx) => {
+      const upsertedUser = await this.oAuthService.upsertGoogleUser(googleUser, trx)
 
-    if (!user) {
-      user = await User.findBy('email', googleUser.email)
+      upsertedUser.useTransaction(trx)
 
-      if (!user) {
-        user = await User.create({
-          email: googleUser.email,
-          firstName: googleUser.name.split(' ')[0],
-          lastName: googleUser.name.split(' ').slice(1).join(' '),
-          isEmailVerified: true,
-        })
-      }
+      const generatedToken =
+        await this.accessTokenService.createAccessTokenForWebDashboard(upsertedUser)
 
-      await user.related('oauthIdentities').create({
-        provider: 'google',
-        providerId: googleUser.id,
-        accessToken: googleUser.token.token,
-      })
-    }
-
-    const token = await User.accessTokens.create(user)
+      return { user: upsertedUser, token: generatedToken }
+    })
 
     const formatedResponse: AuthDataResponse = await ctx.serialize(
       {
@@ -60,6 +58,30 @@ export default class OauthsController {
     )
 
     return response.ok(formatedResponse)
+  }
+
+  async extension(ctx: HttpContext) {
+    const { response, request, ally } = ctx
+
+    const data = await request.validateUsing(extensionOAuthValidator)
+
+    try {
+      const googleUser = await ally.use('google').userFromToken(data.accessToken)
+
+      const { user, token } = await this.oAuthService.handleGoogleExtensionLogin(googleUser, data)
+
+      const formattedResponse: AuthDataResponse = await ctx.serialize(
+        {
+          user: UserTransformer.transform(user).useVariant('forExtension'),
+          token: token.value!.release(),
+        },
+        'Logged in successfully'
+      )
+
+      return response.ok(formattedResponse)
+    } catch (error) {
+      return response.unauthorized(apiError('Invalid, expired, or malformed Google token.'))
+    }
   }
 
   async destroy(ctx: HttpContext) {
@@ -77,17 +99,7 @@ export default class OauthsController {
       )
     }
 
-    const identity = await user
-      .related('oauthIdentities')
-      .query()
-      .where('provider', 'google')
-      .first()
-
-    if (!identity) {
-      return response.notFound(apiError('Google account not connected.'))
-    }
-
-    await identity.delete()
+    await this.oAuthService.unlinkGoogleAccount(user)
 
     const formatedResponse: ApiSuccessResponse = await ctx.serialize(
       null,

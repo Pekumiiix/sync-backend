@@ -1,9 +1,9 @@
 import { type ApiSuccessResponse } from '#interfaces/api'
+import SendContactEmailJob from '#jobs/send_contact_email_job'
 import ContactSubmission from '#models/contact_submission'
-import env from '#start/env'
 import { contactValidator } from '#validators/marketing'
 import type { HttpContext } from '@adonisjs/core/http'
-import mail from '@adonisjs/mail/services/main'
+import queue from '@rlanz/bull-queue/services/main'
 
 export default class ContactController {
   async store(ctx: HttpContext) {
@@ -13,13 +13,12 @@ export default class ContactController {
 
     await ContactSubmission.create(payload)
 
-    await mail.send((message) => {
-      message
-        .to('amaopelumi96@gmail.com')
-        .from(env.get('MAIL_FROM_ADDRESS'))
-        .replyTo(payload.email)
-        .subject(`New Contact Inquiry from ${payload.company || payload.firstName}`)
-        .htmlView('emails/contact_inquiry', { ...payload })
+    await queue.dispatch(SendContactEmailJob, payload, {
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 5000,
+      },
     })
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(

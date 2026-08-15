@@ -61,9 +61,9 @@ const routes = {
     types: placeholder as Registry['extension.bookmark.store']['types'],
   },
   'extension.auth.destroy': {
-    methods: ["DELETE"],
-    pattern: '/api/v1/extension/sign-out/:integrationId',
-    tokens: [{"old":"/api/v1/extension/sign-out/:integrationId","type":0,"val":"api","end":""},{"old":"/api/v1/extension/sign-out/:integrationId","type":0,"val":"v1","end":""},{"old":"/api/v1/extension/sign-out/:integrationId","type":0,"val":"extension","end":""},{"old":"/api/v1/extension/sign-out/:integrationId","type":0,"val":"sign-out","end":""},{"old":"/api/v1/extension/sign-out/:integrationId","type":1,"val":"integrationId","end":""}],
+    methods: ["POST"],
+    pattern: '/api/v1/extension/sign-out',
+    tokens: [{"old":"/api/v1/extension/sign-out","type":0,"val":"api","end":""},{"old":"/api/v1/extension/sign-out","type":0,"val":"v1","end":""},{"old":"/api/v1/extension/sign-out","type":0,"val":"extension","end":""},{"old":"/api/v1/extension/sign-out","type":0,"val":"sign-out","end":""}],
     types: placeholder as Registry['extension.auth.destroy']['types'],
   },
   'oauths.google.redirect': {
@@ -83,6 +83,12 @@ const routes = {
     pattern: '/api/v1/oauth/google/disconnect',
     tokens: [{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"api","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"v1","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"oauth","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"google","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"disconnect","end":""}],
     types: placeholder as Registry['oauths.google.destroy']['types'],
+  },
+  'oauths.google.extension': {
+    methods: ["POST"],
+    pattern: '/api/v1/oauth/google/extension',
+    tokens: [{"old":"/api/v1/oauth/google/extension","type":0,"val":"api","end":""},{"old":"/api/v1/oauth/google/extension","type":0,"val":"v1","end":""},{"old":"/api/v1/oauth/google/extension","type":0,"val":"oauth","end":""},{"old":"/api/v1/oauth/google/extension","type":0,"val":"google","end":""},{"old":"/api/v1/oauth/google/extension","type":0,"val":"extension","end":""}],
+    types: placeholder as Registry['oauths.google.extension']['types'],
   },
   'profile.profile.show': {
     methods: ["GET","HEAD"],

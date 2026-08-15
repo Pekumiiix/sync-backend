@@ -1,9 +1,15 @@
 import User from '#models/user'
 import { type StoreIntegrationValidator } from '#validators/browser_integration'
-import db from '@adonisjs/lucid/services/db'
+import { type TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export class BrowserIntegrationService {
-  async upsertIntegration(user: User, data: StoreIntegrationValidator) {
+  async upsertIntegration(
+    user: User,
+    data: StoreIntegrationValidator,
+    trx: TransactionClientContract
+  ) {
+    user.useTransaction(trx)
+
     const existingIntegration = await user
       .related('browserIntegrations')
       .query()
@@ -12,35 +18,28 @@ export class BrowserIntegrationService {
 
     const oldTokenId = existingIntegration?.accessTokenId
 
-    const integration = await db.transaction(async (trx) => {
-      let record = existingIntegration
+    let integration
 
-      if (record) {
-        record.useTransaction(trx)
+    if (existingIntegration) {
+      existingIntegration.merge({
+        browser: data.browser,
+        osPlatform: data.osPlatform,
+        extensionVersion: data.extensionVersion,
+        accessTokenId: data.accessTokenId,
+      })
 
-        record.merge({
-          browser: data.browser,
-          osPlatform: data.osPlatform,
-          extensionVersion: data.extensionVersion,
-          accessTokenId: data.accessTokenId,
-        })
+      await existingIntegration.save()
 
-        await record.save()
-      } else {
-        record = await user.related('browserIntegrations').create(
-          {
-            deviceId: data.deviceId,
-            browser: data.browser,
-            osPlatform: data.osPlatform,
-            extensionVersion: data.extensionVersion,
-            accessTokenId: data.accessTokenId,
-          },
-          { client: trx }
-        )
-      }
-
-      return record
-    })
+      integration = existingIntegration
+    } else {
+      integration = await user.related('browserIntegrations').create({
+        deviceId: data.deviceId,
+        browser: data.browser,
+        osPlatform: data.osPlatform,
+        extensionVersion: data.extensionVersion,
+        accessTokenId: data.accessTokenId,
+      })
+    }
 
     if (oldTokenId && oldTokenId !== data.accessTokenId) {
       await User.accessTokens.delete(user, oldTokenId)

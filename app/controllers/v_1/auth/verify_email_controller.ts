@@ -22,7 +22,7 @@ export default class VerifyEmailController {
       user.emailVerificationTokenExpiresAt < DateTime.now()
     ) {
       return response.badRequest(
-        apiError('Verification token has expired. Please request a new one.')
+        apiError('Invalid or expired verification token. Please request a new one.')
       )
     }
 

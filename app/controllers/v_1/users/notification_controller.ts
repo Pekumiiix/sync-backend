@@ -44,6 +44,7 @@ export default class NotificationsController {
     await this.notificationService.deleteNotification(params.notificationId, user)
 
     const formattedResponse: ApiSuccessResponse = await ctx.serialize(null, 'Notification deleted.')
+
     return response.ok(formattedResponse)
   }
 
@@ -58,6 +59,7 @@ export default class NotificationsController {
       null,
       'All notifications deleted.'
     )
+
     return response.ok(formattedResponse)
   }
 

@@ -13,10 +13,11 @@ export type ScannedRoutes = {
     'auth.verify_email.resend': { paramsTuple?: []; params?: {} }
     'extension.auth.store': { paramsTuple?: []; params?: {} }
     'extension.bookmark.store': { paramsTuple?: []; params?: {} }
-    'extension.auth.destroy': { paramsTuple: [ParamValue]; params: {'integrationId': ParamValue} }
+    'extension.auth.destroy': { paramsTuple?: []; params?: {} }
     'oauths.google.redirect': { paramsTuple?: []; params?: {} }
     'oauths.google.store': { paramsTuple?: []; params?: {} }
     'oauths.google.destroy': { paramsTuple?: []; params?: {} }
+    'oauths.google.extension': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
     'profile.profile.update': { paramsTuple?: []; params?: {} }
     'profile.profile.update_settings': { paramsTuple?: []; params?: {} }
@@ -106,6 +107,8 @@ export type ScannedRoutes = {
     'auth.verify_email.resend': { paramsTuple?: []; params?: {} }
     'extension.auth.store': { paramsTuple?: []; params?: {} }
     'extension.bookmark.store': { paramsTuple?: []; params?: {} }
+    'extension.auth.destroy': { paramsTuple?: []; params?: {} }
+    'oauths.google.extension': { paramsTuple?: []; params?: {} }
     'folder.folder.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.preview': { paramsTuple?: []; params?: {} }
@@ -115,7 +118,6 @@ export type ScannedRoutes = {
     'marketing.contact.store': { paramsTuple?: []; params?: {} }
   }
   DELETE: {
-    'extension.auth.destroy': { paramsTuple: [ParamValue]; params: {'integrationId': ParamValue} }
     'oauths.google.destroy': { paramsTuple?: []; params?: {} }
     'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.remove_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }

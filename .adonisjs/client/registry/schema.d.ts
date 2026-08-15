@@ -116,12 +116,12 @@ export interface Registry {
     }
   }
   'extension.auth.destroy': {
-    methods: ["DELETE"]
-    pattern: '/api/v1/extension/sign-out/:integrationId'
+    methods: ["POST"]
+    pattern: '/api/v1/extension/sign-out'
     types: {
       body: {}
-      paramsTuple: [ParamValue]
-      params: { integrationId: ParamValue }
+      paramsTuple: []
+      params: {}
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/extension/auth_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/extension/auth_controller').default['destroy']>>>
@@ -161,6 +161,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['destroy']>>>
+    }
+  }
+  'oauths.google.extension': {
+    methods: ["POST"]
+    pattern: '/api/v1/oauth/google/extension'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/extension_user').extensionOAuthValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/extension_user').extensionOAuthValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['extension']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['extension']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'profile.profile.show': {

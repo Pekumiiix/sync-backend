@@ -74,7 +74,7 @@ router
             summary: 'Add bookmarks via browser extension',
           })
         router
-          .delete('sign-out/:integrationId', [controllers.v1.extension.Auth, 'destroy'])
+          .post('sign-out', [controllers.v1.extension.Auth, 'destroy'])
           .use(middleware.auth())
           .openapi({ summary: 'Logout via browser extension' })
       })
@@ -102,6 +102,11 @@ router
           .delete('google/disconnect', [controllers.v1.oauth.Google, 'destroy'])
           .openapi({ summary: 'Disconnect Google OAuth' })
           .use(middleware.auth())
+        router
+          .post('google/extension', [controllers.v1.oauth.Google, 'extension'])
+          .use(middleware.guest())
+          .use(authThrottle)
+          .openapi({ summary: 'Login via Google OAuth from browser extension' })
       })
       .prefix('oauth')
       .as('oauths')
@@ -357,7 +362,6 @@ router
       })
 
     // Billing routes
-
     router
       .group(() => {
         router

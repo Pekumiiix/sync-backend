@@ -35,6 +35,7 @@ export interface ApiDefinition {
       redirect: typeof routes['oauths.google.redirect']
       store: typeof routes['oauths.google.store']
       destroy: typeof routes['oauths.google.destroy']
+      extension: typeof routes['oauths.google.extension']
     }
   }
   profile: {

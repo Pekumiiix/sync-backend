@@ -1,4 +1,5 @@
 import vine from '@vinejs/vine'
+import { type Infer } from '@vinejs/vine/types'
 
 export const contactValidator = vine.create({
   firstName: vine.string().minLength(1).maxLength(255),
@@ -8,3 +9,5 @@ export const contactValidator = vine.create({
   company: vine.string().minLength(1).maxLength(255).optional(),
   country: vine.string().minLength(1).maxLength(255).optional(),
 })
+
+export type ContactData = Infer<typeof contactValidator>

@@ -12,6 +12,7 @@ import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relat
 import Bookmark from './bookmark.ts'
 import Member from './member.ts'
 import hash from '@adonisjs/core/services/hash'
+import Invitation from './invitation.ts'
 
 export default class Folder extends FolderSchema {
   @column({
@@ -34,6 +35,9 @@ export default class Folder extends FolderSchema {
 
   @hasMany(() => Member)
   declare members: HasMany<typeof Member>
+
+  @hasMany(() => Invitation)
+  declare invitations: HasMany<typeof Invitation>
 
   @manyToMany(() => User, {
     pivotTable: 'members',

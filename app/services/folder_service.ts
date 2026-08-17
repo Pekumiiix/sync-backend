@@ -8,12 +8,30 @@ import type User from '#models/user'
 import { MemberService } from './member_service.ts'
 import db from '@adonisjs/lucid/services/db'
 import hash from '@adonisjs/core/services/hash'
+import { PLAN_FOLDER_LIMITS } from '#enums/plan_limit'
 
 @inject()
 export class FolderService {
   constructor(protected memberService: MemberService) {}
 
   async createFolder(user: User, name: string) {
+    const result = await user
+      .related('ownedFolders')
+      .query()
+      .where('is_system', false)
+      .count('* as total')
+      .first()
+
+    const folderCount = Number(result?.$extras?.total ?? 0)
+    const limit = PLAN_FOLDER_LIMITS[user.plan]
+
+    if (folderCount >= limit) {
+      throw new Exception(
+        `You have reached the ${user.plan} plan limit of ${limit} folders. Upgrade to create more.`,
+        { status: 403 }
+      )
+    }
+
     return user.related('ownedFolders').create({
       name,
       isSystem: false,

@@ -10,6 +10,7 @@ import User from '#models/user'
 import { FolderService } from './folder_service.ts'
 import { MemberService } from './member_service.ts'
 import { type StoreInvitationValidator } from '#validators/invitation'
+import { PLAN_MEMBER_LIMIT } from '#enums/plan_limit'
 
 @inject()
 export class InvitationService {
@@ -33,16 +34,6 @@ export class InvitationService {
   }
 
   async createInvitation(inviterId: string, data: StoreInvitationValidator) {
-    const existing = await Invitation.query()
-      .where('email', data.email)
-      .where('folder_id', data.folderId)
-      .where('status', 'pending')
-      .first()
-
-    if (existing) {
-      throw new Exception('A pending invitation already exists for this user.', { status: 400 })
-    }
-
     const invitation = await Invitation.create({
       ...data,
       inviterId: inviterId,
@@ -79,6 +70,34 @@ export class InvitationService {
 
     if (folder.isSystem) {
       throw new Exception('You cannot invite users to a system folder.', { status: 400 })
+    }
+
+    const now = DateTime.now().toSQL()
+    const baseQuery = folder
+      .related('invitations')
+      .query()
+      .where('status', 'pending')
+      .where('expires_at', '>', now)
+
+    const [hasPendingInvitation, pendingInvitationsCountResult] = await Promise.all([
+      baseQuery.clone().where('email', data.email).first(),
+      baseQuery.clone().count('* as total').first(),
+    ])
+
+    if (hasPendingInvitation) {
+      throw new Exception('A pending invitation already exists for this user.', { status: 400 })
+    }
+
+    const pendingInvitationCount = Number(pendingInvitationsCountResult?.$extras.total ?? 0)
+
+    const limit = PLAN_MEMBER_LIMIT[inviter.plan]
+    const totalCount = folder.memberCount + pendingInvitationCount
+
+    if (totalCount >= limit) {
+      throw new Exception(
+        `You have reached the ${inviter.plan} plan limit of ${limit} members. Upgrade to invite more.`,
+        { status: 403 }
+      )
     }
 
     const existingMember = await this.memberService.checkMembership(data.folderId, invitedUser.id)

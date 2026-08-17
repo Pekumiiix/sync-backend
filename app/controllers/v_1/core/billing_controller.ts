@@ -1,3 +1,4 @@
+import { PLAN_NAME_CONFIG } from '#enums/plan_name'
 import { type ApiSuccessResponse } from '#interfaces/api'
 import { type CreateCheckoutResponse } from '#interfaces/billing'
 import User from '#models/user'
@@ -87,11 +88,11 @@ export default class BillingController {
     switch (eventName) {
       case 'subscription_created':
         user.subscriptionId = event.data.id
-        user.plan = event.data.attributes.variant_name.toLowerCase()
+        user.plan = PLAN_NAME_CONFIG[event.data.attributes.variant_name]
         user.subscriptionStatus = event.data.attributes.status
         break
       case 'subscription_updated':
-        user.plan = event.data.attributes.variant_name.toLowerCase()
+        user.plan = PLAN_NAME_CONFIG[event.data.attributes.variant_name]
         user.subscriptionStatus = event.data.attributes.status
         break
       case 'subscription_cancelled':

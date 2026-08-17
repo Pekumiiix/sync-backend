@@ -21,6 +21,7 @@ export class BillingService {
 
     if (error) {
       logger.error({ userId: user.id, variantId, error }, 'Failed to create checkout session')
+
       throw new Exception('Checkout service temporarily unavailable', {
         status: 500,
         code: 'E_CHECKOUT_FAILED',

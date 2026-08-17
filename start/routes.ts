@@ -162,7 +162,7 @@ router
         })
         router
           .patch(':folderId/password', [controllers.v1.core.Folder, 'addPassword'])
-          .use(middleware.requirePaidSubscriptions())
+          .use(middleware.requireStandardPlan())
           .openapi({ summary: 'Add or update a folder password' })
         router
           .patch(':folderId/password/change', [controllers.v1.core.Folder, 'changePassword'])

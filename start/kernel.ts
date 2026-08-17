@@ -45,6 +45,7 @@ router.use([
  * the routes or the routes group.
  */
 export const middleware = router.named({
+  requireStandardPlan: () => import('#middleware/require_standard_plan_middleware'),
   requirePaidSubscriptions: () => import('#middleware/require_paid_subscriptions_middleware'),
   guest: () => import('#middleware/guest_middleware'),
   auth: () => import('#middleware/auth_middleware'),

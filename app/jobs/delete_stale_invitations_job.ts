@@ -19,7 +19,7 @@ export default class DeleteStaleInvitationsJob extends Job {
     const now = DateTime.now().toSQL()
 
     const deletedRows = await Invitation.query()
-      .whereIn('status', ['accepted', 'declined'])
+      .whereIn('status', ['accepted', 'declined', 'expired'])
       .andWhere('updated_at', '<', cutoffDate)
       .orWhere('expires_at', '<', now)
       .delete()

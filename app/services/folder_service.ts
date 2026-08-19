@@ -189,11 +189,14 @@ export class FolderService {
   }
 
   async getAccessibleFolderIds(userId: string): Promise<string[]> {
-    const [memberFolders, ownedFolders] = await Promise.all([
-      db.from('members').select('folder_id').where('user_id', userId),
-      db.from('folders').select('id').where('user_id', userId),
-    ])
+    const accessibleFolders = await db
+      .from('folders')
+      .select('id')
+      .where('user_id', userId)
+      .union((query) => {
+        query.from('members').select('folder_id as id').where('user_id', userId)
+      })
 
-    return [...memberFolders.map((m) => m.folder_id), ...ownedFolders.map((f) => f.id)]
+    return accessibleFolders.map((row) => row.id)
   }
 }

@@ -5,10 +5,10 @@ import type { Data } from '#client/data'
 
 export interface UrlData {
   title: string
-  description: string
-  coverImageUrl: string | undefined
-  faviconUrl: string | undefined
-  websiteName: string | undefined
+  description: string | null
+  coverImageUrl: string | null
+  faviconUrl: string | null
+  websiteName: string | null
   domain: string
   url: string
 }

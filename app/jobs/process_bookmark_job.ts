@@ -1,8 +1,10 @@
 import { type BrowserType } from '#enums/browser'
 import User from '#models/user'
 import { BookmarkService } from '#services/bookmark_service'
+import MetadataExtractorService from '#services/metadata_extractor_service'
 import { inject } from '@adonisjs/core'
 import logger from '@adonisjs/core/services/logger'
+import redis from '@adonisjs/redis/services/main'
 import { Job } from '@rlanz/bull-queue'
 
 interface ProcessBookmarkJobPayload {
@@ -14,7 +16,10 @@ interface ProcessBookmarkJobPayload {
 
 @inject()
 export default class ProcessBookmarkJob extends Job {
-  constructor(protected bookmarkService: BookmarkService) {
+  constructor(
+    protected metadataExtractorService: MetadataExtractorService,
+    protected bookmarkService: BookmarkService
+  ) {
     super()
   }
 
@@ -36,7 +41,7 @@ export default class ProcessBookmarkJob extends Job {
       return
     }
 
-    const openGraphData = await this.bookmarkService.previewBookmark(url)
+    const openGraphData = await this.metadataExtractorService.extract(url)
 
     await this.bookmarkService.createBookmark(user, {
       title: openGraphData.title,
@@ -50,6 +55,8 @@ export default class ProcessBookmarkJob extends Job {
       domain: openGraphData.domain,
       browser,
     })
+
+    await redis.hincrby(`sync_tracker:${payload.userId}`, 'processed', 1)
   }
 
   /**

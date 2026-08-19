@@ -244,7 +244,7 @@ export class RateLimitSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['avatarUrl', 'createdAt', 'email', 'emailVerificationToken', 'emailVerificationTokenExpiresAt', 'firstName', 'id', 'isEmailVerified', 'lastName', 'location', 'password', 'plan', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'settings', 'subscriptionExpiresAt', 'subscriptionId', 'subscriptionStatus', 'subscriptionUpdatedAt', 'updatedAt'] as const
+  static $columns = ['avatarUrl', 'createdAt', 'email', 'emailVerificationToken', 'emailVerificationTokenExpiresAt', 'firstName', 'id', 'isEmailVerified', 'lastName', 'lastSyncedAt', 'location', 'password', 'plan', 'resetPasswordToken', 'resetPasswordTokenExpiresAt', 'settings', 'subscriptionExpiresAt', 'subscriptionId', 'subscriptionStatus', 'subscriptionUpdatedAt', 'updatedAt'] as const
   $columns = UserSchema.$columns
   @column()
   declare avatarUrl: string | null
@@ -264,6 +264,8 @@ export class UserSchema extends BaseModel {
   declare isEmailVerified: boolean
   @column()
   declare lastName: string
+  @column.dateTime()
+  declare lastSyncedAt: DateTime | null
   @column()
   declare location: string | null
   @column({ serializeAs: null })

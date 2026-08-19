@@ -115,6 +115,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/extension/bookmark_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'extension.bookmark.status': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/extension/sync/status'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/extension/bookmark_controller').default['status']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/extension/bookmark_controller').default['status']>>>
+    }
+  }
   'extension.auth.destroy': {
     methods: ["POST"]
     pattern: '/api/v1/extension/sign-out'

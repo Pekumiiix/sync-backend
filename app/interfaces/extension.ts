@@ -9,3 +9,13 @@ export interface ExtensionSignInResponse {
     user: Data.User.Variants['forExtension']
   }
 }
+
+export interface ExtensionStatusResponse {
+  success: boolean
+  message: string
+  data: {
+    total: number
+    processed: number
+    isComplete: boolean
+  }
+}

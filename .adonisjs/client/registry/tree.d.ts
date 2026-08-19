@@ -28,6 +28,7 @@ export interface ApiDefinition {
     }
     bookmark: {
       store: typeof routes['extension.bookmark.store']
+      status: typeof routes['extension.bookmark.status']
     }
   }
   oauths: {

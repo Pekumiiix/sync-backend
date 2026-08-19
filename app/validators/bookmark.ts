@@ -12,12 +12,12 @@ export const fetchUrlDataValidator = vine.create({
 export const createBookmarkValidator = vine.create({
   folderId: folderId(),
   title: vine.string().minLength(1).maxLength(255),
-  description: vine.string().maxLength(1000).optional(),
-  websiteName: vine.string().maxLength(255).optional(),
+  description: vine.string().maxLength(1000).nullable().optional(),
+  websiteName: vine.string().maxLength(255).nullable().optional(),
   url: vine.string().url(),
   domain: vine.string().maxLength(255),
-  faviconUrl: vine.string().url().optional(),
-  coverImageUrl: vine.string().url().optional(),
+  faviconUrl: vine.string().url().nullable().optional(),
+  coverImageUrl: vine.string().url().nullable().optional(),
   tags: vine.array(vine.string().minLength(1).maxLength(50)).optional(),
   browser: vine.enum([...SUPPORTED_BROWSERS]),
 })

@@ -17,7 +17,7 @@ export class AccessTokenService {
   }
 
   async createAccessTokenForWebDashboard(user: User, rememberMe?: boolean) {
-    const token = this.generateAccessToken(
+    const token = await this.generateAccessToken(
       user,
       'Web dashboard session',
       rememberMe ? '7 days' : '1 day'

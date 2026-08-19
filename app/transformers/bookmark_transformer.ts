@@ -45,7 +45,11 @@ export default class BookmarkTransformer extends BaseTransformer<Bookmark> {
             lastName: this.resource.user.lastName,
           }
         : null,
-      canEdit: this.accessLevel === 'editor' || preloadedAccessLevel === 'editor',
+      canEdit: Boolean(
+        this.resource.folder.isSystem ||
+        this.accessLevel === 'editor' ||
+        preloadedAccessLevel === 'editor'
+      ),
     }
   }
 }

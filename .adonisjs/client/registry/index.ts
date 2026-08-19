@@ -60,6 +60,12 @@ const routes = {
     tokens: [{"old":"/api/v1/extension/sync","type":0,"val":"api","end":""},{"old":"/api/v1/extension/sync","type":0,"val":"v1","end":""},{"old":"/api/v1/extension/sync","type":0,"val":"extension","end":""},{"old":"/api/v1/extension/sync","type":0,"val":"sync","end":""}],
     types: placeholder as Registry['extension.bookmark.store']['types'],
   },
+  'extension.bookmark.status': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/extension/sync/status',
+    tokens: [{"old":"/api/v1/extension/sync/status","type":0,"val":"api","end":""},{"old":"/api/v1/extension/sync/status","type":0,"val":"v1","end":""},{"old":"/api/v1/extension/sync/status","type":0,"val":"extension","end":""},{"old":"/api/v1/extension/sync/status","type":0,"val":"sync","end":""},{"old":"/api/v1/extension/sync/status","type":0,"val":"status","end":""}],
+    types: placeholder as Registry['extension.bookmark.status']['types'],
+  },
   'extension.auth.destroy': {
     methods: ["POST"],
     pattern: '/api/v1/extension/sign-out',

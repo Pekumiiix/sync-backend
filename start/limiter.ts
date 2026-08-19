@@ -34,3 +34,9 @@ export const searchThrottle = limiter.define('search', (ctx) => {
 
   return limiter.allowRequests(60).every('1 minute').usingKey(key)
 })
+
+export const extensionThrottle = limiter.define('extension', (ctx) => {
+  const key = ctx.auth?.user?.id ? `user_${ctx.auth.user.id}` : `ip_${ctx.request.ip()}`
+
+  return limiter.allowRequests(60).every('1 minute').usingKey(key)
+})

@@ -21,12 +21,14 @@ import { type ApiSuccessResponse } from '#interfaces/api'
 import { BookmarkService } from '#services/bookmark_service'
 import { MemberService } from '#services/member_service'
 import { inject } from '@adonisjs/core'
+import MetadataExtractorService from '#services/metadata_extractor_service'
 
 @inject()
 export default class BookmarksController {
   constructor(
     protected bookmarkService: BookmarkService,
-    protected memberService: MemberService
+    protected memberService: MemberService,
+    protected metadataExtractorService: MetadataExtractorService
   ) {}
 
   async index(ctx: HttpContext) {
@@ -64,10 +66,10 @@ export default class BookmarksController {
 
     const { url } = await request.validateUsing(fetchUrlDataValidator)
 
-    const openGraphData = await this.bookmarkService.previewBookmark(url)
+    const openGraphData = await this.metadataExtractorService.extract(url)
 
     const formattedResponse: FetchBookmarkPreviewResponse = await ctx.serialize(
-      { openGraphData },
+      { ...openGraphData },
       'URL data fetched successfully!'
     )
 

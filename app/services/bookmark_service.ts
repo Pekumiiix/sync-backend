@@ -13,9 +13,7 @@ import { FolderService } from './folder_service.ts'
 import User from '#models/user'
 import { MemberService } from './member_service.ts'
 import { DateTime } from 'luxon'
-import mql from '@microlink/mql'
-import { type UrlData } from '#interfaces/bookmarks'
-import logger from '@adonisjs/core/services/logger'
+// import mql from '@microlink/mql'
 import { inject } from '@adonisjs/core'
 import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
@@ -60,45 +58,6 @@ export class BookmarkService {
       .preload('user', (query) => query.select('first_name', 'last_name', 'avatar_url'))
       .preload('folder', (query) => query.select('name'))
       .firstOrFail()
-  }
-
-  async previewBookmark(url: string) {
-    const parsedUrl = new URL(url)
-    const domain = parsedUrl.hostname.replace('www.', '')
-
-    let mqlResponse: any
-
-    try {
-      mqlResponse = await mql(url)
-    } catch (error) {
-      logger.error({ url, error }, '[BookmarkService] Network or parsing error')
-
-      throw new Exception('Failed to connect to the URL preview service.', {
-        status: 502,
-        code: 'E_PREVIEW_SERVICE_ERROR',
-      })
-    }
-
-    const { status, data } = mqlResponse
-
-    if (status !== 'success') {
-      throw new Exception(data?.message || 'Microlink returned an unsuccessful status.', {
-        status: 400,
-        code: 'E_METADATA_FETCH_FAILED',
-      })
-    }
-
-    const openGraphData: UrlData = {
-      title: data.title,
-      description: data.description,
-      coverImageUrl: data.image?.url || undefined,
-      faviconUrl: data.logo?.url || undefined,
-      websiteName: data.publisher || undefined,
-      domain,
-      url: parsedUrl.href,
-    }
-
-    return openGraphData
   }
 
   async createBookmark(user: User, data: CreateBookmarkType) {
@@ -394,7 +353,7 @@ export class BookmarkService {
       .preload('user', (q) => q.select('first_name', 'last_name', 'avatar_url'))
       .preload('folder', (q) =>
         q
-          .select('name')
+          .select('name', 'is_system')
           .preload('members', (memberQuery) =>
             memberQuery.select('access_level').where('user_id', userId)
           )
@@ -445,4 +404,43 @@ export class BookmarkService {
       .whereNotNull('browser')
       .distinct('browser')
   }
+
+  // async previewBookmark(url: string) {
+  //   const parsedUrl = new URL(url)
+  //   const domain = parsedUrl.hostname.replace('www.', '')
+
+  //   let mqlResponse: any
+
+  //   try {
+  //     mqlResponse = await mql(url)
+  //   } catch (error) {
+  //     logger.error({ url, error }, '[BookmarkService] Network or parsing error')
+
+  //     throw new Exception('Failed to connect to the URL preview service.', {
+  //       status: 502,
+  //       code: 'E_PREVIEW_SERVICE_ERROR',
+  //     })
+  //   }
+
+  //   const { status, data } = mqlResponse
+
+  //   if (status !== 'success') {
+  //     throw new Exception(data?.message || 'Microlink returned an unsuccessful status.', {
+  //       status: 400,
+  //       code: 'E_METADATA_FETCH_FAILED',
+  //     })
+  //   }
+
+  //   const openGraphData: UrlData = {
+  //     title: data.title,
+  //     description: data.description,
+  //     coverImageUrl: data.image?.url || undefined,
+  //     faviconUrl: data.logo?.url || undefined,
+  //     websiteName: data.publisher || undefined,
+  //     domain,
+  //     url: parsedUrl.href,
+  //   }
+
+  //   return openGraphData
+  // }
 }

@@ -8,7 +8,6 @@ import { events } from '#generated/events'
 import { type AuthDataResponse } from '#interfaces/user'
 import { inject } from '@adonisjs/core'
 import { AccessTokenService } from '#services/access_token_service'
-import db from '@adonisjs/lucid/services/db'
 
 @inject()
 export default class NewAccountController {
@@ -22,27 +21,14 @@ export default class NewAccountController {
     const verificationToken = generateVerificationCode()
     const verificationExpiresAt = DateTime.now().plus({ hours: 12 })
 
-    const { user, token } = await db.transaction(async (trx) => {
-      const createdUser = await User.create(
-        { firstName, lastName, email, password },
-        { client: trx }
-      )
+    const user = await User.create({ firstName, lastName, email, password })
 
-      createdUser.useTransaction(trx)
+    user.emailVerificationToken = verificationToken
+    user.emailVerificationTokenExpiresAt = verificationExpiresAt
 
-      createdUser.emailVerificationToken = verificationToken
-      createdUser.emailVerificationTokenExpiresAt = verificationExpiresAt
+    await user.save()
 
-      await createdUser.save()
-
-      const createdToken =
-        await this.accessTokenService.createAccessTokenForWebDashboard(createdUser)
-
-      return {
-        user: createdUser,
-        token: createdToken,
-      }
-    })
+    const token = await this.accessTokenService.createAccessTokenForWebDashboard(user)
 
     events.UserRegistered.dispatch(user, verificationToken)
 

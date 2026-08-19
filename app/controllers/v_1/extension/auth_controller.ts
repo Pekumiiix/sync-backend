@@ -25,24 +25,17 @@ export default class AuthController {
 
     const tokenName = `Extension: ${data.browser} - ${data.osPlatform}`
 
-    const token = await db.transaction(async (trx) => {
-      user.useTransaction(trx)
+    const token = await this.accessTokenService.createAccessTokenForExtension(user, tokenName)
 
-      const generatedToken = await this.accessTokenService.createAccessTokenForExtension(
-        user,
-        tokenName
-      )
-
+    await db.transaction(async (trx) => {
       await this.browserIntegrationService.upsertIntegration(
         user,
         {
           ...data,
-          accessTokenId: generatedToken.identifier as number,
+          accessTokenId: token.identifier as number,
         },
         trx
       )
-
-      return generatedToken
     })
 
     const formattedResponse: ExtensionSignInResponse = await ctx.serialize(

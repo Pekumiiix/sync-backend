@@ -148,14 +148,16 @@ export default class FoldersController {
       return response.notFound(apiError('Folder not found'))
     }
 
-    const { pinnedBookmarks, bookmarks } =
-      await this.bookmarkService.getPaginatedBookmarksForFolder(folder, query, user.id)
+    const [{ pinnedBookmarks, bookmarks }, { accessLevel }] = await Promise.all([
+      this.bookmarkService.getPaginatedBookmarksForFolder(folder, query, user.id),
+      this.memberService.checkPermissions(user.id, folderId),
+    ])
 
     const meta = bookmarks.getMeta()
 
     const formattedResponse: IndexBookmarksResponse = await ctx.serialize(
       {
-        bookmarks: BookmarkTransformer.transform(bookmarks.all()),
+        bookmarks: BookmarkTransformer.transform(bookmarks.all(), accessLevel),
         pinnedBookmarks,
         meta: {
           currentPage: meta.currentPage,

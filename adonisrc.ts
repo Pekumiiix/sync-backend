@@ -62,7 +62,8 @@ export default defineConfig({
     () => import('@outloud/adonis-openapi/provider'),
     () => import('@adonisjs/limiter/limiter_provider'),
     () => import('@rlanz/bull-queue/queue_provider'),
-    () => import('#providers/lemonsqueezy_provider')
+    () => import('#providers/lemonsqueezy_provider'),
+    () => import('@adonisjs/redis/redis_provider')
   ],
 
   /*

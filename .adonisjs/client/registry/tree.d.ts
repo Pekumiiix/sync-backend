@@ -2,6 +2,13 @@
 import type { routes } from './index.ts'
 
 export interface ApiDefinition {
+  oauths: {
+    google: {
+      redirect: typeof routes['oauths.google.redirect']
+      store: typeof routes['oauths.google.store']
+      extension: typeof routes['oauths.google.extension']
+    }
+  }
   auth: {
     newAccount: {
       store: typeof routes['auth.new_account.store']
@@ -31,19 +38,13 @@ export interface ApiDefinition {
       status: typeof routes['extension.bookmark.status']
     }
   }
-  oauths: {
-    google: {
-      redirect: typeof routes['oauths.google.redirect']
-      store: typeof routes['oauths.google.store']
-      destroy: typeof routes['oauths.google.destroy']
-      extension: typeof routes['oauths.google.extension']
-    }
-  }
   profile: {
     profile: {
       show: typeof routes['profile.profile.show']
+      ouaths: typeof routes['profile.profile.ouaths']
       update: typeof routes['profile.profile.update']
       updateSettings: typeof routes['profile.profile.update_settings']
+      deleteOAuth: typeof routes['profile.profile.delete_o_auth']
     }
   }
   folder: {

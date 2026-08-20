@@ -269,7 +269,7 @@ export class UserSchema extends BaseModel {
   @column()
   declare location: string | null
   @column({ serializeAs: null })
-  declare password: string
+  declare password: string | null
   @column()
   declare plan: PlanType
   @column()

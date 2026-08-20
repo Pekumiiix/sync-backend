@@ -1,15 +1,8 @@
 import User from '#models/user'
 import { type StoreIntegrationValidator } from '#validators/browser_integration'
-import { type TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export class BrowserIntegrationService {
-  async upsertIntegration(
-    user: User,
-    data: StoreIntegrationValidator,
-    trx: TransactionClientContract
-  ) {
-    user.useTransaction(trx)
-
+  async upsertIntegration(user: User, data: StoreIntegrationValidator) {
     const existingIntegration = await user
       .related('browserIntegrations')
       .query()

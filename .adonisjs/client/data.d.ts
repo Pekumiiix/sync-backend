@@ -11,6 +11,7 @@ import type FolderTransformer from '#transformers/folder_transformer'
 import type InvitationTransformer from '#transformers/invitation_transformer'
 import type MemberTransformer from '#transformers/member_transformer'
 import type NotificationTransformer from '#transformers/notification_transformer'
+import type OAuthIdentityTransformer from '#transformers/o_auth_identity_transformer'
 import type UserTransformer from '#transformers/user_transformer'
 
 export namespace Data {
@@ -37,6 +38,10 @@ export namespace Data {
   export type Notification = InferData<NotificationTransformer>
   export namespace Notification {
     export type Variants = InferVariants<NotificationTransformer>
+  }
+  export type OAuthIdentity = InferData<OAuthIdentityTransformer>
+  export namespace OAuthIdentity {
+    export type Variants = InferVariants<OAuthIdentityTransformer>
   }
   export type User = InferData<UserTransformer>
   export namespace User {

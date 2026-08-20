@@ -57,6 +57,7 @@ export const updateProfileValidator = vine.create({
   lastName: vine.string().maxLength(50).optional(),
   location: vine.string().maxLength(100).optional(),
   avatarUrl: vine.string().url().maxLength(2048).optional(),
+  password: password().optional(),
 })
 
 /**

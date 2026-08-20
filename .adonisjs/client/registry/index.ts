@@ -6,6 +6,24 @@ import type { ApiDefinition } from './tree.d.ts'
 const placeholder: any = {}
 
 const routes = {
+  'oauths.google.redirect': {
+    methods: ["GET","HEAD"],
+    pattern: '/oauth/google',
+    tokens: [{"old":"/oauth/google","type":0,"val":"oauth","end":""},{"old":"/oauth/google","type":0,"val":"google","end":""}],
+    types: placeholder as Registry['oauths.google.redirect']['types'],
+  },
+  'oauths.google.store': {
+    methods: ["GET","HEAD"],
+    pattern: '/oauth/google/callback',
+    tokens: [{"old":"/oauth/google/callback","type":0,"val":"oauth","end":""},{"old":"/oauth/google/callback","type":0,"val":"google","end":""},{"old":"/oauth/google/callback","type":0,"val":"callback","end":""}],
+    types: placeholder as Registry['oauths.google.store']['types'],
+  },
+  'oauths.google.extension': {
+    methods: ["POST"],
+    pattern: '/oauth/google/extension',
+    tokens: [{"old":"/oauth/google/extension","type":0,"val":"oauth","end":""},{"old":"/oauth/google/extension","type":0,"val":"google","end":""},{"old":"/oauth/google/extension","type":0,"val":"extension","end":""}],
+    types: placeholder as Registry['oauths.google.extension']['types'],
+  },
   'auth.new_account.store': {
     methods: ["POST"],
     pattern: '/api/v1/auth/sign-up',
@@ -72,35 +90,17 @@ const routes = {
     tokens: [{"old":"/api/v1/extension/sign-out","type":0,"val":"api","end":""},{"old":"/api/v1/extension/sign-out","type":0,"val":"v1","end":""},{"old":"/api/v1/extension/sign-out","type":0,"val":"extension","end":""},{"old":"/api/v1/extension/sign-out","type":0,"val":"sign-out","end":""}],
     types: placeholder as Registry['extension.auth.destroy']['types'],
   },
-  'oauths.google.redirect': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/oauth/google',
-    tokens: [{"old":"/api/v1/oauth/google","type":0,"val":"api","end":""},{"old":"/api/v1/oauth/google","type":0,"val":"v1","end":""},{"old":"/api/v1/oauth/google","type":0,"val":"oauth","end":""},{"old":"/api/v1/oauth/google","type":0,"val":"google","end":""}],
-    types: placeholder as Registry['oauths.google.redirect']['types'],
-  },
-  'oauths.google.store': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/oauth/google/callback',
-    tokens: [{"old":"/api/v1/oauth/google/callback","type":0,"val":"api","end":""},{"old":"/api/v1/oauth/google/callback","type":0,"val":"v1","end":""},{"old":"/api/v1/oauth/google/callback","type":0,"val":"oauth","end":""},{"old":"/api/v1/oauth/google/callback","type":0,"val":"google","end":""},{"old":"/api/v1/oauth/google/callback","type":0,"val":"callback","end":""}],
-    types: placeholder as Registry['oauths.google.store']['types'],
-  },
-  'oauths.google.destroy': {
-    methods: ["DELETE"],
-    pattern: '/api/v1/oauth/google/disconnect',
-    tokens: [{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"api","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"v1","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"oauth","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"google","end":""},{"old":"/api/v1/oauth/google/disconnect","type":0,"val":"disconnect","end":""}],
-    types: placeholder as Registry['oauths.google.destroy']['types'],
-  },
-  'oauths.google.extension': {
-    methods: ["POST"],
-    pattern: '/api/v1/oauth/google/extension',
-    tokens: [{"old":"/api/v1/oauth/google/extension","type":0,"val":"api","end":""},{"old":"/api/v1/oauth/google/extension","type":0,"val":"v1","end":""},{"old":"/api/v1/oauth/google/extension","type":0,"val":"oauth","end":""},{"old":"/api/v1/oauth/google/extension","type":0,"val":"google","end":""},{"old":"/api/v1/oauth/google/extension","type":0,"val":"extension","end":""}],
-    types: placeholder as Registry['oauths.google.extension']['types'],
-  },
   'profile.profile.show': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/account/profile',
     tokens: [{"old":"/api/v1/account/profile","type":0,"val":"api","end":""},{"old":"/api/v1/account/profile","type":0,"val":"v1","end":""},{"old":"/api/v1/account/profile","type":0,"val":"account","end":""},{"old":"/api/v1/account/profile","type":0,"val":"profile","end":""}],
     types: placeholder as Registry['profile.profile.show']['types'],
+  },
+  'profile.profile.ouaths': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/account/oauths',
+    tokens: [{"old":"/api/v1/account/oauths","type":0,"val":"api","end":""},{"old":"/api/v1/account/oauths","type":0,"val":"v1","end":""},{"old":"/api/v1/account/oauths","type":0,"val":"account","end":""},{"old":"/api/v1/account/oauths","type":0,"val":"oauths","end":""}],
+    types: placeholder as Registry['profile.profile.ouaths']['types'],
   },
   'profile.profile.update': {
     methods: ["PATCH"],
@@ -113,6 +113,12 @@ const routes = {
     pattern: '/api/v1/account/settings',
     tokens: [{"old":"/api/v1/account/settings","type":0,"val":"api","end":""},{"old":"/api/v1/account/settings","type":0,"val":"v1","end":""},{"old":"/api/v1/account/settings","type":0,"val":"account","end":""},{"old":"/api/v1/account/settings","type":0,"val":"settings","end":""}],
     types: placeholder as Registry['profile.profile.update_settings']['types'],
+  },
+  'profile.profile.delete_o_auth': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/account/oauth/:provider',
+    tokens: [{"old":"/api/v1/account/oauth/:provider","type":0,"val":"api","end":""},{"old":"/api/v1/account/oauth/:provider","type":0,"val":"v1","end":""},{"old":"/api/v1/account/oauth/:provider","type":0,"val":"account","end":""},{"old":"/api/v1/account/oauth/:provider","type":0,"val":"oauth","end":""},{"old":"/api/v1/account/oauth/:provider","type":1,"val":"provider","end":""}],
+    types: placeholder as Registry['profile.profile.delete_o_auth']['types'],
   },
   'folder.folder.index': {
     methods: ["GET","HEAD"],

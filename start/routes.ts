@@ -18,6 +18,32 @@ import {
   throttle,
 } from '#start/limiter'
 
+// OAuth routes
+router
+  .group(() => {
+    router
+      .get('google', [controllers.v1.oauth.Google, 'redirect'])
+      .use(middleware.guest())
+      .use(authThrottle)
+      .openapi({ summary: 'Redirect to Google OAuth' })
+    router
+      .get('google/callback', [controllers.v1.oauth.Google, 'store'])
+      .use(middleware.guest())
+      .use(authThrottle)
+      .openapi({ summary: 'Handle Google OAuth callback' })
+    router
+      .post('google/extension', [controllers.v1.oauth.Google, 'extension'])
+      .use(middleware.guest())
+      .use(authThrottle)
+      .openapi({ summary: 'Login via Google OAuth from browser extension' })
+  })
+  .prefix('oauth')
+  .as('oauths')
+  .openapi({
+    tags: ['OAuth'],
+    description: 'OAuth related endpoints',
+  })
+
 router
   .group(() => {
     // Authentication routes
@@ -100,48 +126,27 @@ router
         description: 'Browser extension related endpoints',
       })
 
-    // OAuth routes
-    router
-      .group(() => {
-        router
-          .get('google', [controllers.v1.oauth.Google, 'redirect'])
-          .use(middleware.guest())
-          .use(authThrottle)
-          .openapi({ summary: 'Redirect to Google OAuth' })
-        router
-          .get('google/callback', [controllers.v1.oauth.Google, 'store'])
-          .use(middleware.guest())
-          .use(authThrottle)
-          .openapi({ summary: 'Handle Google OAuth callback' })
-        router
-          .delete('google/disconnect', [controllers.v1.oauth.Google, 'destroy'])
-          .openapi({ summary: 'Disconnect Google OAuth' })
-          .use(middleware.auth())
-        router
-          .post('google/extension', [controllers.v1.oauth.Google, 'extension'])
-          .use(middleware.guest())
-          .use(authThrottle)
-          .openapi({ summary: 'Login via Google OAuth from browser extension' })
-      })
-      .prefix('oauth')
-      .as('oauths')
-      .openapi({
-        tags: ['OAuth'],
-        description: 'OAuth related endpoints',
-      })
-
     // Account routes
     router
       .group(() => {
         router
           .get('profile', [controllers.v1.users.Profile, 'show'])
           .openapi({ summary: 'Get user profile' })
+        router.get('oauths', [controllers.v1.users.Profile, 'ouaths']).openapi({
+          summary: 'Get user OAuth identities',
+        })
         router
           .patch('profile', [controllers.v1.users.Profile, 'update'])
           .openapi({ summary: 'Update user profile' })
         router
           .patch('settings', [controllers.v1.users.Profile, 'updateSettings'])
           .openapi({ summary: 'Update user settings' })
+        router
+          .delete('oauth/:provider', [controllers.v1.users.Profile, 'deleteOAuth'])
+          .where('provider', /google/)
+          .openapi({
+            summary: 'Delete a user OAuth identity',
+          })
       })
       .prefix('account')
       .as('profile')

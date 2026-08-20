@@ -4,6 +4,9 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
+    'oauths.google.redirect': { paramsTuple?: []; params?: {} }
+    'oauths.google.store': { paramsTuple?: []; params?: {} }
+    'oauths.google.extension': { paramsTuple?: []; params?: {} }
     'auth.new_account.store': { paramsTuple?: []; params?: {} }
     'auth.access_token.store': { paramsTuple?: []; params?: {} }
     'auth.access_token.destroy': { paramsTuple?: []; params?: {} }
@@ -15,13 +18,11 @@ export type ScannedRoutes = {
     'extension.bookmark.store': { paramsTuple?: []; params?: {} }
     'extension.bookmark.status': { paramsTuple?: []; params?: {} }
     'extension.auth.destroy': { paramsTuple?: []; params?: {} }
-    'oauths.google.redirect': { paramsTuple?: []; params?: {} }
-    'oauths.google.store': { paramsTuple?: []; params?: {} }
-    'oauths.google.destroy': { paramsTuple?: []; params?: {} }
-    'oauths.google.extension': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'profile.profile.ouaths': { paramsTuple?: []; params?: {} }
     'profile.profile.update': { paramsTuple?: []; params?: {} }
     'profile.profile.update_settings': { paramsTuple?: []; params?: {} }
+    'profile.profile.delete_o_auth': { paramsTuple: [ParamValue]; params: {'provider': ParamValue} }
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.store': { paramsTuple?: []; params?: {} }
     'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
@@ -67,10 +68,11 @@ export type ScannedRoutes = {
     'marketing.contact.store': { paramsTuple?: []; params?: {} }
   }
   GET: {
-    'extension.bookmark.status': { paramsTuple?: []; params?: {} }
     'oauths.google.redirect': { paramsTuple?: []; params?: {} }
     'oauths.google.store': { paramsTuple?: []; params?: {} }
+    'extension.bookmark.status': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'profile.profile.ouaths': { paramsTuple?: []; params?: {} }
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.show_bookmarks': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
@@ -84,10 +86,11 @@ export type ScannedRoutes = {
     'search.search.folder_search': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
   }
   HEAD: {
-    'extension.bookmark.status': { paramsTuple?: []; params?: {} }
     'oauths.google.redirect': { paramsTuple?: []; params?: {} }
     'oauths.google.store': { paramsTuple?: []; params?: {} }
+    'extension.bookmark.status': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'profile.profile.ouaths': { paramsTuple?: []; params?: {} }
     'folder.folder.index': { paramsTuple?: []; params?: {} }
     'folder.folder.show': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
     'folder.folder.show_bookmarks': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
@@ -101,6 +104,7 @@ export type ScannedRoutes = {
     'search.search.folder_search': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
   }
   POST: {
+    'oauths.google.extension': { paramsTuple?: []; params?: {} }
     'auth.new_account.store': { paramsTuple?: []; params?: {} }
     'auth.access_token.store': { paramsTuple?: []; params?: {} }
     'auth.access_token.destroy': { paramsTuple?: []; params?: {} }
@@ -111,7 +115,6 @@ export type ScannedRoutes = {
     'extension.auth.store': { paramsTuple?: []; params?: {} }
     'extension.bookmark.store': { paramsTuple?: []; params?: {} }
     'extension.auth.destroy': { paramsTuple?: []; params?: {} }
-    'oauths.google.extension': { paramsTuple?: []; params?: {} }
     'folder.folder.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.store': { paramsTuple?: []; params?: {} }
     'bookmarks.bookmark.preview': { paramsTuple?: []; params?: {} }
@@ -119,19 +122,6 @@ export type ScannedRoutes = {
     'billing.billing.store': { paramsTuple?: []; params?: {} }
     'billing.billing.webhook': { paramsTuple?: []; params?: {} }
     'marketing.contact.store': { paramsTuple?: []; params?: {} }
-  }
-  DELETE: {
-    'oauths.google.destroy': { paramsTuple?: []; params?: {} }
-    'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
-    'folder.folder.remove_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
-    'bookmarks.bookmark.bulk_destroy': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
-    'members.member.leave': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
-    'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
-    'notifications.notification.destroy_all': { paramsTuple?: []; params?: {} }
-    'notifications.notification.destroy': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
-    'browserIntegrations.integration.destroy': { paramsTuple: [ParamValue]; params: {'integrationId': ParamValue} }
-    'billing.billing.destroy': { paramsTuple?: []; params?: {} }
   }
   PATCH: {
     'profile.profile.update': { paramsTuple?: []; params?: {} }
@@ -151,6 +141,19 @@ export type ScannedRoutes = {
     'notifications.notification.mark_all_as_read': { paramsTuple?: []; params?: {} }
     'notifications.notification.mark_as_read': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
     'notifications.notification.mark_as_unread': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
+  }
+  DELETE: {
+    'profile.profile.delete_o_auth': { paramsTuple: [ParamValue]; params: {'provider': ParamValue} }
+    'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'folder.folder.remove_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'bookmarks.bookmark.bulk_destroy': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
+    'members.member.leave': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
+    'notifications.notification.destroy_all': { paramsTuple?: []; params?: {} }
+    'notifications.notification.destroy': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
+    'browserIntegrations.integration.destroy': { paramsTuple: [ParamValue]; params: {'integrationId': ParamValue} }
+    'billing.billing.destroy': { paramsTuple?: []; params?: {} }
   }
 }
 declare module '@adonisjs/core/types/http' {

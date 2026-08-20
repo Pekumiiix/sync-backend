@@ -16,6 +16,7 @@ export default class BookmarkController {
 
     const user = auth.user!
 
+    const uniqueUrls = [...new Set(urls)]
     const cooldownHours = user.settings.syncFrequencyInHours
 
     if (cooldownHours > 0 && user.lastSyncedAt) {
@@ -41,11 +42,11 @@ export default class BookmarkController {
 
     const trackerKey = `sync_tracker:${user.id}`
 
-    await redis.hset(trackerKey, 'total', urls.length)
+    await redis.hset(trackerKey, 'total', uniqueUrls.length)
     await redis.hsetnx(trackerKey, 'processed', 0)
     await redis.expire(trackerKey, 60 * 60 * 24)
 
-    for (const url of urls) {
+    for (const url of uniqueUrls) {
       await queue.dispatch(ProcessBookmarkJob, {
         url,
         userId: user.id,

@@ -7,6 +7,42 @@ import type { InferInput, SimpleError } from '@vinejs/vine/types'
 export type ParamValue = string | number | bigint | boolean
 
 export interface Registry {
+  'oauths.google.redirect': {
+    methods: ["GET","HEAD"]
+    pattern: '/oauth/google'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['redirect']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['redirect']>>>
+    }
+  }
+  'oauths.google.store': {
+    methods: ["GET","HEAD"]
+    pattern: '/oauth/google/callback'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['store']>>>
+    }
+  }
+  'oauths.google.extension': {
+    methods: ["POST"]
+    pattern: '/oauth/google/extension'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/extension_user').extensionOAuthValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/extension_user').extensionOAuthValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['extension']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['extension']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'auth.new_account.store': {
     methods: ["POST"]
     pattern: '/api/v1/auth/sign-up'
@@ -139,54 +175,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/extension/auth_controller').default['destroy']>>>
     }
   }
-  'oauths.google.redirect': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/oauth/google'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['redirect']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['redirect']>>>
-    }
-  }
-  'oauths.google.store': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/oauth/google/callback'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['store']>>>
-    }
-  }
-  'oauths.google.destroy': {
-    methods: ["DELETE"]
-    pattern: '/api/v1/oauth/google/disconnect'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['destroy']>>>
-    }
-  }
-  'oauths.google.extension': {
-    methods: ["POST"]
-    pattern: '/api/v1/oauth/google/extension'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/extension_user').extensionOAuthValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/extension_user').extensionOAuthValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['extension']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['extension']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
   'profile.profile.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/account/profile'
@@ -197,6 +185,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['show']>>>
+    }
+  }
+  'profile.profile.ouaths': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/account/oauths'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['ouaths']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['ouaths']>>>
     }
   }
   'profile.profile.update': {
@@ -221,6 +221,18 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/user').updateSettingsValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['updateSettings']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['updateSettings']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'profile.profile.delete_o_auth': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/account/oauth/:provider'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { provider: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['deleteOAuth']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/users/profile_controller').default['deleteOAuth']>>>
     }
   }
   'folder.folder.index': {

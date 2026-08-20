@@ -7,3 +7,11 @@ export interface ProfileResponse {
     user: Data.User
   }
 }
+
+export interface OAuthIdentityResponse {
+  success: boolean
+  message: string
+  data: {
+    oAuthIdentity: Data.OAuthIdentity
+  }
+}

@@ -30,7 +30,7 @@ export default defineConfig({
     () => import('@adonisjs/session/commands'),
     () => import('@adonisjs/mail/commands'),
     () => import('@outloud/adonis-openapi/commands'),
-    () => import('@rlanz/bull-queue/commands')
+    () => import('@rlanz/bull-queue/commands'),
   ],
 
   /*
@@ -63,7 +63,7 @@ export default defineConfig({
     () => import('@adonisjs/limiter/limiter_provider'),
     () => import('@rlanz/bull-queue/queue_provider'),
     () => import('#providers/lemonsqueezy_provider'),
-    () => import('@adonisjs/redis/redis_provider')
+    () => import('@adonisjs/redis/redis_provider'),
   ],
 
   /*
@@ -79,7 +79,7 @@ export default defineConfig({
     () => import('#start/kernel'),
     () => import('#start/validator'),
     () => import('#start/event'),
-    () => import('#start/jobs')
+    () => import('#start/jobs'),
   ],
 
   /*
@@ -119,6 +119,10 @@ export default defineConfig({
   metaFiles: [
     {
       pattern: '.adonisjs/openapi.json',
+      reloadServer: false,
+    },
+    {
+      pattern: 'resources/views/**/*.edge',
       reloadServer: false,
     },
   ],

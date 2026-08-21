@@ -6,7 +6,6 @@ import type { ExtensionSignInResponse } from '#interfaces/extension'
 import UserTransformer from '#transformers/user_transformer'
 import { inject } from '@adonisjs/core'
 import { ApiSuccessResponse } from '#interfaces/api'
-import db from '@adonisjs/lucid/services/db'
 import { AccessTokenService } from '#services/access_token_service'
 
 @inject()
@@ -27,15 +26,9 @@ export default class AuthController {
 
     const token = await this.accessTokenService.createAccessTokenForExtension(user, tokenName)
 
-    await db.transaction(async (trx) => {
-      await this.browserIntegrationService.upsertIntegration(
-        user,
-        {
-          ...data,
-          accessTokenId: token.identifier as number,
-        },
-        trx
-      )
+    await this.browserIntegrationService.upsertIntegration(user, {
+      ...data,
+      accessTokenId: token.identifier as number,
     })
 
     const formattedResponse: ExtensionSignInResponse = await ctx.serialize(

@@ -36,6 +36,9 @@ export default await Env.create(new URL('../', import.meta.url), {
   // Frontend
   FRONTEND_URL: Env.schema.string({ format: 'url', tld: false }),
 
+  // CORS origin
+  CORS_ORIGIN: Env.schema.string.optional(),
+
   // Lemon Squeezy
   LEMON_SQUEEZY_API_KEY: Env.schema.string(),
   LEMON_SQUEEZY_STORE_ID: Env.schema.string(),
@@ -81,5 +84,5 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   REDIS_HOST: Env.schema.string({ format: 'host' }),
   REDIS_PORT: Env.schema.number(),
-  REDIS_PASSWORD: Env.schema.secret.optional()
+  REDIS_PASSWORD: Env.schema.secret.optional(),
 })

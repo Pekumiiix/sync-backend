@@ -17,6 +17,13 @@ import {
   searchThrottle,
   throttle,
 } from '#start/limiter'
+import db from '@adonisjs/lucid/services/db'
+
+// Server status routes
+router.get('/db-check', async () => {
+  const result = await db.rawQuery('SELECT NOW()')
+  return result
+})
 
 // OAuth routes
 router

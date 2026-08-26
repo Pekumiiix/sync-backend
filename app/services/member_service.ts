@@ -84,6 +84,26 @@ export class MemberService {
     return permissions
   }
 
+  async requireAccessLevelBulk(
+    userId: string,
+    folderIds: string[],
+    allowedAccessLevel: AccessLevelType
+  ) {
+    const result = await Member.query()
+      .where('user_id', userId)
+      .whereIn('folder_id', folderIds)
+      .where('access_level', allowedAccessLevel)
+      .count('* as total')
+
+    const authorizedCount = Number(result[0].$extras.total)
+
+    if (authorizedCount !== folderIds.length) {
+      throw new Exception('You lack sufficient permissions for one or more folders.', {
+        status: 403,
+      })
+    }
+  }
+
   async getFolderPreviews(folderId: string, limit: number) {
     const members = await Member.query()
       .where('folder_id', folderId)

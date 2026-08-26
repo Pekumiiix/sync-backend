@@ -56,7 +56,12 @@ export const updateProfileValidator = vine.create({
   firstName: vine.string().maxLength(50).optional(),
   lastName: vine.string().maxLength(50).optional(),
   location: vine.string().maxLength(100).optional(),
-  avatarUrl: vine.string().url().maxLength(2048).optional(),
+  avatar: vine
+    .file({
+      size: '5mb',
+      extnames: ['jpg', 'jpeg', 'png', 'webp'],
+    })
+    .optional(),
   password: password().optional(),
 })
 

@@ -85,4 +85,10 @@ export default await Env.create(new URL('../', import.meta.url), {
   REDIS_HOST: Env.schema.string({ format: 'host' }),
   REDIS_PORT: Env.schema.number(),
   REDIS_PASSWORD: Env.schema.secret.optional(),
+
+  CLOUDINARY_CLOUD_NAME: Env.schema.string(),
+
+  CLOUDINARY_API_KEY: Env.schema.string(),
+
+  CLOUDINARY_API_SECRET: Env.schema.string(),
 })

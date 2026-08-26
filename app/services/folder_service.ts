@@ -151,6 +151,68 @@ export class FolderService {
       .update({ recent_bookmarks_images: JSON.stringify(imageUrls) })
   }
 
+  async syncBulkFolderRecentImages(
+    folderIds: string[],
+    trx?: TransactionClientContract
+  ): Promise<void> {
+    if (!folderIds.length) return
+
+    const client = trx || db
+    const inPlaceholders = folderIds.map(() => '?').join(', ')
+
+    const fetchSql = `
+      WITH RankedBookmarks AS (
+        SELECT 
+          folder_id, 
+          cover_image_url,
+          ROW_NUMBER() OVER(PARTITION BY folder_id ORDER BY created_at DESC) as rn
+        FROM bookmarks
+        WHERE folder_id IN (${inPlaceholders})
+          AND cover_image_url IS NOT NULL 
+          AND cover_image_url != ''
+      )
+      SELECT folder_id, cover_image_url 
+      FROM RankedBookmarks 
+      WHERE rn <= 3;
+    `
+
+    const fetchResult = await client.rawQuery(fetchSql, folderIds)
+    const rows = fetchResult.rows ?? fetchResult
+
+    const folderImages: Record<string, string[]> = {}
+    for (const id of folderIds) {
+      folderImages[id] = []
+    }
+
+    for (const row of rows) {
+      const folderId = row.folderId || row.folder_id
+      const imageUrl = row.coverImageUrl || row.cover_image_url
+
+      folderImages[folderId].push(imageUrl)
+    }
+
+    const updateBindings: any[] = []
+    const whenThenStatements: string[] = []
+
+    for (const [folderId, images] of Object.entries(folderImages)) {
+      whenThenStatements.push('WHEN id = ? THEN ?::jsonb')
+      updateBindings.push(folderId, JSON.stringify(images))
+    }
+
+    updateBindings.push(...folderIds)
+
+    const updateSql = `
+      UPDATE folders
+      SET recent_bookmarks_images = CASE
+        ${whenThenStatements.join('\n        ')}
+        ELSE recent_bookmarks_images
+      END
+      WHERE id IN (${inPlaceholders})
+    `
+
+    await client.rawQuery(updateSql, updateBindings)
+  }
+
   async updatePassword(folderId: string, user: User, password: string | null) {
     const folder = await Folder.findOrFail(folderId)
 

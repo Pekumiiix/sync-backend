@@ -80,6 +80,7 @@
     "axios": "^1.19.0",
     "better-sqlite3": "^12.10.0",
     "cheerio": "^1.2.0",
+    "cloudinary": "^2.10.1",
     "edge.js": "^6.5.1",
     "luxon": "^3.7.2",
     "pg": "^8.21.0",

@@ -3,6 +3,7 @@ import { ApiSuccessResponse } from '#interfaces/api'
 import { type ProfileResponse } from '#interfaces/profile'
 import { type FrequencyHours } from '#interfaces/user'
 import User from '#models/user'
+import { CloudinaryService } from '#services/cloudinary_service'
 import { OAuthService } from '#services/o_auth_service'
 import OAuthIdentityTransformer from '#transformers/o_auth_identity_transformer'
 import UserTransformer from '#transformers/user_transformer'
@@ -13,7 +14,10 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 @inject()
 export default class ProfileController {
-  constructor(protected oAuthService: OAuthService) {}
+  constructor(
+    protected oAuthService: OAuthService,
+    protected cloudinaryService: CloudinaryService
+  ) {}
 
   async show(ctx: HttpContext) {
     const { auth, response } = ctx
@@ -30,13 +34,24 @@ export default class ProfileController {
 
   async update(ctx: HttpContext) {
     const { auth, request, response } = ctx
-
-    const { firstName, lastName, avatarUrl, location, password } =
-      await request.validateUsing(updateProfileValidator)
-
     const user = auth.user!
 
-    user.merge({ firstName, lastName, avatarUrl, location, password })
+    const payload = await request.validateUsing(updateProfileValidator)
+
+    const { avatar: avatarFile, ...updateData } = payload
+
+    let finalAvatarUrl = user.avatarUrl
+
+    if (avatarFile?.tmpPath) {
+      const uploadResult = await this.cloudinaryService.upload(avatarFile, user)
+
+      finalAvatarUrl = uploadResult.secure_url
+    }
+
+    user.merge({
+      ...updateData,
+      avatarUrl: finalAvatarUrl,
+    })
 
     await user.save()
 

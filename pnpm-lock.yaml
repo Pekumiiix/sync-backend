@@ -71,6 +71,9 @@ importers:
       cheerio:
         specifier: ^1.2.0
         version: 1.2.0
+      cloudinary:
+        specifier: ^2.10.1
+        version: 2.10.1
       edge.js:
         specifier: ^6.5.1
         version: 6.5.1
@@ -1306,6 +1309,10 @@ packages:
   cli-truncate@5.2.0:
     resolution: {integrity: sha512-xRwvIOMGrfOAnM1JYtqQImuaNtDEv9v6oIYAs4LIHwTiKee8uwvIi363igssOC0O5U04i4AlENs79LQLu9tEMw==}
     engines: {node: '>=20'}
+
+  cloudinary@2.10.1:
+    resolution: {integrity: sha512-0aqF/sGwm2dSM/Xse87EI5OpKcuX/hwoPPdUDTdUal6GMPKevtElcI3spcaeuzJJbcLkY3vJaF22q0u50VO5Lw==}
+    engines: {node: '>=9'}
 
   cluster-key-slot@1.1.1:
     resolution: {integrity: sha512-rwHwUfXL40Chm1r08yrhU3qpUvdVlgkKNeyeGPOxnW8/SyVDvgRaed/Uz54AqWNaTCAThlj6QAs3TZcKI0xDEw==}
@@ -4180,6 +4187,10 @@ snapshots:
     dependencies:
       slice-ansi: 8.0.0
       string-width: 8.2.1
+
+  cloudinary@2.10.1:
+    dependencies:
+      lodash: 4.18.1
 
   cluster-key-slot@1.1.1: {}
 

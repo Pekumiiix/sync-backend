@@ -19,6 +19,7 @@ export type ScannedRoutes = {
     'extension.bookmark.status': { paramsTuple?: []; params?: {} }
     'extension.auth.destroy': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'profile.profile.destroy': { paramsTuple?: []; params?: {} }
     'profile.profile.ouaths': { paramsTuple?: []; params?: {} }
     'profile.profile.update': { paramsTuple?: []; params?: {} }
     'profile.profile.update_settings': { paramsTuple?: []; params?: {} }
@@ -123,6 +124,20 @@ export type ScannedRoutes = {
     'billing.billing.webhook': { paramsTuple?: []; params?: {} }
     'marketing.contact.store': { paramsTuple?: []; params?: {} }
   }
+  DELETE: {
+    'profile.profile.destroy': { paramsTuple?: []; params?: {} }
+    'profile.profile.delete_o_auth': { paramsTuple: [ParamValue]; params: {'provider': ParamValue} }
+    'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'folder.folder.remove_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'bookmarks.bookmark.bulk_destroy': { paramsTuple?: []; params?: {} }
+    'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
+    'members.member.leave': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
+    'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
+    'notifications.notification.destroy_all': { paramsTuple?: []; params?: {} }
+    'notifications.notification.destroy': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
+    'browserIntegrations.integration.destroy': { paramsTuple: [ParamValue]; params: {'integrationId': ParamValue} }
+    'billing.billing.destroy': { paramsTuple?: []; params?: {} }
+  }
   PATCH: {
     'profile.profile.update': { paramsTuple?: []; params?: {} }
     'profile.profile.update_settings': { paramsTuple?: []; params?: {} }
@@ -141,19 +156,6 @@ export type ScannedRoutes = {
     'notifications.notification.mark_all_as_read': { paramsTuple?: []; params?: {} }
     'notifications.notification.mark_as_read': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
     'notifications.notification.mark_as_unread': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
-  }
-  DELETE: {
-    'profile.profile.delete_o_auth': { paramsTuple: [ParamValue]; params: {'provider': ParamValue} }
-    'folder.folder.destroy': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
-    'folder.folder.remove_password': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
-    'bookmarks.bookmark.bulk_destroy': { paramsTuple?: []; params?: {} }
-    'bookmarks.bookmark.destroy': { paramsTuple: [ParamValue]; params: {'bookmarkId': ParamValue} }
-    'members.member.leave': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
-    'members.member.destroy': { paramsTuple: [ParamValue,ParamValue]; params: {'folderId': ParamValue,'memberId': ParamValue} }
-    'notifications.notification.destroy_all': { paramsTuple?: []; params?: {} }
-    'notifications.notification.destroy': { paramsTuple: [ParamValue]; params: {'notificationId': ParamValue} }
-    'browserIntegrations.integration.destroy': { paramsTuple: [ParamValue]; params: {'integrationId': ParamValue} }
-    'billing.billing.destroy': { paramsTuple?: []; params?: {} }
   }
 }
 declare module '@adonisjs/core/types/http' {

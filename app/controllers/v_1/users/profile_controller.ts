@@ -32,6 +32,25 @@ export default class ProfileController {
     return response.ok(formattedUser)
   }
 
+  async destroy(ctx: HttpContext) {
+    const { auth, response } = ctx
+
+    const user = auth.user!
+
+    if (user.currentAccessToken) {
+      await User.accessTokens.delete(user, user.currentAccessToken.identifier)
+    }
+
+    await user.delete()
+
+    const formattedResponse: ApiSuccessResponse = await ctx.serialize(
+      null,
+      'Profile deleted successfully'
+    )
+
+    return response.ok(formattedResponse)
+  }
+
   async update(ctx: HttpContext) {
     const { auth, request, response } = ctx
     const user = auth.user!

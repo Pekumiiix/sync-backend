@@ -139,6 +139,9 @@ router
         router
           .get('profile', [controllers.v1.users.Profile, 'show'])
           .openapi({ summary: 'Get user profile' })
+        router
+          .delete('profile', [controllers.v1.users.Profile, 'destroy'])
+          .openapi({ summary: 'Delete user profile' })
         router.get('oauths', [controllers.v1.users.Profile, 'ouaths']).openapi({
           summary: 'Get user OAuth identities',
         })

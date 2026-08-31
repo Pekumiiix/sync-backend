@@ -41,6 +41,7 @@ export interface ApiDefinition {
   profile: {
     profile: {
       show: typeof routes['profile.profile.show']
+      destroy: typeof routes['profile.profile.destroy']
       ouaths: typeof routes['profile.profile.ouaths']
       update: typeof routes['profile.profile.update']
       updateSettings: typeof routes['profile.profile.update_settings']

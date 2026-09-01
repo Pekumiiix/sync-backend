@@ -277,6 +277,12 @@ export class BookmarkService {
       throw new Exception('One or more bookmarks not found.', { status: 404 })
     }
 
+    const allAlreadyInTarget = bookmarks.every((b) => b.folderId === newFolderId)
+
+    if (allAlreadyInTarget) {
+      return bookmarks
+    }
+
     const bookmarksToMove = bookmarks.filter((b) => b.folderId !== newFolderId)
 
     if (!bookmarksToMove.length) return bookmarks

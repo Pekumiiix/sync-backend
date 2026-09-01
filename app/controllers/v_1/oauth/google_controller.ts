@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
 import { OAuthService } from '#services/o_auth_service'
-import { extensionOAuthValidator } from '#validators/extension_user'
 import { BrowserIntegrationService } from '#services/browser_integration_service'
 import { AccessTokenService } from '#services/access_token_service'
 import env from '#start/env'
@@ -54,31 +53,5 @@ export default class OauthsController {
       .clearQs()
       .withQs({ token: urlToken })
       .toPath(`${frontendurl}/auth/callback`)
-  }
-
-  async extension(ctx: HttpContext) {
-    const { response, request, ally } = ctx
-
-    const data = await request.validateUsing(extensionOAuthValidator)
-
-    try {
-      const googleUser = await ally.use('google').userFromToken(data.accessToken)
-
-      const { token } = await this.oAuthService.handleGoogleExtensionLogin(googleUser, data)
-
-      const urlToken = token.value!.release()
-
-      return response
-        .redirect()
-        .clearQs()
-        .withQs({ token: urlToken })
-        .toPath(`${frontendurl}/auth/callback`)
-    } catch (_) {
-      return response
-        .redirect()
-        .clearQs()
-        .withQs({ error: 'auth_failed' })
-        .toPath(`${frontendurl}/auth/callback`)
-    }
   }
 }

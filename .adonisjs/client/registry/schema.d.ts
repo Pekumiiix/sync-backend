@@ -31,18 +31,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['store']>>>
     }
   }
-  'oauths.google.extension': {
-    methods: ["POST"]
-    pattern: '/oauth/google/extension'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/extension_user').extensionOAuthValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/extension_user').extensionOAuthValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['extension']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/v_1/oauth/google_controller').default['extension']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
   'auth.new_account.store': {
     methods: ["POST"]
     pattern: '/api/v1/auth/sign-up'

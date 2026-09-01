@@ -18,12 +18,6 @@ const routes = {
     tokens: [{"old":"/oauth/google/callback","type":0,"val":"oauth","end":""},{"old":"/oauth/google/callback","type":0,"val":"google","end":""},{"old":"/oauth/google/callback","type":0,"val":"callback","end":""}],
     types: placeholder as Registry['oauths.google.store']['types'],
   },
-  'oauths.google.extension': {
-    methods: ["POST"],
-    pattern: '/oauth/google/extension',
-    tokens: [{"old":"/oauth/google/extension","type":0,"val":"oauth","end":""},{"old":"/oauth/google/extension","type":0,"val":"google","end":""},{"old":"/oauth/google/extension","type":0,"val":"extension","end":""}],
-    types: placeholder as Registry['oauths.google.extension']['types'],
-  },
   'auth.new_account.store': {
     methods: ["POST"],
     pattern: '/api/v1/auth/sign-up',

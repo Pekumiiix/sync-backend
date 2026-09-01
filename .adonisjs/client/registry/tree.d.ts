@@ -6,7 +6,6 @@ export interface ApiDefinition {
     google: {
       redirect: typeof routes['oauths.google.redirect']
       store: typeof routes['oauths.google.store']
-      extension: typeof routes['oauths.google.extension']
     }
   }
   auth: {

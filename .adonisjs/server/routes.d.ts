@@ -6,7 +6,6 @@ export type ScannedRoutes = {
   ALL: {
     'oauths.google.redirect': { paramsTuple?: []; params?: {} }
     'oauths.google.store': { paramsTuple?: []; params?: {} }
-    'oauths.google.extension': { paramsTuple?: []; params?: {} }
     'auth.new_account.store': { paramsTuple?: []; params?: {} }
     'auth.access_token.store': { paramsTuple?: []; params?: {} }
     'auth.access_token.destroy': { paramsTuple?: []; params?: {} }
@@ -105,7 +104,6 @@ export type ScannedRoutes = {
     'search.search.folder_search': { paramsTuple: [ParamValue]; params: {'folderId': ParamValue} }
   }
   POST: {
-    'oauths.google.extension': { paramsTuple?: []; params?: {} }
     'auth.new_account.store': { paramsTuple?: []; params?: {} }
     'auth.access_token.store': { paramsTuple?: []; params?: {} }
     'auth.access_token.destroy': { paramsTuple?: []; params?: {} }

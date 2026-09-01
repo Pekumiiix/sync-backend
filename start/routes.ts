@@ -38,11 +38,6 @@ router
       .use(middleware.guest())
       .use(authThrottle)
       .openapi({ summary: 'Handle Google OAuth callback' })
-    router
-      .post('google/extension', [controllers.v1.oauth.Google, 'extension'])
-      .use(middleware.guest())
-      .use(authThrottle)
-      .openapi({ summary: 'Login via Google OAuth from browser extension' })
   })
   .prefix('oauth')
   .as('oauths')

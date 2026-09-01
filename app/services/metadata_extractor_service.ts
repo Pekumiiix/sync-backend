@@ -52,7 +52,7 @@ export default class MetadataExtractorService {
           'Accept': 'text/html,application/xhtml+xml',
           'Accept-Language': 'en-US,en;q=0.9',
         },
-        timeout: 5000,
+        timeout: 15000,
         maxContentLength: 5 * 1024 * 1024,
         responseType: 'text',
       })

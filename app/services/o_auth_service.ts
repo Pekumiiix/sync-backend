@@ -3,7 +3,6 @@ import { BrowserIntegrationService } from '#services/browser_integration_service
 import { inject } from '@adonisjs/core'
 import type { AllyUserContract, GoogleToken } from '@adonisjs/ally/types'
 import { AccessTokenService } from './access_token_service.ts'
-import { ExtensionOAuthData } from '#validators/extension_user'
 
 type StatelessToken = { token: string; type: 'bearer' }
 
@@ -13,24 +12,6 @@ export class OAuthService {
     protected browserIntegrationService: BrowserIntegrationService,
     protected accessTokenService: AccessTokenService
   ) {}
-
-  async handleGoogleExtensionLogin(
-    googleUser: AllyUserContract<StatelessToken>,
-    data: ExtensionOAuthData
-  ) {
-    const user = await this.upsertGoogleUser(googleUser)
-
-    const tokenName = `Extension: ${data.browser} - ${data.osPlatform}`
-
-    const token = await this.accessTokenService.createAccessTokenForExtension(user, tokenName)
-
-    await this.browserIntegrationService.upsertIntegration(user, {
-      ...data,
-      accessTokenId: token.identifier as number,
-    })
-
-    return { user, token }
-  }
 
   async upsertGoogleUser(googleUser: AllyUserContract<StatelessToken | GoogleToken>) {
     if (!googleUser.email) {

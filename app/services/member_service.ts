@@ -89,15 +89,34 @@ export class MemberService {
     folderIds: string[],
     allowedAccessLevel: AccessLevelType
   ) {
-    const result = await Member.query()
-      .where('user_id', userId)
-      .whereIn('folder_id', folderIds)
-      .where('access_level', allowedAccessLevel)
-      .count('* as total')
+    if (folderIds.length === 0) return
 
-    const authorizedCount = Number(result[0].$extras.total)
+    const folders = await Folder.query()
+      .whereIn('id', folderIds)
+      .preload('members', (query) => {
+        query.where('user_id', userId)
+      })
 
-    if (authorizedCount !== folderIds.length) {
+    if (folders.length !== folderIds.length) {
+      throw new Exception('One or more folders do not exist.', {
+        status: 404,
+      })
+    }
+
+    const hasUnauthorizedFolder = folders.some((folder) => {
+      const isOwner = folder.userId === userId
+
+      if (isOwner) {
+        return false // Authorized
+      }
+
+      const member = folder.members[0]
+      const hasValidAccess = member && member.accessLevel === allowedAccessLevel
+
+      return !hasValidAccess
+    })
+
+    if (hasUnauthorizedFolder) {
       throw new Exception('You lack sufficient permissions for one or more folders.', {
         status: 403,
       })
